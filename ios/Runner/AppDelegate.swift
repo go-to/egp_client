@@ -12,6 +12,7 @@ import GoogleMaps
 
     // Google Maps API Key
     GMSServices.provideAPIKey(Env.googleMapApiKey)
+    GMSServices.setMetalRendererEnabled(true)
 
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
