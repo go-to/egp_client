@@ -61,6 +61,7 @@ class EgpMapState extends State<EgpMap> {
     }
 
     setState(() {
+      _markers.clear();
       for (final shop in shops!.shops) {
         var marker = Marker(
           markerId: MarkerId(shop.iD.toString()),
@@ -72,6 +73,8 @@ class EgpMapState extends State<EgpMap> {
           ),
           onTap: () => {
             debugPrint(shop.shopName),
+            // 店舗情報を更新
+            _onMapCreated(_controller),
           },
           // 営業時間中か否かによって表示するアイコンを変える
           icon: shop.inCurrentSales ? shopOpenIcon : shopCloseIcon,
@@ -149,6 +152,8 @@ class EgpMapState extends State<EgpMap> {
                 zoom: AppConstants.defaultMapZoom),
           ),
         );
+        // 店舗情報を更新
+        _onMapCreated(_controller);
       },
       child: const Icon(Icons.my_location_outlined),
     );
