@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'dart:math' as math;
 
+import 'package:egp_client/grpc_gen/egp.pb.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'app_constants.dart';
-import 'src/locations.dart' as locations;
+import 'package:egp_client/grpc_egp_service.dart';
 
 class EgpMap extends StatefulWidget {
   const EgpMap({super.key});
@@ -34,34 +34,49 @@ class EgpMapState extends State<EgpMap> {
   );
 
   void setCustomMapPin() {
-    shopOpenIcon = AssetMapBitmap(AppConstants.shopOpenImagePath);
-    shopCloseIcon = AssetMapBitmap(AppConstants.shopCloseImagePath);
+    shopOpenIcon = AssetMapBitmap(
+      AppConstants.shopOpenImagePath,
+      width: AppConstants.shopImageWidth,
+      height: AppConstants.shopImageHeight,
+    );
+    shopCloseIcon = AssetMapBitmap(
+      AppConstants.shopCloseImagePath,
+      width: AppConstants.shopImageWidth,
+      height: AppConstants.shopImageHeight,
+    );
   }
 
   final Map<String, Marker> _markers = {};
 
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    final googleOffices = await locations.getGoogleOffices();
+    // 店舗情報を取得
+    final channel = GrpcEgpService.getChannel();
+    ShopsResponse? shops;
+    try {
+      shops = await GrpcEgpService.getShops();
+    } catch (e) {
+      print('Caught error: $e');
+    } finally {
+      channel.shutdown();
+    }
 
     setState(() {
-      var random = math.Random();
-      for (final office in googleOffices.offices) {
-        var randNum = random.nextInt(10);
+      for (final shop in shops!.shops) {
         var marker = Marker(
-          markerId: MarkerId(office.name),
-          position: LatLng(office.lat, office.lng),
+          markerId: MarkerId(shop.iD.toString()),
+          position: LatLng(shop.latitude, shop.longitude),
           infoWindow: InfoWindow(
-            title: '${office.name}: ${randNum % 2}',
-            snippet: office.address,
-            onTap: () => {debugPrint('${office.name}: ${randNum % 2}')},
+            title: shop.shopName,
+            snippet: "営業時間: ${shop.businessDays}",
+            onTap: () => {debugPrint(shop.shopName)},
           ),
           onTap: () => {
-            debugPrint(office.name),
+            debugPrint(shop.shopName),
           },
-          // TODO アイコンの出し分け（一旦乱数を使用して出し分け）
-          icon: randNum % 2 == 0 ? shopOpenIcon : shopCloseIcon,
+          // 営業時間中か否かによって表示するアイコンを変える
+          icon: shop.inCurrentSales ? shopOpenIcon : shopCloseIcon,
         );
-        _markers[office.name] = marker;
+        _markers[shop.iD.toString()] = marker;
       }
     });
   }
