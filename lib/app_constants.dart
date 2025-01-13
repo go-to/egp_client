@@ -8,6 +8,8 @@ class AppConstants {
   static const String shopCloseImagePath = 'assets/shop_close.png';
   static const double shopImageWidth = 40;
   static const double shopImageHeight = 40;
+  static const double latitudeAdjustValue = 0.00001;
+  static const double longitudeAdjustValue = 0.00001;
 
   // 現在地ボタン
   static const double currentPositionButtonWidth = 55;

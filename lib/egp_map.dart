@@ -62,12 +62,24 @@ class EgpMapState extends State<EgpMap> {
 
     setState(() {
       _markers.clear();
+      var latLonList = [];
       for (final shop in shops!.shops) {
+        var latitude = shop.latitude;
+        var longitude = shop.longitude;
+        var latLon = latitude.toString() + longitude.toString();
+        // 緯度経度が同じ場合は、重なり防止のためにマーカーの位置をずらす
+        if (latLonList.contains(latLon)) {
+          latitude = latitude + AppConstants.latitudeAdjustValue;
+          longitude = longitude + AppConstants.longitudeAdjustValue;
+          latLon = latitude.toString() + longitude.toString();
+        }
+        latLonList.add(latLon);
+
         var marker = Marker(
           markerId: MarkerId(shop.iD.toString()),
-          position: LatLng(shop.latitude, shop.longitude),
+          position: LatLng(latitude, longitude),
           infoWindow: InfoWindow(
-            title: shop.shopName,
+            title: "${shop.iD}: ${shop.shopName}",
             snippet: "営業時間: ${shop.businessDays}",
             onTap: () => {debugPrint(shop.shopName)},
           ),
