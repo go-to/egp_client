@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:egp_client/grpc_gen/egp.pb.dart';
+import 'package:egp_client/src/shop_marker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'app_constants.dart';
 import 'package:egp_client/grpc_egp_service.dart';
+import 'package:widget_to_marker/widget_to_marker.dart';
 
 class EgpMap extends StatefulWidget {
   const EgpMap({super.key});
@@ -15,6 +17,63 @@ class EgpMap extends StatefulWidget {
 }
 
 class EgpMapState extends State<EgpMap> {
+  Map<String, Marker> defaultMarkers = {};
+  Map<String, Marker> markers = {};
+
+  initMarkers() async {
+    // 店舗情報を取得
+    final channel = GrpcEgpService.getChannel();
+    ShopsResponse? shops;
+    try {
+      shops = await GrpcEgpService.getShops();
+    } catch (e) {
+      print('Caught error: $e');
+    } finally {
+      channel.shutdown();
+    }
+
+    var latLonList = [];
+    for (final shop in shops!.shops) {
+      var latitude = shop.latitude;
+      var longitude = shop.longitude;
+      var latLon = latitude.toString() + longitude.toString();
+      // 緯度経度が同じ場合は、重なり防止のためにマーカーの位置をずらす
+      if (latLonList.contains(latLon)) {
+        latitude = latitude + AppConstants.latitudeAdjustValue;
+        longitude = longitude + AppConstants.longitudeAdjustValue;
+        latLon = latitude.toString() + longitude.toString();
+      }
+      latLonList.add(latLon);
+
+      var marker = Marker(
+        markerId: MarkerId(shop.iD.toString()),
+        position: LatLng(latitude, longitude),
+        onTap: () async => {
+          // 店舗情報を更新
+          _onMapCreated(_controller),
+          // タップした店舗のマーカーを変更
+          defaultMarkers[shop.iD.toString()] = Marker(
+            markerId: MarkerId(shop.iD.toString()),
+            position: LatLng(latitude, longitude),
+            icon: await ShopMarker(
+              shopName: '${shop.no}: ${shop.shopName}',
+              inCurrentSales: shop.inCurrentSales,
+            ).toBitmapDescriptor(
+                logicalSize: const Size(150, 150),
+                imageSize: const Size(300, 400)),
+          ),
+          defaultMarkers.values.toSet(),
+          setState(() {}),
+        },
+        // 営業時間中か否かによって表示するアイコンを変える
+        icon: shop.inCurrentSales ? shopOpenIcon : shopCloseIcon,
+      );
+      defaultMarkers[shop.iD.toString()] = marker;
+    }
+
+    setState(() {});
+  }
+
   Position? currentPosition;
   late GoogleMapController _controller;
   late StreamSubscription<Position> positionStream;
@@ -46,60 +105,15 @@ class EgpMapState extends State<EgpMap> {
     );
   }
 
-  final Map<String, Marker> _markers = {};
-
   Future<void> _onMapCreated(GoogleMapController controller) async {
-    // 店舗情報を取得
-    final channel = GrpcEgpService.getChannel();
-    ShopsResponse? shops;
-    try {
-      shops = await GrpcEgpService.getShops();
-    } catch (e) {
-      print('Caught error: $e');
-    } finally {
-      channel.shutdown();
-    }
-
-    setState(() {
-      _markers.clear();
-      var latLonList = [];
-      for (final shop in shops!.shops) {
-        var latitude = shop.latitude;
-        var longitude = shop.longitude;
-        var latLon = latitude.toString() + longitude.toString();
-        // 緯度経度が同じ場合は、重なり防止のためにマーカーの位置をずらす
-        if (latLonList.contains(latLon)) {
-          latitude = latitude + AppConstants.latitudeAdjustValue;
-          longitude = longitude + AppConstants.longitudeAdjustValue;
-          latLon = latitude.toString() + longitude.toString();
-        }
-        latLonList.add(latLon);
-
-        var marker = Marker(
-          markerId: MarkerId(shop.iD.toString()),
-          position: LatLng(latitude, longitude),
-          infoWindow: InfoWindow(
-            title: "${shop.iD}: ${shop.shopName}",
-            snippet: "営業時間: ${shop.businessDays}",
-            onTap: () => {debugPrint(shop.shopName)},
-          ),
-          onTap: () => {
-            debugPrint(shop.shopName),
-            // 店舗情報を更新
-            _onMapCreated(_controller),
-          },
-          // 営業時間中か否かによって表示するアイコンを変える
-          icon: shop.inCurrentSales ? shopOpenIcon : shopCloseIcon,
-        );
-        _markers[shop.iD.toString()] = marker;
-      }
-    });
+    initMarkers();
   }
 
   @override
   void initState() {
-    super.initState();
     setCustomMapPin();
+    initMarkers();
+    super.initState();
 
     // 位置情報が許可されていない時に許可をリクエストする
     Future(() async {
@@ -132,7 +146,7 @@ class EgpMapState extends State<EgpMap> {
               _controller = controller;
               _onMapCreated(_controller);
             },
-            markers: _markers.values.toSet(),
+            markers: defaultMarkers.values.toSet(),
           ),
           Positioned(
             right: AppConstants.currentPositionButtonPositionRight,
