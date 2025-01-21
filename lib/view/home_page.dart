@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:egp_client/grpc_gen/egp.pb.dart';
 import 'package:egp_client/provider/shop_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,9 +18,13 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> {
-  late GoogleMapController _controller;
+  late GoogleMapController _mapController;
   late StreamSubscription<Position> positionStream;
   Position? currentPosition;
+
+  final _pageController = PageController(
+    viewportFraction: 0.85,
+  );
 
   final LocationSettings locationSettings = const LocationSettings(
     accuracy: LocationAccuracy.high,
@@ -54,7 +59,9 @@ class _HomePageState extends ConsumerState<HomePage> {
     // デフォルトのマーカー表示
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final shops = await ref.read(shopProvider.notifier).setShops();
-      ref.read(markerProvider.notifier).addDefaultMarkers(shops);
+      ref
+          .read(markerProvider.notifier)
+          .addDefaultMarkers(_pageController, shops);
     });
   }
 
@@ -68,6 +75,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         title: Text(Config.appTitle),
       ),
       body: Stack(
+        alignment: Alignment.bottomCenter,
         children: [
           GoogleMap(
             mapType: MapType.normal,
@@ -76,9 +84,45 @@ class _HomePageState extends ConsumerState<HomePage> {
             myLocationButtonEnabled: false,
             zoomControlsEnabled: false,
             onMapCreated: (GoogleMapController controller) {
-              _controller = controller;
+              _mapController = controller;
             },
             markers: markers.values.toSet(),
+          ),
+          Container(
+            height: 148,
+            padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
+            child: PageView(
+              onPageChanged: (int index) async {
+                //スワイプ後のページのお店を取得
+                final selectedShop = shops.values.elementAt(index);
+                var activeShopId = '';
+                var selectedShopPosition =
+                    LatLng(selectedShop.latitude, selectedShop.longitude);
+                for (var marker in markers.values) {
+                  if (marker.position == selectedShopPosition) {
+                    activeShopId = marker.markerId.value.toString();
+                    break;
+                  }
+                }
+                ref
+                    .read(markerProvider.notifier)
+                    .updateMarkers(_pageController, shops, activeShopId);
+                //現在のズームレベルを取得
+                final zoomLevel = await _mapController.getZoomLevel();
+                //スワイプ後のお店の座標までカメラを移動
+                _mapController.animateCamera(
+                  CameraUpdate.newCameraPosition(
+                    CameraPosition(
+                      target:
+                          LatLng(selectedShop.latitude, selectedShop.longitude),
+                      zoom: zoomLevel,
+                    ),
+                  ),
+                );
+              },
+              controller: _pageController,
+              children: _shopTiles(shops),
+            ),
           ),
           Positioned(
             right: Config.currentPositionButtonPositionRight,
@@ -88,6 +132,23 @@ class _HomePageState extends ConsumerState<HomePage> {
         ],
       ),
     );
+  }
+
+  // カード
+  List<Widget> _shopTiles(Map<String, Shop> shops) {
+    final shopTiles = shops.values.map(
+      (shop) {
+        return Card(
+          child: SizedBox(
+            height: 100,
+            child: Center(
+              child: Text('${shop.no}: ${shop.shopName}'),
+            ),
+          ),
+        );
+      },
+    ).toList();
+    return shopTiles;
   }
 
   // 現在値ボタン
@@ -103,7 +164,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       onPressed: () async {
         Position currentPosition = await Geolocator.getCurrentPosition(
             locationSettings: locationSettings);
-        _controller.animateCamera(
+        _mapController.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
                 target:
@@ -113,7 +174,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         );
         // 店舗情報を更新
         final shops = await ref.read(shopProvider.notifier).setShops();
-        ref.read(markerProvider.notifier).updateMarkers(shops);
+        ref.read(markerProvider.notifier).updateMarkers(_pageController, shops);
       },
       child: const Icon(Icons.my_location_outlined),
     );
