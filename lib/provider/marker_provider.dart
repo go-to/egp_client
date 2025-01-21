@@ -7,11 +7,11 @@ import '../service/grpc_service.dart';
 import '../widget/shop_marker_widget.dart';
 
 final markerProvider =
-    StateNotifierProvider<MarkerNotifier, Set<Marker>>((ref) {
+    StateNotifierProvider<MarkerNotifier, Map<String, Marker>>((ref) {
   return MarkerNotifier();
 });
 
-class MarkerNotifier extends StateNotifier<Set<Marker>> {
+class MarkerNotifier extends StateNotifier<Map<String, Marker>> {
   MarkerNotifier() : super({});
 
   final shopOpenIcon = AssetMapBitmap(
@@ -55,8 +55,8 @@ class MarkerNotifier extends StateNotifier<Set<Marker>> {
       // 営業時間中か否かによって表示するアイコンを変える
       icon: icon,
     );
-    state.removeWhere((shop) => shop.markerId == marker.markerId);
-    state = {...state, marker};
+    state[shopId] = marker;
+    state = {...state};
   }
 
   // 並列処理でデフォルトのマーカーを設定

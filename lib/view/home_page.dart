@@ -75,7 +75,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             onMapCreated: (GoogleMapController controller) {
               _controller = controller;
             },
-            markers: markers,
+            markers: markers.values.toSet(),
           ),
           Positioned(
             right: Config.currentPositionButtonPositionRight,
