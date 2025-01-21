@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:egp_client/egp_map.dart';
 import 'package:egp_client/main_page.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

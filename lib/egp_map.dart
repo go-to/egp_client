@@ -5,9 +5,8 @@ import 'package:egp_client/src/shop_marker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'app_constants.dart';
+import 'package:egp_client/app_constants.dart';
 import 'package:egp_client/grpc_egp_service.dart';
-import 'package:widget_to_marker/widget_to_marker.dart';
 
 class EgpMap extends StatefulWidget {
   const EgpMap({super.key});
@@ -50,20 +49,9 @@ class EgpMapState extends State<EgpMap> {
         position: LatLng(latitude, longitude),
         onTap: () async => {
           // 店舗情報を更新
-          _onMapCreated(_controller),
+          updateMarkers(),
           // タップした店舗のマーカーを変更
-          defaultMarkers[shop.iD.toString()] = Marker(
-            markerId: MarkerId(shop.iD.toString()),
-            position: LatLng(latitude, longitude),
-            icon: await ShopMarker(
-              shopName: '${shop.no}: ${shop.shopName}',
-              inCurrentSales: shop.inCurrentSales,
-            ).toBitmapDescriptor(
-                logicalSize: const Size(150, 150),
-                imageSize: const Size(300, 400)),
-          ),
-          defaultMarkers.values.toSet(),
-          setState(() {}),
+          changeTapedMarker(shop, latitude, longitude),
         },
         // 営業時間中か否かによって表示するアイコンを変える
         icon: shop.inCurrentSales ? shopOpenIcon : shopCloseIcon,
@@ -144,7 +132,8 @@ class EgpMapState extends State<EgpMap> {
             zoomControlsEnabled: false,
             onMapCreated: (GoogleMapController controller) async {
               _controller = controller;
-              _onMapCreated(_controller);
+              // 店舗情報を更新
+              updateMarkers();
             },
             markers: defaultMarkers.values.toSet(),
           ),
@@ -179,9 +168,44 @@ class EgpMapState extends State<EgpMap> {
           ),
         );
         // 店舗情報を更新
-        _onMapCreated(_controller);
+        updateMarkers();
       },
       child: const Icon(Icons.my_location_outlined),
     );
+  }
+
+  // 各店舗のマーカーを更新
+  Future<void> updateMarkers() {
+    return Future.delayed(
+      const Duration(seconds: 0),
+      () {
+        _onMapCreated(_controller);
+      },
+    ).then((value) {
+      print('value: ${value}');
+    }).catchError((error) {
+      print('error: ${error}');
+    });
+  }
+
+  // タップした店舗のマーカーを更新
+  Future<void> changeTapedMarker(shop, latitude, longitude) async {
+    return Future.delayed(const Duration(seconds: 0), () async {
+      final shopMarker =
+          await createShopMarker(shop.shopName, shop.inCurrentSales);
+
+      defaultMarkers[shop.iD.toString()] = Marker(
+        markerId: MarkerId(shop.iD.toString()),
+        position: LatLng(latitude, longitude),
+        icon: shopMarker,
+      );
+
+      defaultMarkers.values.toSet();
+      setState(() {});
+    }).then((value) {
+      print('value: ${value}');
+    }).catchError((error) {
+      print('error: ${error}');
+    });
   }
 }
