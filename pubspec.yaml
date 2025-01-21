@@ -45,6 +45,8 @@ dependencies:
   hooks_riverpod: ^2.6.1
   flutter_hooks: ^0.20.5
   flutter_dotenv: ^5.2.1
+  widget_to_marker: ^1.0.6
+  flutter_riverpod: ^2.6.1
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +76,7 @@ flutter:
     - assets/locations.json
     - assets/shop_open.png
     - assets/shop_close.png
+    - assets/test.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
