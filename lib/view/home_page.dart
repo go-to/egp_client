@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:egp_client/provider/shop_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -51,13 +52,15 @@ class _HomePageState extends ConsumerState<HomePage> {
     });
 
     // デフォルトのマーカー表示
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(markerProvider.notifier).addDefaultMarkers();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final shops = await ref.read(shopProvider.notifier).setShops();
+      ref.read(markerProvider.notifier).addDefaultMarkers(shops);
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final shops = ref.watch(shopProvider);
     final markers = ref.watch(markerProvider);
 
     return Scaffold(
@@ -109,7 +112,8 @@ class _HomePageState extends ConsumerState<HomePage> {
           ),
         );
         // 店舗情報を更新
-        ref.read(markerProvider.notifier).updateMarkers();
+        final shops = await ref.read(shopProvider.notifier).setShops();
+        ref.read(markerProvider.notifier).updateMarkers(shops);
       },
       child: const Icon(Icons.my_location_outlined),
     );

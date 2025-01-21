@@ -43,14 +43,14 @@ class MarkerNotifier extends StateNotifier<Map<String, Marker>> {
   }
 
   // マーカーを設定
-  Future<void> setMarker(
-      String shopId, LatLng position, BitmapDescriptor icon) async {
+  Future<void> setMarker(Map<String, Shop> shops, String shopId,
+      LatLng position, BitmapDescriptor icon) async {
     final marker = Marker(
       markerId: MarkerId(shopId),
       position: position,
       onTap: () => {
         // 店舗情報を更新
-        updateMarkers(shopId),
+        updateMarkers(shops, shopId),
       },
       // 営業時間中か否かによって表示するアイコンを変える
       icon: icon,
@@ -60,12 +60,13 @@ class MarkerNotifier extends StateNotifier<Map<String, Marker>> {
   }
 
   // 並列処理でデフォルトのマーカーを設定
-  void addDefaultMarkers() async {
+  void addDefaultMarkers(Map<String, Shop> shops) async {
     // TODO シンプルなマーカーにする
-    final shops = await getShops();
+    // final shops = await getShops();
 
     var latLonList = [];
-    await Future.wait(shops!.shops.map((shop) async {
+    // await Future.wait(shops.shops.map((shop) async {
+    await Future.wait(shops.values.map((shop) async {
       var shopId = shop.iD.toString();
       var latitude = shop.latitude;
       var longitude = shop.longitude;
@@ -81,16 +82,15 @@ class MarkerNotifier extends StateNotifier<Map<String, Marker>> {
       var position = LatLng(latitude, longitude);
       var icon = shop.inCurrentSales ? shopOpenIcon : shopCloseIcon;
 
-      await setMarker(shopId, position, icon);
+      await setMarker(shops, shopId, position, icon);
     }));
   }
 
   // 並列処理で動的マーカーを追加
-  Future<void> updateMarkers([String? activeShopId]) async {
-    final shops = await getShops();
-
+  Future<void> updateMarkers(Map<String, Shop> shops,
+      [String? activeShopId]) async {
     var latLonList = [];
-    await Future.wait(shops!.shops.map((shop) async {
+    await Future.wait(shops.values.map((shop) async {
       var shopId = shop.iD.toString();
       var latitude = shop.latitude;
       var longitude = shop.longitude;
@@ -111,7 +111,7 @@ class MarkerNotifier extends StateNotifier<Map<String, Marker>> {
         icon = await createShopMarkerWidget(shopName, shop.inCurrentSales);
       }
 
-      await setMarker(shopId, position, icon);
+      await setMarker(shops, shopId, position, icon);
     }));
   }
 }
