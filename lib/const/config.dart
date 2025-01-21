@@ -1,4 +1,7 @@
-class AppConstants {
+class Config {
+  // タイトル
+  static const String appTitle = 'ヱビスビールに合う逸品グランプリ';
+
   // マップ表示
   static const double defaultMapLatitude = 35.64691938518296;
   static const double defaultMapLongitude = 139.71008179999998;
