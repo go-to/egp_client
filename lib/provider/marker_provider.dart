@@ -68,59 +68,73 @@ class MarkerNotifier extends StateNotifier<Map<String, Marker>> {
 
   // 並列処理でデフォルトのマーカーを設定
   void addDefaultMarkers(
-      PageController pageController, Map<String, Shop> shops) async {
-    // TODO シンプルなマーカーにする
-    // final shops = await getShops();
+      PageController pageController, Map<String, Shop> shops) {
+    Future(() async {
+      // TODO シンプルなマーカーにする
+      Map<String, Shop> adjustedShops = {};
+      var latLonList = [];
+      await Future.wait(shops.values.map((shop) async {
+        var shopId = shop.iD.toString();
+        var latitude = shop.latitude;
+        var longitude = shop.longitude;
+        var latLon = latitude.toString() + longitude.toString();
+        // 緯度経度が同じ場合は、重なり防止のためにマーカーの位置をずらす
+        if (latLonList.contains(latLon)) {
+          latitude = latitude + Config.latitudeAdjustValue;
+          longitude = longitude + Config.longitudeAdjustValue;
+          latLon = latitude.toString() + longitude.toString();
+        }
+        latLonList.add(latLon);
+        adjustedShops[shopId] = shop;
+        adjustedShops[shopId]!.latitude = latitude;
+        adjustedShops[shopId]!.longitude = longitude;
 
-    var latLonList = [];
-    // await Future.wait(shops.shops.map((shop) async {
-    await Future.wait(shops.values.map((shop) async {
-      var shopId = shop.iD.toString();
-      var latitude = shop.latitude;
-      var longitude = shop.longitude;
-      var latLon = latitude.toString() + longitude.toString();
-      // 緯度経度が同じ場合は、重なり防止のためにマーカーの位置をずらす
-      if (latLonList.contains(latLon)) {
-        latitude = latitude + Config.latitudeAdjustValue;
-        longitude = longitude + Config.longitudeAdjustValue;
-        latLon = latitude.toString() + longitude.toString();
-      }
-      latLonList.add(latLon);
+        var position = LatLng(latitude, longitude);
+        var icon = shop.inCurrentSales ? shopOpenIcon : shopCloseIcon;
 
-      var position = LatLng(latitude, longitude);
-      var icon = shop.inCurrentSales ? shopOpenIcon : shopCloseIcon;
-
-      await setMarker(pageController, shops, shopId, position, icon);
-    }));
+        Future.delayed(Duration(seconds: 0), () async {
+          await setMarker(
+              pageController, adjustedShops, shopId, position, icon);
+        });
+      }));
+    });
   }
 
   // 並列処理で動的マーカーを追加
-  Future<void> updateMarkers(
-      PageController pageController, Map<String, Shop> shops,
-      [String? activeShopId]) async {
-    var latLonList = [];
-    await Future.wait(shops.values.map((shop) async {
-      var shopId = shop.iD.toString();
-      var latitude = shop.latitude;
-      var longitude = shop.longitude;
-      var latLon = latitude.toString() + longitude.toString();
-      // 緯度経度が同じ場合は、重なり防止のためにマーカーの位置をずらす
-      if (latLonList.contains(latLon)) {
-        latitude = latitude + Config.latitudeAdjustValue;
-        longitude = longitude + Config.longitudeAdjustValue;
-        latLon = latitude.toString() + longitude.toString();
-      }
-      latLonList.add(latLon);
+  void updateMarkers(PageController pageController, Map<String, Shop> shops,
+      [String? activeShopId]) {
+    Future(() async {
+      Map<String, Shop> adjustedShops = {};
+      var latLonList = [];
+      await Future.wait(shops.values.map((shop) async {
+        var shopId = shop.iD.toString();
+        var latitude = shop.latitude;
+        var longitude = shop.longitude;
+        var latLon = latitude.toString() + longitude.toString();
+        // 緯度経度が同じ場合は、重なり防止のためにマーカーの位置をずらす
+        if (latLonList.contains(latLon)) {
+          latitude = latitude + Config.latitudeAdjustValue;
+          longitude = longitude + Config.longitudeAdjustValue;
+          latLon = latitude.toString() + longitude.toString();
+        }
+        latLonList.add(latLon);
+        adjustedShops[shopId] = shop;
+        adjustedShops[shopId]!.latitude = latitude;
+        adjustedShops[shopId]!.longitude = longitude;
 
-      var position = LatLng(latitude, longitude);
-      BitmapDescriptor icon =
-          shop.inCurrentSales ? shopOpenIcon : shopCloseIcon;
-      if (activeShopId != null && shopId == activeShopId) {
-        var shopName = '${shop.no}: ${shop.shopName}';
-        icon = await createShopMarkerWidget(shopName, shop.inCurrentSales);
-      }
+        var position = LatLng(latitude, longitude);
+        BitmapDescriptor icon =
+            shop.inCurrentSales ? shopOpenIcon : shopCloseIcon;
+        if (activeShopId != null && shopId == activeShopId) {
+          var shopName = '${shop.no}: ${shop.shopName}';
+          icon = await createShopMarkerWidget(shopName, shop.inCurrentSales);
+        }
 
-      await setMarker(pageController, shops, shopId, position, icon);
-    }));
+        Future.delayed(Duration(seconds: 0), () async {
+          await setMarker(
+              pageController, adjustedShops, shopId, position, icon);
+        });
+      }));
+    });
   }
 }
