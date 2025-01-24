@@ -39,6 +39,7 @@ Future<BitmapDescriptor> createShopMarkerWidget(
   );
 
   final result = await shopMarkerWidget.toBitmapDescriptor(
-      logicalSize: const Size(150, 150), imageSize: const Size(300, 400));
+      // logicalSize: const Size(150, 150), imageSize: const Size(300, 400));
+      logicalSize: const Size(100, 100), imageSize: const Size(200, 400));
   return result;
 }
