@@ -45,7 +45,7 @@ class MarkerNotifier extends StateNotifier<Map<String, Marker>> {
 
   // マーカーを設定
   Future<void> setMarker(PageController pageController, Map<String, Shop> shops,
-      String shopId, LatLng position, BitmapDescriptor icon) async {
+      String shopId, LatLng position, BitmapDescriptor icon, int zIndex) async {
     final marker = Marker(
       markerId: MarkerId(shopId),
       position: position,
@@ -61,6 +61,7 @@ class MarkerNotifier extends StateNotifier<Map<String, Marker>> {
       },
       // 営業時間中か否かによって表示するアイコンを変える
       icon: icon,
+      zIndex: zIndex.toDouble(),
     );
     state[shopId] = marker;
     state = {...state};
@@ -91,10 +92,11 @@ class MarkerNotifier extends StateNotifier<Map<String, Marker>> {
 
         var position = LatLng(latitude, longitude);
         var icon = shop.inCurrentSales ? shopOpenIcon : shopCloseIcon;
+        var zIndex = shop.inCurrentSales ? 1 : 0;
 
         Future.delayed(Duration(seconds: 0), () async {
           await setMarker(
-              pageController, adjustedShops, shopId, position, icon);
+              pageController, adjustedShops, shopId, position, icon, zIndex);
         });
       }));
     });
@@ -123,16 +125,18 @@ class MarkerNotifier extends StateNotifier<Map<String, Marker>> {
         adjustedShops[shopId]!.longitude = longitude;
 
         var position = LatLng(latitude, longitude);
+        var zIndex = shop.inCurrentSales ? 1 : 0;
         BitmapDescriptor icon =
             shop.inCurrentSales ? shopOpenIcon : shopCloseIcon;
         if (activeShopId != null && shopId == activeShopId) {
           var shopName = '${shop.no}: ${shop.shopName}';
           icon = await createShopMarkerWidget(shopName, shop.inCurrentSales);
+          zIndex = 2;
         }
 
         Future.delayed(Duration(seconds: 0), () async {
           await setMarker(
-              pageController, adjustedShops, shopId, position, icon);
+              pageController, adjustedShops, shopId, position, icon, zIndex);
         });
       }));
     });

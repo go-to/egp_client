@@ -1,3 +1,4 @@
+import 'package:egp_client/view/shop_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -17,7 +18,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Google Maps Sample',
-      home: HomePage(),
+      routes: <String, WidgetBuilder>{
+        '/': (_) => HomePage(),
+        '/shop_detail': (_) => ShopDetail(
+              year: 0,
+              no: 0,
+              shopName: '',
+              address: '',
+            ),
+      },
     );
   }
 }

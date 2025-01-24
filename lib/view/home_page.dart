@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:egp_client/grpc_gen/egp.pb.dart';
 import 'package:egp_client/provider/shop_provider.dart';
+import 'package:egp_client/view/shop_detail.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -107,6 +108,13 @@ class _HomePageState extends ConsumerState<HomePage> {
                   onMapCreated: (GoogleMapController controller) {
                     _mapController = controller;
                   },
+                  onTap: (LatLng position) async {
+                    final shops =
+                        await ref.read(shopProvider.notifier).setShops();
+                    ref
+                        .read(markerProvider.notifier)
+                        .updateMarkers(_pageController, shops);
+                  },
                   markers: markers.values.toSet(),
                 )
               : Center(
@@ -130,7 +138,45 @@ class _HomePageState extends ConsumerState<HomePage> {
               ? Container(
                   height: 148,
                   padding: const EdgeInsets.fromLTRB(0, 0, 0, 20),
-                  child: PageView(
+                  child: PageView.builder(
+                    itemCount: shops.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) {
+                                final shop = shops.values.elementAt(index);
+                                // TODO 年を変数化する
+                                return ShopDetail(
+                                    year: 2024,
+                                    no: shop.no,
+                                    shopName: shop.shopName,
+                                    address: shop.address);
+                              },
+                            ),
+                          );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 32.0),
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            child: Center(
+                              child: Text(
+                                '${shops.values.elementAt(index).no}: ${shops.values.elementAt(index).shopName}',
+                                style: TextStyle(
+                                    fontSize: 24, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
                     onPageChanged: (int index) async {
                       //スワイプ後のページのお店を取得
                       final selectedShop = shops.values.elementAt(index);
@@ -160,7 +206,6 @@ class _HomePageState extends ConsumerState<HomePage> {
                       );
                     },
                     controller: _pageController,
-                    children: _shopTiles(shops),
                   ),
                 )
               : Container(),
@@ -177,14 +222,17 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   // カード
-  List<Widget> _shopTiles(Map<String, Shop> shops) {
+  List<Future<InkWell>> _shopTiles(Map<String, Shop> shops) {
     final shopTiles = shops.values.map(
-      (shop) {
-        return Card(
-          child: SizedBox(
-            height: 100,
-            child: Center(
-              child: Text('${shop.no}: ${shop.shopName}'),
+      (shop) async {
+        return InkWell(
+          onTap: await Navigator.of(context).pushNamed('/shop_detail'),
+          child: Card(
+            child: SizedBox(
+              height: 100,
+              child: Center(
+                child: Text('${shop.no}: ${shop.shopName}'),
+              ),
             ),
           ),
         );
