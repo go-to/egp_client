@@ -13,6 +13,8 @@ Future<BitmapDescriptor> defaultMarkerIconOpen(
   return BitmapDescriptor.asset(
     const ImageConfiguration(),
     Config.shopOpenImagePath,
+    width: Config.shopImageWidth,
+    height: Config.shopImageHeight,
   );
 }
 
@@ -22,5 +24,7 @@ Future<BitmapDescriptor> defaultMarkerIconClose(
   return BitmapDescriptor.asset(
     const ImageConfiguration(),
     Config.shopCloseImagePath,
+    width: Config.shopImageWidth,
+    height: Config.shopImageHeight,
   );
 }

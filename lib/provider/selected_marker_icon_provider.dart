@@ -12,5 +12,7 @@ Future<BitmapDescriptor> selectedMarkerIcon(SelectedMarkerIconRef ref) async {
   return BitmapDescriptor.asset(
     const ImageConfiguration(),
     Config.shopSelectedImagePath,
+    width: Config.shopSelectedImageWidth,
+    height: Config.shopSelectedImageHeight,
   );
 }
