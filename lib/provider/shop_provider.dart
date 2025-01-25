@@ -1,39 +1,17 @@
 import 'package:egp_client/grpc_gen/egp.pb.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:egp_client/service/shop_service.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../service/grpc_service.dart';
+part 'shop_provider.g.dart';
 
-final shopProvider =
-    StateNotifierProvider<ShopNotifier, Map<String, Shop>>((ref) {
-  return ShopNotifier();
-});
-
-class ShopNotifier extends StateNotifier<Map<String, Shop>> {
-  ShopNotifier() : super({});
-
-  Future<ShopsResponse?> getShops() async {
-    // 店舗情報を取得
-    final channel = GrpcService.getChannel();
-    ShopsResponse? shops;
-    try {
-      shops = await GrpcService.getShops();
-    } catch (e) {
-      print('Caught error: $e');
-      return null;
-    } finally {
-      channel.shutdown();
-    }
-
-    return shops;
+@riverpod
+class Shop extends _$Shop {
+  @override
+  Future<ShopsResponse?> build() async {
+    return await _fetchShops();
   }
 
-  Future<Map<String, Shop>> setShops() async {
-    final shops = await getShops();
-
-    for (var shop in shops!.shops) {
-      state[shop.iD.toString()] = shop;
-    }
-    state = {...state};
-    return state;
+  Future<ShopsResponse?> _fetchShops() {
+    return ShopService.getShops();
   }
 }

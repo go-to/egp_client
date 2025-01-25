@@ -19,4 +19,7 @@ class Config {
   static const double currentPositionButtonHeight = 55;
   static const double currentPositionButtonPositionRight = 10;
   static const double currentPositionButtonPositionBottom = 70;
+
+  // イベントページ
+  static const String eventBaseUrl = 'https://ebisu-gp.com';
 }

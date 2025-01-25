@@ -1,0 +1,367 @@
+import 'dart:async';
+import 'dart:core';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../const/config.dart';
+import '../provider/marker_provider.dart';
+import '../provider/shop_provider.dart';
+import '../service/shop_service.dart';
+import '../view/shop_detail.dart';
+
+class Home extends ConsumerStatefulWidget {
+  const Home({super.key});
+
+  @override
+  ConsumerState<Home> createState() => _HomeState();
+}
+
+class _HomeState extends ConsumerState<Home> {
+  bool _locationPermissionGranted = false;
+  late GoogleMapController _mapController;
+  late StreamSubscription<Position>? _positionStream;
+  Position? currentPosition;
+
+  late List<Marker> _markers;
+
+  final _pageController = PageController(
+    viewportFraction: 0.85,
+  );
+
+  final LocationSettings locationSettings = const LocationSettings(
+    accuracy: LocationAccuracy.high,
+    distanceFilter: Config.locationDistanceFilter,
+  );
+
+  // 初期位置
+  final CameraPosition _kGooglePlex = const CameraPosition(
+    target: LatLng(Config.defaultMapLatitude, Config.defaultMapLongitude),
+    zoom: Config.defaultMapZoom,
+  );
+
+  // 店舗の営業中か否かを識別するためのアイコン
+  final shopOpenIcon = AssetMapBitmap(
+    Config.shopOpenImagePath,
+    width: Config.shopImageWidth,
+    height: Config.shopImageHeight,
+  );
+  final shopCloseIcon = AssetMapBitmap(
+    Config.shopCloseImagePath,
+    width: Config.shopImageWidth,
+    height: Config.shopImageHeight,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _startPositionStream();
+    _addMarkers();
+  }
+
+  void _addMarkers() async {
+    List<Marker> markers = [];
+    final shops = await ShopService.getShops();
+    for (var shop in shops!.shops) {
+      final markerId = MarkerId(shop.iD.toString());
+      markers.add(Marker(
+        markerId: markerId,
+        position: LatLng(shop.latitude, shop.longitude),
+        onTap: () {
+          ref.read(selectedMarkerProvider.notifier).selectMarker(markerId);
+        },
+        // 営業時間中か否かによって表示するアイコンを変える
+        icon: shop.inCurrentSales ? shopOpenIcon : shopCloseIcon,
+        zIndex: shop.inCurrentSales ? 1.toDouble() : 0.toDouble(),
+      ));
+    }
+
+    setState(() {
+      _markers = markers;
+    });
+  }
+
+  @override
+  void dispose() {
+    _positionStream?.cancel();
+    _pageController.dispose();
+    _mapController.dispose();
+    super.dispose();
+  }
+
+  // 現在地ストリームを開始
+  void _startPositionStream() async {
+    final permissionGranted = await _checkLocationPermission();
+    if (!permissionGranted) return;
+
+    // 権限が許可された場合にGoogleMapを再ビルド
+    if (permissionGranted) {
+      setState(() {
+        _locationPermissionGranted = true;
+      });
+    }
+
+    _positionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings).listen(
+      (Position position) {
+        // カメラを現在地に移動
+        _mapController.animateCamera(
+          CameraUpdate.newLatLng(_kGooglePlex.target),
+        );
+      },
+      onError: (e) {
+        print('位置情報取得エラー: $e');
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedMarkerId = ref.watch(selectedMarkerProvider);
+    final shopListAsync = ref.watch(shopProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(Config.appTitle),
+      ),
+      body: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          // マップ表示
+          shopListAsync.when(
+            data: (shops) {
+              if (_locationPermissionGranted) {
+                return GoogleMap(
+                  mapType: MapType.normal,
+                  initialCameraPosition: _kGooglePlex,
+                  myLocationEnabled: true,
+                  myLocationButtonEnabled: false,
+                  zoomControlsEnabled: false,
+                  onMapCreated: (GoogleMapController controller) {
+                    _mapController = controller;
+                  },
+                  onTap: (LatLng position) async {
+                    ref.read(selectedMarkerProvider.notifier).clearSelection();
+                  },
+                  markers: _markers.map((marker) {
+                    return marker.copyWith(
+                      onTapParam: () => ref
+                          .read(selectedMarkerProvider.notifier)
+                          .selectMarker(marker.markerId),
+                    );
+                  }).toSet(),
+                );
+              } else {
+                return Center(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      // _checkLocationPermission;
+                      final permissionGranted =
+                          await _checkLocationPermission();
+
+                      // 権限が許可された場合にGoogleMapを再ビルド
+                      if (permissionGranted) {
+                        setState(() {
+                          _locationPermissionGranted = true;
+                        });
+                      }
+                    },
+                    child: Text('位置情報を許可する'),
+                  ),
+                );
+              }
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (Object error, StackTrace stackTrace) => Center(
+              child: Text('Error: $error'),
+            ),
+          ),
+
+          // カード表示
+          shopListAsync.when(
+            data: (shops) {
+              if (_locationPermissionGranted) {
+                // マーカー未選択の場合は非表示
+                if (selectedMarkerId == null) {
+                  return const SizedBox.shrink();
+                }
+
+                // 選択中のマーカーに該当するIndexを取得
+                final selectedIndex =
+                    _markers.indexWhere((m) => m.markerId == selectedMarkerId);
+                if (selectedIndex != -1) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    // PageViewがビルドされた後にジャンプ
+                    if (_pageController.hasClients) {
+                      _pageController.jumpToPage(selectedIndex);
+                    }
+                  });
+                }
+
+                return Positioned(
+                  bottom: 20,
+                  left: 0,
+                  right: 0,
+                  height: 150,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: _markers.length,
+                    onPageChanged: (index) async {
+                      ref
+                          .read(selectedMarkerProvider.notifier)
+                          .selectMarker(_markers[index].markerId);
+
+                      //現在のズームレベルを取得
+                      final zoomLevel = await _mapController.getZoomLevel();
+                      final shop = shops!.shops[index];
+
+                      //スワイプ後のお店の座標までカメラを移動
+                      _mapController.animateCamera(
+                        CameraUpdate.newCameraPosition(
+                          CameraPosition(
+                            target: LatLng(shop.latitude, shop.longitude),
+                            zoom: zoomLevel,
+                          ),
+                        ),
+                      );
+                    },
+                    itemBuilder: (context, index) {
+                      final shop = shops!.shops[index];
+                      final marker = _markers[index];
+                      return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  final shop = shops.shops.elementAt(index);
+                                  // TODO 年を変数化する
+                                  return ShopDetail(
+                                      year: 2024,
+                                      no: shop.no,
+                                      shopName: shop.shopName,
+                                      address: shop.address);
+                                },
+                              ),
+                            );
+                          },
+                          child: Card(
+                            elevation: 5,
+                            margin: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${shop.no}: ${shop.shopName}',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text('${shop.address}'),
+                                ],
+                              ),
+                            ),
+                          ));
+                    },
+                  ),
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (Object error, StackTrace stackTrace) => Center(
+              child: Text('Error: $error'),
+            ),
+            // }
+            //         },
+          ),
+
+          // 現在地ボタン
+          _locationPermissionGranted
+              ? Positioned(
+                  right: Config.currentPositionButtonPositionRight,
+                  bottom: Config.currentPositionButtonPositionBottom,
+                  child: _goToCurrentPositionButton(),
+                )
+              : Container(),
+        ],
+      ),
+    );
+  }
+
+  // 現在値ボタンWidget
+  Widget _goToCurrentPositionButton() {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        minimumSize: const Size(Config.currentPositionButtonWidth,
+            Config.currentPositionButtonHeight),
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        shape: const CircleBorder(),
+      ),
+      onPressed: () async {
+        final permissionGranted = await _checkLocationPermission();
+        if (!permissionGranted) return;
+
+        // 権限が許可された場合にGoogleMapを再ビルド
+        if (permissionGranted) {
+          setState(() {
+            _locationPermissionGranted = true;
+          });
+        }
+
+        // 現在位置に移動
+        final position = await Geolocator.getCurrentPosition(
+            locationSettings: locationSettings);
+        final currentLatLng = LatLng(position.latitude, position.longitude);
+        _mapController.animateCamera(
+          CameraUpdate.newLatLngZoom(currentLatLng, Config.defaultMapZoom),
+        );
+      },
+      child: const Icon(Icons.my_location_outlined),
+    );
+  }
+
+  // 位置情報の権限を確認
+  Future<bool> _checkLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // 位置情報サービスが有効か確認
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('位置情報サービスを有効にしてください。')),
+      );
+      return false;
+    }
+
+    // 位置情報の権限を確認
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('位置情報の権限が拒否されました。')),
+        );
+        return false;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('位置情報の権限が永久に拒否されています。')),
+      );
+      return false;
+    }
+
+    return true;
+  }
+}

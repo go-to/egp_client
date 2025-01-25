@@ -14,5 +14,7 @@ protoc:
 	protoc --dart_out=grpc:${GRPC_GEN_PATH} -I ${PROTOBUF_SRC_PATH} ${PROTOBUF_SRC_PATH}/*.proto google/protobuf/timestamp.proto
 clean-branch:
 	git switch main && git branch | xargs git branch -d
+build:
+	flutter pub run build_runner build --delete-conflicting-outputs
 build-app:
 	flutter build apk && mv build/app/outputs/flutter-apk/app-release.apk ./build/egp.apk
