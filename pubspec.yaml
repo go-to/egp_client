@@ -80,7 +80,7 @@ flutter:
     - assets/locations.json
     - assets/shop_open.png
     - assets/shop_close.png
-    - assets/test.png
+    - assets/shop_selected.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:

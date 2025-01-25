@@ -8,6 +8,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../const/config.dart';
 import '../provider/marker_provider.dart';
+import '../provider/default_marker_icon_provider.dart';
+import '../provider/selected_marker_icon_provider.dart';
 import '../provider/shop_provider.dart';
 import '../service/shop_service.dart';
 import '../view/shop_detail.dart';
@@ -25,7 +27,8 @@ class _HomeState extends ConsumerState<Home> {
   late StreamSubscription<Position>? _positionStream;
   Position? currentPosition;
 
-  late List<Marker> _markers;
+  // late List<Marker> _markers;
+  late Map<String, Marker> _markers;
 
   final _pageController = PageController(
     viewportFraction: 0.85,
@@ -62,11 +65,11 @@ class _HomeState extends ConsumerState<Home> {
   }
 
   void _addMarkers() async {
-    List<Marker> markers = [];
+    Map<String, Marker> markers = {};
     final shops = await ShopService.getShops();
     for (var shop in shops!.shops) {
       final markerId = MarkerId(shop.iD.toString());
-      markers.add(Marker(
+      markers[markerId.value] = (Marker(
         markerId: markerId,
         position: LatLng(shop.latitude, shop.longitude),
         onTap: () {
@@ -119,8 +122,14 @@ class _HomeState extends ConsumerState<Home> {
 
   @override
   Widget build(BuildContext context) {
+    // マーカーリストを取得
     final selectedMarkerId = ref.watch(selectedMarkerProvider);
+    // 選択中のマーカーID
     final shopListAsync = ref.watch(shopProvider);
+    // アイコンを取得（非同期）
+    final defaultIconOpenAsync = ref.watch(defaultMarkerIconOpenProvider);
+    final defaultIconCloseAsync = ref.watch(defaultMarkerIconCloseProvider);
+    final selectedIconAsync = ref.watch(selectedMarkerIconProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -132,46 +141,92 @@ class _HomeState extends ConsumerState<Home> {
           // マップ表示
           shopListAsync.when(
             data: (shops) {
-              if (_locationPermissionGranted) {
-                return GoogleMap(
-                  mapType: MapType.normal,
-                  initialCameraPosition: _kGooglePlex,
-                  myLocationEnabled: true,
-                  myLocationButtonEnabled: false,
-                  zoomControlsEnabled: false,
-                  onMapCreated: (GoogleMapController controller) {
-                    _mapController = controller;
-                  },
-                  onTap: (LatLng position) async {
-                    ref.read(selectedMarkerProvider.notifier).clearSelection();
-                  },
-                  markers: _markers.map((marker) {
-                    return marker.copyWith(
-                      onTapParam: () => ref
-                          .read(selectedMarkerProvider.notifier)
-                          .selectMarker(marker.markerId),
-                    );
-                  }).toSet(),
-                );
-              } else {
-                return Center(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      // _checkLocationPermission;
-                      final permissionGranted =
-                          await _checkLocationPermission();
+              return defaultIconOpenAsync.when(
+                data: (defaultIconOpen) {
+                  return defaultIconCloseAsync.when(
+                    data: (defaultIconClose) {
+                      return selectedIconAsync.when(
+                        data: (selectedIcon) {
+                          if (_locationPermissionGranted) {
+                            // マーカーアイコンを設定
+                            final markers = shops!.shops.map((shop) {
+                              final marker = _markers[shop.iD.toString()] ??
+                                  Marker(
+                                      markerId: MarkerId(shop.iD.toString()));
+                              var icon = defaultIconOpen;
+                              var zIndex = 1;
+                              if (marker.markerId == selectedMarkerId) {
+                                icon = selectedIcon;
+                                zIndex = 2;
+                              } else if (!shop.inCurrentSales) {
+                                icon = defaultIconClose;
+                                zIndex = 0;
+                              }
+                              return marker.copyWith(
+                                iconParam: icon,
+                                zIndexParam: zIndex.toDouble(),
+                                onTapParam: () {
+                                  ref
+                                      .read(selectedMarkerProvider.notifier)
+                                      .selectMarker(marker.markerId);
+                                },
+                              );
+                            }).toSet();
 
-                      // 権限が許可された場合にGoogleMapを再ビルド
-                      if (permissionGranted) {
-                        setState(() {
-                          _locationPermissionGranted = true;
-                        });
-                      }
+                            return GoogleMap(
+                              mapType: MapType.normal,
+                              initialCameraPosition: _kGooglePlex,
+                              myLocationEnabled: true,
+                              myLocationButtonEnabled: false,
+                              zoomControlsEnabled: false,
+                              onMapCreated: (GoogleMapController controller) {
+                                _mapController = controller;
+                              },
+                              onTap: (LatLng position) async {
+                                ref
+                                    .read(selectedMarkerProvider.notifier)
+                                    .clearSelection();
+                              },
+                              markers: markers,
+                            );
+                          } else {
+                            return Center(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  final permissionGranted =
+                                      await _checkLocationPermission();
+
+                                  // 権限が許可された場合にGoogleMapを再ビルド
+                                  if (permissionGranted) {
+                                    setState(() {
+                                      _locationPermissionGranted = true;
+                                    });
+                                  }
+                                },
+                                child: Text('位置情報を許可する'),
+                              ),
+                            );
+                          }
+                        },
+                        loading: () =>
+                            const Center(child: CircularProgressIndicator()),
+                        error: (Object error, StackTrace stackTrace) => Center(
+                          child: Text('Error: $error'),
+                        ),
+                      );
                     },
-                    child: Text('位置情報を許可する'),
-                  ),
-                );
-              }
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (Object error, StackTrace stackTrace) => Center(
+                      child: Text('Error: $error'),
+                    ),
+                  );
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (Object error, StackTrace stackTrace) => Center(
+                  child: Text('Error: $error'),
+                ),
+              );
             },
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (Object error, StackTrace stackTrace) => Center(
@@ -189,8 +244,9 @@ class _HomeState extends ConsumerState<Home> {
                 }
 
                 // 選択中のマーカーに該当するIndexを取得
-                final selectedIndex =
-                    _markers.indexWhere((m) => m.markerId == selectedMarkerId);
+                final selectedIndex = _markers.values
+                    .toList()
+                    .indexWhere((m) => m.markerId == selectedMarkerId);
                 if (selectedIndex != -1) {
                   WidgetsBinding.instance.addPostFrameCallback((_) {
                     // PageViewがビルドされた後にジャンプ
@@ -209,9 +265,8 @@ class _HomeState extends ConsumerState<Home> {
                     controller: _pageController,
                     itemCount: _markers.length,
                     onPageChanged: (index) async {
-                      ref
-                          .read(selectedMarkerProvider.notifier)
-                          .selectMarker(_markers[index].markerId);
+                      ref.read(selectedMarkerProvider.notifier).selectMarker(
+                          _markers.values.toList()[index].markerId);
 
                       //現在のズームレベルを取得
                       final zoomLevel = await _mapController.getZoomLevel();

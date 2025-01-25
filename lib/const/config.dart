@@ -9,6 +9,7 @@ class Config {
   static const int locationDistanceFilter = 100;
   static const String shopOpenImagePath = 'assets/shop_open.png';
   static const String shopCloseImagePath = 'assets/shop_close.png';
+  static const String shopSelectedImagePath = 'assets/shop_selected.png';
   static const double shopImageWidth = 40;
   static const double shopImageHeight = 40;
   static const double latitudeAdjustValue = 0.00002;
