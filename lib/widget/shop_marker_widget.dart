@@ -17,7 +17,7 @@ class ShopMarkerWidget extends StatelessWidget {
         Image(
           image: AssetImage(
             // TODO タップした店舗の写真を表示
-            inCurrentSales ? 'assets/test.png' : 'assets/test.png',
+            inCurrentSales ? 'assets/shop_selected.png' : 'assets/shop_selected.png',
           ),
           height: 150,
           width: 150,

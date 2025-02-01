@@ -9,8 +9,11 @@ class Config {
   static const int locationDistanceFilter = 100;
   static const String shopOpenImagePath = 'assets/shop_open.png';
   static const String shopCloseImagePath = 'assets/shop_close.png';
-  static const double shopImageWidth = 40;
-  static const double shopImageHeight = 40;
+  static const String shopSelectedImagePath = 'assets/shop_selected.png';
+  static const double shopImageWidth = 50;
+  static const double shopImageHeight = 50;
+  static const double shopSelectedImageWidth = 80;
+  static const double shopSelectedImageHeight = 80;
   static const double latitudeAdjustValue = 0.00002;
   static const double longitudeAdjustValue = 0.00002;
 
@@ -19,4 +22,7 @@ class Config {
   static const double currentPositionButtonHeight = 55;
   static const double currentPositionButtonPositionRight = 10;
   static const double currentPositionButtonPositionBottom = 70;
+
+  // イベントページ
+  static const String eventBaseUrl = 'https://ebisu-gp.com';
 }
