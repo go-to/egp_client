@@ -7,7 +7,7 @@ part of 'default_marker_icon_provider.dart';
 // **************************************************************************
 
 String _$defaultMarkerIconOpenHash() =>
-    r'dab7ca9ff358d7e7f9e70f9914cdf493cd9c6eb8';
+    r'986b5fefd9f69fbc05eedd25c51ad91c84e481f8';
 
 /// See also [defaultMarkerIconOpen].
 @ProviderFor(defaultMarkerIconOpen)
@@ -27,7 +27,7 @@ final defaultMarkerIconOpenProvider =
 typedef DefaultMarkerIconOpenRef
     = AutoDisposeFutureProviderRef<BitmapDescriptor>;
 String _$defaultMarkerIconCloseHash() =>
-    r'055f4cf0ab7adb0f34c0a2702b9faed639ce6c62';
+    r'ba3551977e35742945061feb7caeaf263125f5a2';
 
 /// See also [defaultMarkerIconClose].
 @ProviderFor(defaultMarkerIconClose)
