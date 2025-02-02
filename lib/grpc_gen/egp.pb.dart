@@ -14,6 +14,10 @@ import 'dart:core' as $core;
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
+import 'egp.pbenum.dart';
+
+export 'egp.pbenum.dart';
+
 class Date extends $pb.GeneratedMessage {
   factory Date({
     $core.int? year,
@@ -422,7 +426,7 @@ class Shop extends $pb.GeneratedMessage {
   factory Shop({
     $fixnum.Int64? iD,
     $fixnum.Int64? eventID,
-    $fixnum.Int64? categoryID,
+    CategoryType? categoryID,
     $core.int? no,
     $core.String? shopName,
     $core.String? menuName,
@@ -446,14 +450,15 @@ class Shop extends $pb.GeneratedMessage {
     $core.bool? isIrregularHoliday,
     $core.double? latitude,
     $core.double? longitude,
-    $core.String? location,
+    $core.String? distance,
     $core.int? weekNumber,
     $core.int? dayOfWeek,
     $core.String? startTime,
     $core.String? endTime,
     $core.bool? isHoliday,
     $core.bool? inCurrentSales,
-    BeerTypes? beerTypes,
+    $core.int? year,
+    $core.String? categoryName,
   }) {
     final $result = create();
     if (iD != null) {
@@ -534,8 +539,8 @@ class Shop extends $pb.GeneratedMessage {
     if (longitude != null) {
       $result.longitude = longitude;
     }
-    if (location != null) {
-      $result.location = location;
+    if (distance != null) {
+      $result.distance = distance;
     }
     if (weekNumber != null) {
       $result.weekNumber = weekNumber;
@@ -555,8 +560,11 @@ class Shop extends $pb.GeneratedMessage {
     if (inCurrentSales != null) {
       $result.inCurrentSales = inCurrentSales;
     }
-    if (beerTypes != null) {
-      $result.beerTypes = beerTypes;
+    if (year != null) {
+      $result.year = year;
+    }
+    if (categoryName != null) {
+      $result.categoryName = categoryName;
     }
     return $result;
   }
@@ -567,7 +575,7 @@ class Shop extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Shop', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
     ..aInt64(1, _omitFieldNames ? '' : 'ID', protoName: 'ID')
     ..aInt64(2, _omitFieldNames ? '' : 'EventID', protoName: 'EventID')
-    ..aInt64(3, _omitFieldNames ? '' : 'CategoryID', protoName: 'CategoryID')
+    ..e<CategoryType>(3, _omitFieldNames ? '' : 'CategoryID', $pb.PbFieldType.OE, protoName: 'CategoryID', defaultOrMaker: CategoryType.CATEGORY_TYPE_NONE, valueOf: CategoryType.valueOf, enumValues: CategoryType.values)
     ..a<$core.int>(4, _omitFieldNames ? '' : 'No', $pb.PbFieldType.O3, protoName: 'No')
     ..aOS(5, _omitFieldNames ? '' : 'ShopName', protoName: 'ShopName')
     ..aOS(6, _omitFieldNames ? '' : 'MenuName', protoName: 'MenuName')
@@ -591,14 +599,15 @@ class Shop extends $pb.GeneratedMessage {
     ..aOB(24, _omitFieldNames ? '' : 'IsIrregularHoliday', protoName: 'IsIrregularHoliday')
     ..a<$core.double>(25, _omitFieldNames ? '' : 'Latitude', $pb.PbFieldType.OD, protoName: 'Latitude')
     ..a<$core.double>(26, _omitFieldNames ? '' : 'Longitude', $pb.PbFieldType.OD, protoName: 'Longitude')
-    ..aOS(27, _omitFieldNames ? '' : 'Location', protoName: 'Location')
+    ..aOS(27, _omitFieldNames ? '' : 'Distance', protoName: 'Distance')
     ..a<$core.int>(28, _omitFieldNames ? '' : 'WeekNumber', $pb.PbFieldType.O3, protoName: 'WeekNumber')
     ..a<$core.int>(29, _omitFieldNames ? '' : 'DayOfWeek', $pb.PbFieldType.O3, protoName: 'DayOfWeek')
     ..aOS(30, _omitFieldNames ? '' : 'StartTime', protoName: 'StartTime')
     ..aOS(31, _omitFieldNames ? '' : 'EndTime', protoName: 'EndTime')
     ..aOB(32, _omitFieldNames ? '' : 'IsHoliday', protoName: 'IsHoliday')
     ..aOB(33, _omitFieldNames ? '' : 'InCurrentSales', protoName: 'InCurrentSales')
-    ..aOM<BeerTypes>(34, _omitFieldNames ? '' : 'BeerTypes', protoName: 'BeerTypes', subBuilder: BeerTypes.create)
+    ..a<$core.int>(34, _omitFieldNames ? '' : 'Year', $pb.PbFieldType.O3, protoName: 'Year')
+    ..aOS(35, _omitFieldNames ? '' : 'CategoryName', protoName: 'CategoryName')
     ..hasRequiredFields = false
   ;
 
@@ -642,9 +651,9 @@ class Shop extends $pb.GeneratedMessage {
   void clearEventID() => clearField(2);
 
   @$pb.TagNumber(3)
-  $fixnum.Int64 get categoryID => $_getI64(2);
+  CategoryType get categoryID => $_getN(2);
   @$pb.TagNumber(3)
-  set categoryID($fixnum.Int64 v) { $_setInt64(2, v); }
+  set categoryID(CategoryType v) { setField(3, v); }
   @$pb.TagNumber(3)
   $core.bool hasCategoryID() => $_has(2);
   @$pb.TagNumber(3)
@@ -858,13 +867,13 @@ class Shop extends $pb.GeneratedMessage {
   void clearLongitude() => clearField(26);
 
   @$pb.TagNumber(27)
-  $core.String get location => $_getSZ(26);
+  $core.String get distance => $_getSZ(26);
   @$pb.TagNumber(27)
-  set location($core.String v) { $_setString(26, v); }
+  set distance($core.String v) { $_setString(26, v); }
   @$pb.TagNumber(27)
-  $core.bool hasLocation() => $_has(26);
+  $core.bool hasDistance() => $_has(26);
   @$pb.TagNumber(27)
-  void clearLocation() => clearField(27);
+  void clearDistance() => clearField(27);
 
   @$pb.TagNumber(28)
   $core.int get weekNumber => $_getIZ(27);
@@ -921,15 +930,22 @@ class Shop extends $pb.GeneratedMessage {
   void clearInCurrentSales() => clearField(33);
 
   @$pb.TagNumber(34)
-  BeerTypes get beerTypes => $_getN(33);
+  $core.int get year => $_getIZ(33);
   @$pb.TagNumber(34)
-  set beerTypes(BeerTypes v) { setField(34, v); }
+  set year($core.int v) { $_setSignedInt32(33, v); }
   @$pb.TagNumber(34)
-  $core.bool hasBeerTypes() => $_has(33);
+  $core.bool hasYear() => $_has(33);
   @$pb.TagNumber(34)
-  void clearBeerTypes() => clearField(34);
-  @$pb.TagNumber(34)
-  BeerTypes ensureBeerTypes() => $_ensure(33);
+  void clearYear() => clearField(34);
+
+  @$pb.TagNumber(35)
+  $core.String get categoryName => $_getSZ(34);
+  @$pb.TagNumber(35)
+  set categoryName($core.String v) { $_setString(34, v); }
+  @$pb.TagNumber(35)
+  $core.bool hasCategoryName() => $_has(34);
+  @$pb.TagNumber(35)
+  void clearCategoryName() => clearField(35);
 }
 
 class ShopLocation extends $pb.GeneratedMessage {
@@ -1173,12 +1189,21 @@ class ShopTime extends $pb.GeneratedMessage {
 }
 
 class ShopsRequest extends $pb.GeneratedMessage {
-  factory ShopsRequest() => create();
+  factory ShopsRequest({
+    $core.Iterable<SearchType>? searchTypes,
+  }) {
+    final $result = create();
+    if (searchTypes != null) {
+      $result.searchTypes.addAll(searchTypes);
+    }
+    return $result;
+  }
   ShopsRequest._() : super();
   factory ShopsRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
   factory ShopsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopsRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
+    ..pc<SearchType>(1, _omitFieldNames ? '' : 'SearchTypes', $pb.PbFieldType.KE, protoName: 'SearchTypes', valueOf: SearchType.valueOf, enumValues: SearchType.values, defaultEnumValue: SearchType.SEARCH_TYPE_IN_CURRENT_SALES)
     ..hasRequiredFields = false
   ;
 
@@ -1202,6 +1227,9 @@ class ShopsRequest extends $pb.GeneratedMessage {
   @$core.pragma('dart2js:noInline')
   static ShopsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ShopsRequest>(create);
   static ShopsRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<SearchType> get searchTypes => $_getList(0);
 }
 
 class ShopsResponse extends $pb.GeneratedMessage {

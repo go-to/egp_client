@@ -23,6 +23,15 @@ class Config {
   static const double currentPositionButtonPositionRight = 10;
   static const double currentPositionButtonPositionBottom = 70;
 
+  // 検索項目
+  static const Map<int, String> searchItemList = {
+    0: '営業中',
+    1: 'スタンプ未獲得',
+    2: '不定休',
+    3: '完全予約制',
+    4: 'ビアカクテル部門',
+  };
+
   // イベントページ
   static const String eventBaseUrl = 'https://ebisu-gp.com';
 }

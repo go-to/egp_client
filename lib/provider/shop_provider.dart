@@ -14,4 +14,10 @@ class Shop extends _$Shop {
   Future<ShopsResponse?> _fetchShops() {
     return ShopService.getShops();
   }
+
+  Future<ShopsResponse?> getShops([List<int>? searchCondition]) async {
+    final shops = await ShopService.getShops(searchCondition);
+    state = AsyncData(shops);
+    return shops;
+  }
 }

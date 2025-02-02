@@ -12,11 +12,20 @@ class GrpcService {
     );
   }
 
-  static Future<ShopsResponse> getShops() async {
+  static Future<ShopsResponse> getShops([List<int>? searchParams]) async {
     final channel = getChannel();
     final client = EgpServiceClient(channel);
+    List<SearchType> searchTypes = [];
+
+    for (final searchType in searchParams!) {
+      final value = SearchType.valueOf(searchType);
+      if (value == null) {
+        continue;
+      }
+      searchTypes.add(value);
+    }
     final res = await client.getShops(
-      ShopsRequest(),
+      ShopsRequest(searchTypes: searchTypes),
     );
     return res;
   }

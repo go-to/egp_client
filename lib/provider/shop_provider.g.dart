@@ -6,7 +6,7 @@ part of 'shop_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$shopHash() => r'572fd88b1b262e17dd6a3cd811e59af0a07f9d43';
+String _$shopHash() => r'5988bba130ecbce6976c386a331577961d9bd169';
 
 /// See also [Shop].
 @ProviderFor(Shop)
