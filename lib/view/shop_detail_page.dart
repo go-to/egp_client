@@ -3,13 +3,13 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../const/config.dart';
 
-class ShopDetail extends StatefulWidget {
+class ShopDetailPage extends StatefulWidget {
   final int year;
   final int no;
   final String shopName;
   final String address;
 
-  const ShopDetail({
+  const ShopDetailPage({
     super.key,
     required this.year,
     required this.no,
@@ -18,10 +18,10 @@ class ShopDetail extends StatefulWidget {
   });
 
   @override
-  State<ShopDetail> createState() => _ShopDetail();
+  State<ShopDetailPage> createState() => _ShopPageDetail();
 }
 
-class _ShopDetail extends State<ShopDetail> {
+class _ShopPageDetail extends State<ShopDetailPage> {
   late final WebViewController _controller;
 
   @override
