@@ -459,6 +459,7 @@ class Shop extends $pb.GeneratedMessage {
     $core.bool? inCurrentSales,
     $core.int? year,
     $core.String? categoryName,
+    $core.String? menuImageUrl,
   }) {
     final $result = create();
     if (iD != null) {
@@ -566,6 +567,9 @@ class Shop extends $pb.GeneratedMessage {
     if (categoryName != null) {
       $result.categoryName = categoryName;
     }
+    if (menuImageUrl != null) {
+      $result.menuImageUrl = menuImageUrl;
+    }
     return $result;
   }
   Shop._() : super();
@@ -608,6 +612,7 @@ class Shop extends $pb.GeneratedMessage {
     ..aOB(33, _omitFieldNames ? '' : 'InCurrentSales', protoName: 'InCurrentSales')
     ..a<$core.int>(34, _omitFieldNames ? '' : 'Year', $pb.PbFieldType.O3, protoName: 'Year')
     ..aOS(35, _omitFieldNames ? '' : 'CategoryName', protoName: 'CategoryName')
+    ..aOS(36, _omitFieldNames ? '' : 'MenuImageUrl', protoName: 'MenuImageUrl')
     ..hasRequiredFields = false
   ;
 
@@ -946,6 +951,15 @@ class Shop extends $pb.GeneratedMessage {
   $core.bool hasCategoryName() => $_has(34);
   @$pb.TagNumber(35)
   void clearCategoryName() => clearField(35);
+
+  @$pb.TagNumber(36)
+  $core.String get menuImageUrl => $_getSZ(35);
+  @$pb.TagNumber(36)
+  set menuImageUrl($core.String v) { $_setString(35, v); }
+  @$pb.TagNumber(36)
+  $core.bool hasMenuImageUrl() => $_has(35);
+  @$pb.TagNumber(36)
+  void clearMenuImageUrl() => clearField(36);
 }
 
 class ShopLocation extends $pb.GeneratedMessage {
