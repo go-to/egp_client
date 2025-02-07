@@ -2,6 +2,8 @@ import 'package:egp_client/provider/shop_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../widget/stamp_card_widget.dart';
+
 class StampManagementPage extends ConsumerStatefulWidget {
   const StampManagementPage({super.key});
 
@@ -19,17 +21,15 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
       data: (shops) {
         return GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 1,
+            crossAxisCount: 2,
+            childAspectRatio: 1.0,
+            crossAxisSpacing: 10,
+            mainAxisSpacing: 10,
           ),
           itemCount: shops!.shops.length, // 仮のスタンプ数
           itemBuilder: (context, index) {
             final shop = shops.shops.toList()[index];
-            return Card(
-              child: Center(
-                child: Text('${shop.no}: ${shop.shopName}'),
-              ),
-            );
+            return StampCard(shop: shop);
           },
         );
       },
