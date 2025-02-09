@@ -36,7 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   google_maps_flutter: ^2.10.0
   google_maps_flutter_web: ^0.5.10
-  http: ^1.2.2
+  http: ^1.3.0
   json_serializable: ^6.9.2
   geolocator: ^13.0.2
   webview_flutter: ^4.10.0
@@ -48,6 +48,7 @@ dependencies:
   widget_to_marker: ^1.0.6
   flutter_riverpod: ^2.6.1
   riverpod_annotation: ^2.6.1
+  google_fonts: ^6.2.1
 
 dev_dependencies:
   flutter_test:
@@ -78,6 +79,7 @@ flutter:
   assets:
     - .env
     - assets/locations.json
+    - assets/shop_default.png
     - assets/shop_open.png
     - assets/shop_close.png
     - assets/shop_selected.png

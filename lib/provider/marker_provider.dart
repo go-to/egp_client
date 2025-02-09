@@ -9,6 +9,10 @@ class SelectedMarker extends _$SelectedMarker {
   @override
   MarkerId? build() => null;
 
+  MarkerId? getSelectedMarker() {
+    return state;
+  }
+
   void selectMarker(MarkerId markerId) {
     state = markerId;
   }

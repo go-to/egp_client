@@ -7,6 +7,7 @@ class Config {
   static const double defaultMapLongitude = 139.71008179999998;
   static const double defaultMapZoom = 17;
   static const int locationDistanceFilter = 100;
+  static const String shopDefaultImagePath = 'assets/shop_default.png';
   static const String shopOpenImagePath = 'assets/shop_open.png';
   static const String shopCloseImagePath = 'assets/shop_close.png';
   static const String shopSelectedImagePath = 'assets/shop_selected.png';
@@ -16,6 +17,9 @@ class Config {
   static const double shopSelectedImageHeight = 80;
   static const double latitudeAdjustValue = 0.00002;
   static const double longitudeAdjustValue = 0.00002;
+  static const String notInCurrentSalesText = '時間外';
+  static const String irregularHoliday = '不定休';
+  static const String needsReservation = '要予約';
 
   // 現在地ボタン
   static const double currentPositionButtonWidth = 55;
@@ -31,6 +35,9 @@ class Config {
     3: '完全予約制',
     4: 'ビアカクテル部門',
   };
+
+  // スタンプ
+  static const String isStampedLabel = '済';
 
   // イベントページ
   static const String eventBaseUrl = 'https://ebisu-gp.com';

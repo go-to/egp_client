@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:core';
+import 'dart:ui' as ui;
 
 import 'package:egp_client/grpc_gen/egp.pb.dart';
 import 'package:egp_client/provider/search_condition_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -13,8 +15,35 @@ import '../provider/marker_provider.dart';
 import '../provider/default_marker_icon_provider.dart';
 import '../provider/selected_marker_icon_provider.dart';
 import '../provider/shop_provider.dart';
-import '../service/shop_service.dart';
 import '../view/shop_detail_page.dart';
+
+class CustomMarker {
+  final String id;
+  final int no;
+  final CategoryType categoryId;
+  final LatLng position;
+  final double zIndex;
+  final bool inCurrentSales;
+  final bool isStamped;
+  final bool isIrregularHoliday;
+  final bool needsReservation;
+  final String imageUrl;
+  BitmapDescriptor? icon;
+
+  CustomMarker({
+    required this.id,
+    required this.no,
+    required this.categoryId,
+    required this.position,
+    required this.zIndex,
+    required this.inCurrentSales,
+    required this.isStamped,
+    required this.isIrregularHoliday,
+    required this.needsReservation,
+    required this.imageUrl,
+    this.icon,
+  });
+}
 
 class ShopListPage extends ConsumerStatefulWidget {
   const ShopListPage({super.key});
@@ -29,6 +58,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   late GoogleMapController _mapController;
   late StreamSubscription<Position>? _positionStream;
   late Map<String, Marker> _markers;
+  late List<CustomMarker> _customMarkers;
   Position? currentPosition;
 
   final _pageController = PageController(
@@ -47,6 +77,11 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   );
 
   // 店舗の営業中か否かを識別するためのアイコン
+  final shopDefaultIcon = AssetMapBitmap(
+    Config.shopDefaultImagePath,
+    width: Config.shopImageWidth,
+    height: Config.shopImageHeight,
+  );
   final shopOpenIcon = AssetMapBitmap(
     Config.shopOpenImagePath,
     width: Config.shopImageWidth,
@@ -57,38 +92,254 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     width: Config.shopImageWidth,
     height: Config.shopImageHeight,
   );
+  final shopSelectedIcon = AssetMapBitmap(
+    Config.shopSelectedImagePath,
+    width: Config.shopSelectedImageWidth,
+    height: Config.shopSelectedImageHeight,
+  );
 
   @override
   void initState() {
     super.initState();
     _startPositionStream();
     _markers = {};
-    _addMarkers();
+    _customMarkers = [];
+    _loadMarkers();
   }
 
-  void _addMarkers() async {
-    final shops = await ShopService.getShops();
-    _setMarkers(shops);
-  }
-
-  void _setMarkers(ShopsResponse? shops) async {
-    Map<String, Marker> markers = {};
-    for (var shop in shops!.shops) {
-      final markerId = MarkerId(shop.iD.toString());
-      markers[markerId.value] = (Marker(
-        markerId: markerId,
-        position: LatLng(shop.latitude, shop.longitude),
-        onTap: () {
-          ref.read(selectedMarkerProvider.notifier).selectMarker(markerId);
-        },
-        // 営業時間中か否かによって表示するアイコンを変える
-        icon: shop.inCurrentSales ? shopOpenIcon : shopCloseIcon,
-        zIndex: shop.inCurrentSales ? 1.toDouble() : 0.toDouble(),
-      ));
+  void _loadMarkers() async {
+    final shops = await ref.read(shopProvider.notifier).getShops();
+    if (shops != null) {
+      _setMarkers(shops);
     }
+  }
+
+  void _setMarkers(ShopsResponse shops) async {
+    resetCustomMarkers();
+    for (var shop in shops.shops) {
+      _customMarkers.add(
+        CustomMarker(
+          id: shop.iD.toString(),
+          no: shop.no,
+          categoryId: shop.categoryID,
+          position: LatLng(shop.latitude, shop.longitude),
+          zIndex: 0.0,
+          inCurrentSales: shop.inCurrentSales,
+          // TODO スタンプ管理機能を実装したら値を動的に設定
+          isStamped: shop.no % 3 == 0 ? true : false,
+          isIrregularHoliday: shop.isIrregularHoliday,
+          needsReservation: shop.normalizedNeedsReservation,
+          imageUrl: shop.menuImageUrl,
+          icon: shopDefaultIcon,
+        ),
+      );
+    }
+    _updateMarkers();
+  }
+
+  void _updateMarkers() {
+    setState(() {
+      _markers = Map.fromEntries(_customMarkers.map((customMarker) {
+        return MapEntry(
+          customMarker.id,
+          Marker(
+            markerId: MarkerId(customMarker.id),
+            position: customMarker.position,
+            icon: customMarker.icon ?? BitmapDescriptor.defaultMarker,
+          ),
+        );
+      }));
+    });
+  }
+
+  Future<void> _loadCustomIcons([MarkerId? selectedMarkerId]) async {
+    List<Future<MapEntry<String, Marker>>> futures = _customMarkers
+        .map((marker) => _createCustomMarker(marker, selectedMarkerId)
+            .then((m) => MapEntry(marker.id, m)))
+        .toList();
+
+    List<MapEntry<String, Marker>> markerEntries = await Future.wait(futures);
 
     setState(() {
-      _markers = markers;
+      _markers = Map.fromEntries(markerEntries);
+    });
+  }
+
+  Future<Marker> _createCustomMarker(CustomMarker marker,
+      [MarkerId? selectedMarkerId]) async {
+    double zIndex = 3.0;
+    if (selectedMarkerId == null || selectedMarkerId.value != marker.id) {
+      zIndex = marker.inCurrentSales ? 2.0 : 1.0;
+    }
+    final icon = await _createCustomMarkerBitmap(marker, selectedMarkerId);
+    return Marker(
+      markerId: MarkerId(marker.id),
+      position: marker.position,
+      icon: icon,
+      zIndex: zIndex,
+      onTap: () {
+        final markerId = MarkerId(marker.id);
+        ref.read(selectedMarkerProvider.notifier).selectMarker(markerId);
+        _loadCustomIcons(markerId);
+      },
+    );
+  }
+
+  Future<BitmapDescriptor> _createCustomMarkerBitmap(CustomMarker marker,
+      [MarkerId? selectedMarkerId]) async {
+    final pictureRecorder = ui.PictureRecorder();
+    final canvas = Canvas(pictureRecorder);
+
+    // 各種変数定義（デフォルトは営業時間外）
+    double fontSize = 18;
+    double size = 65;
+    String iconPath = Config.shopOpenImagePath;
+    String textLabel = Config.notInCurrentSalesText;
+    Color textColor = Colors.white;
+    int displayTextPositionCoefficient = 20; // テキスト表示位置調整用の係数
+    // 店舗選択時の拡大表示
+    if (selectedMarkerId != null && selectedMarkerId.value == marker.id) {
+      size = 100;
+      iconPath = Config.shopSelectedImagePath;
+      fontSize = 30;
+      displayTextPositionCoefficient = 30;
+      if (marker.inCurrentSales) {
+        // スタンプ獲得済み
+        if (marker.isStamped) {
+          fontSize = 70;
+          textLabel = Config.isStampedLabel;
+          textColor = Colors.red;
+          displayTextPositionCoefficient = 2;
+          // 不定休
+        } else if (marker.isIrregularHoliday) {
+          textLabel = Config.irregularHoliday;
+          textColor = Colors.black;
+          // 要予約
+        } else if (marker.needsReservation) {
+          textLabel = Config.needsReservation;
+          textColor = Colors.black;
+        }
+      }
+      // スタンプ獲得済み
+    } else if (marker.inCurrentSales) {
+      if (marker.isStamped) {
+        textLabel = Config.isStampedLabel;
+        textColor = Colors.red;
+        fontSize = 40;
+        displayTextPositionCoefficient = 5;
+        // 不定休
+      } else if (marker.isIrregularHoliday) {
+        textLabel = Config.irregularHoliday;
+        textColor = Colors.black;
+        // 要予約
+      } else if (marker.needsReservation) {
+        textLabel = Config.needsReservation;
+        textColor = Colors.black;
+      }
+    }
+
+    // 背景の円を描画
+    final bgPaint = Paint()..color = Color(0xFFF3EEDA).withAlpha(200);
+    canvas.drawCircle(Offset(size / 2, size / 2), size / 2, bgPaint);
+
+    // アセットから画像を読み込み
+    final ByteData data = await rootBundle.load(iconPath);
+    final Uint8List bytes = data.buffer.asUint8List();
+    final ui.Codec codec = await ui.instantiateImageCodec(bytes);
+    final ui.FrameInfo fi = await codec.getNextFrame();
+    final ui.Image image = fi.image;
+
+    // 画像をそのまま描画
+    canvas.drawImage(image,
+        Offset((size - image.width) / 2, (size - image.height) / 2), Paint());
+
+    // 背景の円を描画（暗くする用）
+    if (!marker.inCurrentSales) {
+      final bgPaint2 = Paint()..color = Colors.black.withAlpha(150);
+      canvas.drawCircle(Offset(size / 2, size / 2), size / 2, bgPaint2);
+    }
+
+    if (marker.isStamped ||
+        !marker.inCurrentSales ||
+        marker.isIrregularHoliday ||
+        marker.needsReservation) {
+      // テキストを描画
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: textLabel,
+          style: TextStyle(
+            color: textColor,
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      textPainter.paint(
+        canvas,
+        Offset(size / 2 - textPainter.width / 2,
+            size - textPainter.height - displayTextPositionCoefficient),
+      );
+    }
+
+    // 枠線にカテゴリの色を表示
+    Color borderColor = Colors.black;
+    switch (marker.categoryId) {
+      case CategoryType.CATEGORY_TYPE_BEER_COCKTAIL:
+        borderColor = Color(0xFF494967);
+        break;
+      case CategoryType.CATEGORY_TYPE_EBISU_1:
+        borderColor = Color(0xFF7456D9);
+        break;
+      case CategoryType.CATEGORY_TYPE_EBISU_2:
+        borderColor = Color(0xFF8BC0F0);
+        break;
+      case CategoryType.CATEGORY_TYPE_EBISU_SOUTH:
+        borderColor = Color(0xFFD59B60);
+        break;
+      case CategoryType.CATEGORY_TYPE_EBISU_WEST:
+        borderColor = Color(0xFFF0E157);
+        break;
+      case CategoryType.CATEGORY_TYPE_NONE:
+        borderColor = Color(0xFF454545);
+        break;
+    }
+    // 枠線を描画
+    final borderPaint = Paint()
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 4;
+    canvas.drawCircle(Offset(size / 2, size / 2), size / 2 - 1.5, borderPaint);
+
+    final img = await pictureRecorder
+        .endRecording()
+        .toImage(size.toInt(), size.toInt());
+    final data2 = await img.toByteData(format: ui.ImageByteFormat.png);
+
+    return BitmapDescriptor.bytes(data2!.buffer.asUint8List());
+  }
+
+  void updateMarkerIcon(
+      CustomMarker marker, BitmapDescriptor newIcon, double newZIndex) {
+    if (_markers.containsKey(marker.id)) {
+      setState(() {
+        _markers[marker.id] = _markers[marker.id]!.copyWith(
+          iconParam: newIcon,
+          zIndexParam: newZIndex,
+          onTapParam: () {
+            final markerId = MarkerId(marker.id);
+            ref.read(selectedMarkerProvider.notifier).selectMarker(markerId);
+            _loadCustomIcons(markerId);
+          },
+        );
+      });
+    }
+  }
+
+  void resetCustomMarkers() {
+    setState(() {
+      _customMarkers = [];
     });
   }
 
@@ -154,30 +405,6 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                     return selectedIconAsync.when(
                       data: (selectedIcon) {
                         if (_locationPermissionGranted) {
-                          // マーカーアイコンを設定
-                          final markers = shops!.shops.map((shop) {
-                            final marker = _markers[shop.iD.toString()] ??
-                                Marker(markerId: MarkerId(shop.iD.toString()));
-                            var icon = defaultIconOpen;
-                            var zIndex = 1;
-                            if (marker.markerId == selectedMarkerId) {
-                              icon = selectedIcon;
-                              zIndex = 2;
-                            } else if (!shop.inCurrentSales) {
-                              icon = defaultIconClose;
-                              zIndex = 0;
-                            }
-                            return marker.copyWith(
-                              iconParam: icon,
-                              zIndexParam: zIndex.toDouble(),
-                              onTapParam: () {
-                                ref
-                                    .read(selectedMarkerProvider.notifier)
-                                    .selectMarker(marker.markerId);
-                              },
-                            );
-                          }).toSet();
-
                           return Stack(
                             children: [
                               GoogleMap(
@@ -188,6 +415,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                 zoomControlsEnabled: false,
                                 onMapCreated: (GoogleMapController controller) {
                                   _mapController = controller;
+                                  _loadCustomIcons(selectedMarkerId);
                                   setState(() {
                                     _mapCreated = true;
                                   });
@@ -196,8 +424,9 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                   ref
                                       .read(selectedMarkerProvider.notifier)
                                       .clearSelection();
+                                  _loadCustomIcons();
                                 },
-                                markers: markers,
+                                markers: Set<Marker>.of(_markers.values),
                               ),
                               if (!_mapCreated)
                                 const Center(
@@ -254,7 +483,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
           data: (shops) {
             final searchCondition = ref.watch(searchConditionProvider);
             final searchItemList =
-                ref.watch(searchConditionProvider.notifier).getSearchItemList();
+                ref.read(searchConditionProvider.notifier).getSearchItemList();
             return Positioned(
               top: 16,
               left: 16,
@@ -310,14 +539,18 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                 bottom: 20,
                 left: 0,
                 right: 0,
-                height: 150,
+                height: 160,
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: _markers.length,
                   onPageChanged: (index) async {
+                    final markerId = _markers.values.toList()[index].markerId;
                     ref
                         .read(selectedMarkerProvider.notifier)
-                        .selectMarker(_markers.values.toList()[index].markerId);
+                        .selectMarker(markerId);
+
+                    // 選択した店舗のマーカーを変更
+                    _loadCustomIcons(markerId);
 
                     //現在のズームレベルを取得
                     final zoomLevel = await _mapController.getZoomLevel();
@@ -335,6 +568,11 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                   },
                   itemBuilder: (context, index) {
                     final shop = shops!.shops[index];
+                    final attributes = {
+                      'メニュー名': shop.menuName,
+                      '住所': shop.address,
+                      '提供時間': shop.businessHours,
+                    };
                     return GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -353,23 +591,86 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                         },
                         child: Card(
                           elevation: 5,
-                          margin: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
                                   '${shop.no}: ${shop.shopName}',
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                const SizedBox(height: 8),
-                                Text('${shop.address}'),
-                              ],
-                            ),
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(width: 8),
+                                  Expanded(
+                                    flex: 1,
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth: 100,
+                                        maxHeight: 100,
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(
+                                          shop.menuImageUrl,
+                                          fit: BoxFit.contain,
+                                          loadingBuilder: (context, child,
+                                              loadingProgress) {
+                                            if (loadingProgress == null) {
+                                              return child;
+                                            }
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                value: loadingProgress
+                                                            .expectedTotalBytes !=
+                                                        null
+                                                    ? loadingProgress
+                                                            .cumulativeBytesLoaded /
+                                                        loadingProgress
+                                                            .expectedTotalBytes!
+                                                    : null,
+                                              ),
+                                            );
+                                          },
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Icon(Icons.error);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(8),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children:
+                                            attributes.entries.map((entry) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(bottom: 4),
+                                            child: Text(
+                                              '${entry.key}: ${entry.value}',
+                                              // style: TextStyle(fontSize: 14),
+                                              style: TextStyle(fontSize: 10),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ));
                   },
@@ -409,8 +710,13 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         // 店舗情報を取得
         final shops =
             await ref.read(shopProvider.notifier).getShops(searchCondition);
-        // マーカー情報を更新
-        _setMarkers(shops);
+        if (shops != null) {
+          // マーカー情報を更新
+          Future.sync(() => _setMarkers(shops));
+          final selectedMarkerId =
+              ref.read(selectedMarkerProvider.notifier).getSelectedMarker();
+          _loadCustomIcons(selectedMarkerId);
+        }
         // マーカーの選択状態を解除
         ref.read(selectedMarkerProvider.notifier).clearSelection();
       },
