@@ -6,7 +6,7 @@ part of 'marker_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$selectedMarkerHash() => r'e3a43f9265e323f5907b93f01408f6f29132ec67';
+String _$selectedMarkerHash() => r'df4e46523dc587859b9f3b742e7e6e64ebfa6696';
 
 /// See also [SelectedMarker].
 @ProviderFor(SelectedMarker)

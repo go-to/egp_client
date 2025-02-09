@@ -79,6 +79,7 @@ flutter:
   assets:
     - .env
     - assets/locations.json
+    - assets/shop_default.png
     - assets/shop_open.png
     - assets/shop_close.png
     - assets/shop_selected.png
