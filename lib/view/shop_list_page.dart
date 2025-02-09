@@ -68,12 +68,14 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
   void _addMarkers() async {
     final shops = await ShopService.getShops();
-    _setMarkers(shops);
+    if (shops != null) {
+      _setMarkers(shops);
+    }
   }
 
-  void _setMarkers(ShopsResponse? shops) async {
+  void _setMarkers(ShopsResponse shops) async {
     Map<String, Marker> markers = {};
-    for (var shop in shops!.shops) {
+    for (var shop in shops.shops) {
       final markerId = MarkerId(shop.iD.toString());
       markers[markerId.value] = (Marker(
         markerId: markerId,
@@ -477,8 +479,10 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         // 店舗情報を取得
         final shops =
             await ref.read(shopProvider.notifier).getShops(searchCondition);
-        // マーカー情報を更新
-        _setMarkers(shops);
+        if (shops != null) {
+          // マーカー情報を更新
+          _setMarkers(shops);
+        }
         // マーカーの選択状態を解除
         ref.read(selectedMarkerProvider.notifier).clearSelection();
       },
