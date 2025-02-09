@@ -335,6 +335,11 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                   },
                   itemBuilder: (context, index) {
                     final shop = shops!.shops[index];
+                    final attributes = {
+                      'メニュー名': shop.menuName,
+                      '住所': shop.address,
+                      '提供時間': shop.businessHours,
+                    };
                     return GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -353,23 +358,86 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                         },
                         child: Card(
                           elevation: 5,
-                          margin: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
                                   '${shop.no}: ${shop.shopName}',
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                const SizedBox(height: 8),
-                                Text('${shop.address}'),
-                              ],
-                            ),
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(width: 8),
+                                  Expanded(
+                                    flex: 1,
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                        maxWidth: 100,
+                                        maxHeight: 100,
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(
+                                          shop.menuImageUrl,
+                                          fit: BoxFit.contain,
+                                          loadingBuilder: (context, child,
+                                              loadingProgress) {
+                                            if (loadingProgress == null) {
+                                              return child;
+                                            }
+                                            return Center(
+                                              child: CircularProgressIndicator(
+                                                value: loadingProgress
+                                                            .expectedTotalBytes !=
+                                                        null
+                                                    ? loadingProgress
+                                                            .cumulativeBytesLoaded /
+                                                        loadingProgress
+                                                            .expectedTotalBytes!
+                                                    : null,
+                                              ),
+                                            );
+                                          },
+                                          errorBuilder:
+                                              (context, error, stackTrace) {
+                                            return Icon(Icons.error);
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(8),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children:
+                                            attributes.entries.map((entry) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(bottom: 4),
+                                            child: Text(
+                                              '${entry.key}: ${entry.value}',
+                                              // style: TextStyle(fontSize: 14),
+                                              style: TextStyle(fontSize: 10),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ));
                   },
