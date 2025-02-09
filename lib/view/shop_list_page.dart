@@ -312,7 +312,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                 bottom: 20,
                 left: 0,
                 right: 0,
-                height: 150,
+                height: 160,
                 child: PageView.builder(
                   controller: _pageController,
                   itemCount: _markers.length,
