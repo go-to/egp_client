@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:core';
+import 'dart:ui' as ui;
 
 import 'package:egp_client/grpc_gen/egp.pb.dart';
 import 'package:egp_client/provider/search_condition_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -17,19 +19,23 @@ import '../view/shop_detail_page.dart';
 
 class CustomMarker {
   final String id;
-  final String categoryId;
+  final int no;
+  final CategoryType categoryId;
   final LatLng position;
   final double zIndex;
   final bool inCurrentSales;
+  final bool isStamped;
   final String imageUrl;
   BitmapDescriptor? icon;
 
   CustomMarker({
     required this.id,
+    required this.no,
     required this.categoryId,
     required this.position,
     required this.zIndex,
     required this.inCurrentSales,
+    required this.isStamped,
     required this.imageUrl,
     this.icon,
   });
@@ -110,10 +116,12 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       _customMarkers.add(
         CustomMarker(
           id: shop.iD.toString(),
-          categoryId: shop.categoryID.toString(),
+          no: shop.no,
+          categoryId: shop.categoryID,
           position: LatLng(shop.latitude, shop.longitude),
           zIndex: 0.0,
           inCurrentSales: shop.inCurrentSales,
+          isStamped: false, // TODO スタンプ管理機能を実装したら値を動的に設定
           imageUrl: shop.menuImageUrl,
           icon: shopDefaultIcon,
         ),
@@ -139,14 +147,109 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
   Future<void> _loadCustomIcons([MarkerId? selectedMarkerId]) async {
     for (var marker in _customMarkers) {
-      var icon = shopSelectedIcon;
-      var zIndex = 3.0;
+      // BitmapDescriptor icon = shopSelectedIcon;
+      double zIndex = 3.0;
       if (selectedMarkerId == null || selectedMarkerId.value != marker.id) {
-        icon = marker.inCurrentSales ? shopOpenIcon : shopCloseIcon;
+        //   icon = marker.inCurrentSales ? shopOpenIcon : shopCloseIcon;
         zIndex = marker.inCurrentSales ? 2.0 : 1.0;
       }
+      // icon = await _createCustomMarkerBitmap(icon, marker.no.toString());
+      final icon = await _createCustomMarkerBitmap(marker, selectedMarkerId);
       updateMarkerIcon(marker, icon, zIndex);
     }
+  }
+
+  Future<BitmapDescriptor> _createCustomMarkerBitmap(CustomMarker marker,
+      [MarkerId? selectedMarkerId]) async {
+    final pictureRecorder = ui.PictureRecorder();
+    final canvas = Canvas(pictureRecorder);
+
+    double size = 100;
+    double fontSize = 70;
+    String iconPath = Config.shopSelectedImagePath;
+    if (selectedMarkerId == null || selectedMarkerId.value != marker.id) {
+      size = 65;
+      fontSize = 50;
+      iconPath = Config.shopOpenImagePath;
+    }
+
+    Color borderColor = Colors.black;
+    // カテゴリ
+    switch (marker.categoryId) {
+      case CategoryType.CATEGORY_TYPE_BEER_COCKTAIL:
+        borderColor = Color(0xFF494967);
+        break;
+      case CategoryType.CATEGORY_TYPE_EBISU_1:
+        borderColor = Color(0xFF7456D9);
+        break;
+      case CategoryType.CATEGORY_TYPE_EBISU_2:
+        borderColor = Color(0xFF8BC0F0);
+        break;
+      case CategoryType.CATEGORY_TYPE_EBISU_SOUTH:
+        borderColor = Color(0xFFD59B60);
+        break;
+      case CategoryType.CATEGORY_TYPE_EBISU_WEST:
+        borderColor = Color(0xFFF0E157);
+        break;
+      case CategoryType.CATEGORY_TYPE_NONE:
+        borderColor = Color(0xFF454545);
+        break;
+    }
+
+    // 背景の円を描画
+    final bgPaint = Paint()..color = Colors.white.withAlpha(150);
+    canvas.drawCircle(Offset(size / 2, size / 2), size / 2, bgPaint);
+
+    // アセットから画像を読み込み
+    final ByteData data = await rootBundle.load(iconPath);
+    final Uint8List bytes = data.buffer.asUint8List();
+    final ui.Codec codec = await ui.instantiateImageCodec(bytes);
+    final ui.FrameInfo fi = await codec.getNextFrame();
+    final ui.Image image = fi.image;
+
+    // 画像をそのまま描画
+    canvas.drawImage(image,
+        Offset((size - image.width) / 2, (size - image.height) / 2), Paint());
+
+    // 背景の円を描画（暗くする用）
+    if (!marker.inCurrentSales) {
+      final bgPaint2 = Paint()..color = Colors.black.withAlpha(150);
+      canvas.drawCircle(Offset(size / 2, size / 2), size / 2, bgPaint2);
+    }
+
+    if (marker.isStamped) {
+      // テキストを描画
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: Config.IS_STAMPED_LABEL,
+          style: TextStyle(
+            color: Colors.red,
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      textPainter.paint(
+        canvas,
+        Offset(size / 2 - textPainter.width / 2, size - textPainter.height - 5),
+      );
+    }
+
+    // 枠線を描画
+    final borderPaint = Paint()
+      ..color = borderColor
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 3;
+    canvas.drawCircle(Offset(size / 2, size / 2), size / 2 - 1.5, borderPaint);
+
+    final img = await pictureRecorder
+        .endRecording()
+        .toImage(size.toInt(), size.toInt());
+    final data2 = await img.toByteData(format: ui.ImageByteFormat.png);
+
+    return BitmapDescriptor.bytes(data2!.buffer.asUint8List());
   }
 
   void updateMarkerIcon(

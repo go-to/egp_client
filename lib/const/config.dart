@@ -33,6 +33,9 @@ class Config {
     4: 'ビアカクテル部門',
   };
 
+  // スタンプ
+  static const String IS_STAMPED_LABEL = '済';
+
   // イベントページ
   static const String eventBaseUrl = 'https://ebisu-gp.com';
 }
