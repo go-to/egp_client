@@ -25,6 +25,8 @@ class CustomMarker {
   final double zIndex;
   final bool inCurrentSales;
   final bool isStamped;
+  final bool isIrregularHoliday;
+  final bool needsReservation;
   final String imageUrl;
   BitmapDescriptor? icon;
 
@@ -36,6 +38,8 @@ class CustomMarker {
     required this.zIndex,
     required this.inCurrentSales,
     required this.isStamped,
+    required this.isIrregularHoliday,
+    required this.needsReservation,
     required this.imageUrl,
     this.icon,
   });
@@ -121,8 +125,10 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
           position: LatLng(shop.latitude, shop.longitude),
           zIndex: 0.0,
           inCurrentSales: shop.inCurrentSales,
-          isStamped: false,
           // TODO スタンプ管理機能を実装したら値を動的に設定
+          isStamped: shop.no % 3 == 0 ? true : false,
+          isIrregularHoliday: shop.isIrregularHoliday,
+          needsReservation: shop.normalizedNeedsReservation,
           imageUrl: shop.menuImageUrl,
           icon: shopDefaultIcon,
         ),
@@ -184,17 +190,101 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     final pictureRecorder = ui.PictureRecorder();
     final canvas = Canvas(pictureRecorder);
 
-    double size = 100;
-    double fontSize = 70;
-    String iconPath = Config.shopSelectedImagePath;
-    if (selectedMarkerId == null || selectedMarkerId.value != marker.id) {
-      size = 65;
-      fontSize = 50;
-      iconPath = Config.shopOpenImagePath;
+    // 各種変数定義（デフォルトは営業時間外）
+    double fontSize = 18;
+    double size = 65;
+    String iconPath = Config.shopOpenImagePath;
+    String textLabel = Config.notInCurrentSalesText;
+    Color textColor = Colors.white;
+    int displayTextPositionCoefficient = 20; // テキスト表示位置調整用の係数
+    // 店舗選択時の拡大表示
+    if (selectedMarkerId != null && selectedMarkerId.value == marker.id) {
+      size = 100;
+      iconPath = Config.shopSelectedImagePath;
+      fontSize = 30;
+      displayTextPositionCoefficient = 30;
+      if (marker.inCurrentSales) {
+        // スタンプ獲得済み
+        if (marker.isStamped) {
+          fontSize = 70;
+          textLabel = Config.isStampedLabel;
+          textColor = Colors.red;
+          displayTextPositionCoefficient = 2;
+          // 不定休
+        } else if (marker.isIrregularHoliday) {
+          textLabel = Config.irregularHoliday;
+          textColor = Colors.black;
+          // 要予約
+        } else if (marker.needsReservation) {
+          textLabel = Config.needsReservation;
+          textColor = Colors.black;
+        }
+      }
+      // スタンプ獲得済み
+    } else if (marker.inCurrentSales) {
+      if (marker.isStamped) {
+        textLabel = Config.isStampedLabel;
+        textColor = Colors.red;
+        fontSize = 40;
+        displayTextPositionCoefficient = 5;
+        // 不定休
+      } else if (marker.isIrregularHoliday) {
+        textLabel = Config.irregularHoliday;
+        textColor = Colors.black;
+        // 要予約
+      } else if (marker.needsReservation) {
+        textLabel = Config.needsReservation;
+        textColor = Colors.black;
+      }
     }
 
+    // 背景の円を描画
+    final bgPaint = Paint()..color = Color(0xFFF3EEDA).withAlpha(200);
+    canvas.drawCircle(Offset(size / 2, size / 2), size / 2, bgPaint);
+
+    // アセットから画像を読み込み
+    final ByteData data = await rootBundle.load(iconPath);
+    final Uint8List bytes = data.buffer.asUint8List();
+    final ui.Codec codec = await ui.instantiateImageCodec(bytes);
+    final ui.FrameInfo fi = await codec.getNextFrame();
+    final ui.Image image = fi.image;
+
+    // 画像をそのまま描画
+    canvas.drawImage(image,
+        Offset((size - image.width) / 2, (size - image.height) / 2), Paint());
+
+    // 背景の円を描画（暗くする用）
+    if (!marker.inCurrentSales) {
+      final bgPaint2 = Paint()..color = Colors.black.withAlpha(150);
+      canvas.drawCircle(Offset(size / 2, size / 2), size / 2, bgPaint2);
+    }
+
+    if (marker.isStamped ||
+        !marker.inCurrentSales ||
+        marker.isIrregularHoliday ||
+        marker.needsReservation) {
+      // テキストを描画
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: textLabel,
+          style: TextStyle(
+            color: textColor,
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      );
+      textPainter.layout();
+      textPainter.paint(
+        canvas,
+        Offset(size / 2 - textPainter.width / 2,
+            size - textPainter.height - displayTextPositionCoefficient),
+      );
+    }
+
+    // 枠線にカテゴリの色を表示
     Color borderColor = Colors.black;
-    // カテゴリ
     switch (marker.categoryId) {
       case CategoryType.CATEGORY_TYPE_BEER_COCKTAIL:
         borderColor = Color(0xFF494967);
@@ -215,53 +305,11 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         borderColor = Color(0xFF454545);
         break;
     }
-
-    // 背景の円を描画
-    final bgPaint = Paint()..color = Colors.white.withAlpha(150);
-    canvas.drawCircle(Offset(size / 2, size / 2), size / 2, bgPaint);
-
-    // アセットから画像を読み込み
-    final ByteData data = await rootBundle.load(iconPath);
-    final Uint8List bytes = data.buffer.asUint8List();
-    final ui.Codec codec = await ui.instantiateImageCodec(bytes);
-    final ui.FrameInfo fi = await codec.getNextFrame();
-    final ui.Image image = fi.image;
-
-    // 画像をそのまま描画
-    canvas.drawImage(image,
-        Offset((size - image.width) / 2, (size - image.height) / 2), Paint());
-
-    // 背景の円を描画（暗くする用）
-    if (!marker.inCurrentSales) {
-      final bgPaint2 = Paint()..color = Colors.black.withAlpha(150);
-      canvas.drawCircle(Offset(size / 2, size / 2), size / 2, bgPaint2);
-    }
-
-    if (marker.isStamped) {
-      // テキストを描画
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: Config.IS_STAMPED_LABEL,
-          style: TextStyle(
-            color: Colors.red,
-            fontSize: fontSize,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        textDirection: TextDirection.ltr,
-      );
-      textPainter.layout();
-      textPainter.paint(
-        canvas,
-        Offset(size / 2 - textPainter.width / 2, size - textPainter.height - 5),
-      );
-    }
-
     // 枠線を描画
     final borderPaint = Paint()
       ..color = borderColor
       ..style = PaintingStyle.stroke
-      ..strokeWidth = 3;
+      ..strokeWidth = 4;
     canvas.drawCircle(Offset(size / 2, size / 2), size / 2 - 1.5, borderPaint);
 
     final img = await pictureRecorder

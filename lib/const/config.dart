@@ -17,6 +17,9 @@ class Config {
   static const double shopSelectedImageHeight = 80;
   static const double latitudeAdjustValue = 0.00002;
   static const double longitudeAdjustValue = 0.00002;
+  static const String notInCurrentSalesText = '時間外';
+  static const String irregularHoliday = '不定休';
+  static const String needsReservation = '要予約';
 
   // 現在地ボタン
   static const double currentPositionButtonWidth = 55;
@@ -34,7 +37,7 @@ class Config {
   };
 
   // スタンプ
-  static const String IS_STAMPED_LABEL = '済';
+  static const String isStampedLabel = '済';
 
   // イベントページ
   static const String eventBaseUrl = 'https://ebisu-gp.com';
