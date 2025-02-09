@@ -121,7 +121,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
           position: LatLng(shop.latitude, shop.longitude),
           zIndex: 0.0,
           inCurrentSales: shop.inCurrentSales,
-          isStamped: false, // TODO スタンプ管理機能を実装したら値を動的に設定
+          isStamped: false,
+          // TODO スタンプ管理機能を実装したら値を動的に設定
           imageUrl: shop.menuImageUrl,
           icon: shopDefaultIcon,
         ),
@@ -146,17 +147,36 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   }
 
   Future<void> _loadCustomIcons([MarkerId? selectedMarkerId]) async {
-    for (var marker in _customMarkers) {
-      // BitmapDescriptor icon = shopSelectedIcon;
-      double zIndex = 3.0;
-      if (selectedMarkerId == null || selectedMarkerId.value != marker.id) {
-        //   icon = marker.inCurrentSales ? shopOpenIcon : shopCloseIcon;
-        zIndex = marker.inCurrentSales ? 2.0 : 1.0;
-      }
-      // icon = await _createCustomMarkerBitmap(icon, marker.no.toString());
-      final icon = await _createCustomMarkerBitmap(marker, selectedMarkerId);
-      updateMarkerIcon(marker, icon, zIndex);
+    List<Future<MapEntry<String, Marker>>> futures = _customMarkers
+        .map((marker) => _createCustomMarker(marker, selectedMarkerId)
+            .then((m) => MapEntry(marker.id, m)))
+        .toList();
+
+    List<MapEntry<String, Marker>> markerEntries = await Future.wait(futures);
+
+    setState(() {
+      _markers = Map.fromEntries(markerEntries);
+    });
+  }
+
+  Future<Marker> _createCustomMarker(CustomMarker marker,
+      [MarkerId? selectedMarkerId]) async {
+    double zIndex = 3.0;
+    if (selectedMarkerId == null || selectedMarkerId.value != marker.id) {
+      zIndex = marker.inCurrentSales ? 2.0 : 1.0;
     }
+    final icon = await _createCustomMarkerBitmap(marker, selectedMarkerId);
+    return Marker(
+      markerId: MarkerId(marker.id),
+      position: marker.position,
+      icon: icon,
+      zIndex: zIndex,
+      onTap: () {
+        final markerId = MarkerId(marker.id);
+        ref.read(selectedMarkerProvider.notifier).selectMarker(markerId);
+        _loadCustomIcons(markerId);
+      },
+    );
   }
 
   Future<BitmapDescriptor> _createCustomMarkerBitmap(CustomMarker marker,
