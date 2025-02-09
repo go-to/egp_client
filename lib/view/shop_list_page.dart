@@ -196,20 +196,20 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     String iconPath = Config.shopOpenImagePath;
     String textLabel = Config.notInCurrentSalesText;
     Color textColor = Colors.white;
-    int displayTextPositionCoefficient = 20; // テキスト表示位置調整用の係数
+    int displayTextPositionCoefficient = 22; // テキスト表示位置調整用の係数
     // 店舗選択時の拡大表示
     if (selectedMarkerId != null && selectedMarkerId.value == marker.id) {
       size = 100;
       iconPath = Config.shopSelectedImagePath;
       fontSize = 30;
-      displayTextPositionCoefficient = 30;
+      displayTextPositionCoefficient = 32;
       if (marker.inCurrentSales) {
         // スタンプ獲得済み
         if (marker.isStamped) {
           fontSize = 70;
           textLabel = Config.isStampedLabel;
           textColor = Colors.red;
-          displayTextPositionCoefficient = 2;
+          displayTextPositionCoefficient = 14;
           // 不定休
         } else if (marker.isIrregularHoliday) {
           textLabel = Config.irregularHoliday;
@@ -226,7 +226,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         textLabel = Config.isStampedLabel;
         textColor = Colors.red;
         fontSize = 40;
-        displayTextPositionCoefficient = 5;
+        displayTextPositionCoefficient = 10;
         // 不定休
       } else if (marker.isIrregularHoliday) {
         textLabel = Config.irregularHoliday;
