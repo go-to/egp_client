@@ -203,14 +203,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       iconPath = Config.shopSelectedImagePath;
       fontSize = 30;
       displayTextPositionCoefficient = 32;
-      // スタンプ獲得済み
-      if (marker.isStamped) {
-        fontSize = 70;
-        textLabel = Config.isStampedLabel;
-        textColor = Colors.red;
-        displayTextPositionCoefficient = 14;
-        // 営業時間内
-      } else if (marker.inCurrentSales) {
+      // 営業時間内
+      if (marker.inCurrentSales) {
         // 不定休
         if (marker.isIrregularHoliday) {
           textLabel = Config.irregularHoliday;
@@ -221,12 +215,6 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
           textColor = Colors.black;
         }
       }
-      // スタンプ獲得済み
-    } else if (marker.isStamped) {
-      textLabel = Config.isStampedLabel;
-      textColor = Colors.red;
-      fontSize = 40;
-      displayTextPositionCoefficient = 10;
       // 営業時間内
     } else if (marker.inCurrentSales) {
       // 不定休
@@ -256,13 +244,38 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         Offset((size - image.width) / 2, (size - image.height) / 2), Paint());
 
     // 背景の円を描画（暗くする用）
-    if (!marker.inCurrentSales) {
-      final bgPaint2 = Paint()..color = Colors.black.withAlpha(150);
+    if (marker.isStamped) {
+      final bgPaint2 = Paint()
+        ..color = Color(0xFFF3EEDA).withAlpha(200).withAlpha(255);
       canvas.drawCircle(Offset(size / 2, size / 2), size / 2, bgPaint2);
+    } else if (!marker.inCurrentSales) {
+      final bgPaint3 = Paint()..color = Colors.black.withAlpha(150);
+      canvas.drawCircle(Offset(size / 2, size / 2), size / 2, bgPaint3);
     }
 
-    if (marker.isStamped ||
-        !marker.inCurrentSales ||
+    // スタンプ獲得済み
+    if (marker.isStamped) {
+      final ByteData isStampedData =
+          await rootBundle.load(Config.isStampedImagePath);
+      final Uint8List isStampedBytes = isStampedData.buffer.asUint8List();
+      final ui.Codec isStampedCodec =
+          await ui.instantiateImageCodec(isStampedBytes);
+      final ui.FrameInfo isStampedFi = await isStampedCodec.getNextFrame();
+      final ui.Image isStampedImage = isStampedFi.image;
+
+      final imageSize = size;
+      final imageOffset = Offset(0, 0);
+      final imageRect =
+          Rect.fromLTWH(imageOffset.dx, imageOffset.dy, imageSize, imageSize);
+      canvas.drawImageRect(
+          isStampedImage,
+          Rect.fromLTWH(0, 0, isStampedImage.width.toDouble(),
+              isStampedImage.height.toDouble()),
+          imageRect,
+          Paint());
+
+      // 営業時間外・不定休・要予約
+    } else if (!marker.inCurrentSales ||
         marker.isIrregularHoliday ||
         marker.needsReservation) {
       // テキストを描画
@@ -390,89 +403,57 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     final selectedMarkerId = ref.watch(selectedMarkerProvider);
     // 選択中のマーカーID
     final shopListAsync = ref.watch(shopProvider);
-    // アイコンを取得（非同期）
-    final defaultIconOpenAsync = ref.watch(defaultMarkerIconOpenProvider);
-    final defaultIconCloseAsync = ref.watch(defaultMarkerIconCloseProvider);
-    final selectedIconAsync = ref.watch(selectedMarkerIconProvider);
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
         // マップ表示
         shopListAsync.when(
           data: (shops) {
-            return defaultIconOpenAsync.when(
-              data: (defaultIconOpen) {
-                return defaultIconCloseAsync.when(
-                  data: (defaultIconClose) {
-                    return selectedIconAsync.when(
-                      data: (selectedIcon) {
-                        if (_locationPermissionGranted) {
-                          return Stack(
-                            children: [
-                              GoogleMap(
-                                mapType: MapType.normal,
-                                initialCameraPosition: _kGooglePlex,
-                                myLocationEnabled: true,
-                                myLocationButtonEnabled: false,
-                                zoomControlsEnabled: false,
-                                onMapCreated: (GoogleMapController controller) {
-                                  _mapController = controller;
-                                  _loadCustomIcons(selectedMarkerId);
-                                  setState(() {
-                                    _mapCreated = true;
-                                  });
-                                },
-                                onTap: (LatLng position) async {
-                                  ref
-                                      .read(selectedMarkerProvider.notifier)
-                                      .clearSelection();
-                                  _loadCustomIcons();
-                                },
-                                markers: Set<Marker>.of(_markers.values),
-                              ),
-                              if (!_mapCreated)
-                                const Center(
-                                    child: CircularProgressIndicator()),
-                            ],
-                          );
-                        } else {
-                          return Center(
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                final permissionGranted =
-                                    await _checkLocationPermission();
-
-                                // 権限が許可された場合にGoogleMapを再ビルド
-                                if (permissionGranted) {
-                                  setState(() {
-                                    _locationPermissionGranted = true;
-                                  });
-                                }
-                              },
-                              child: Text('位置情報を許可する'),
-                            ),
-                          );
-                        }
-                      },
-                      loading: () =>
-                          const Center(child: CircularProgressIndicator()),
-                      error: (Object error, StackTrace stackTrace) => Center(
-                        child: Text('Error: $error'),
-                      ),
-                    );
-                  },
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (Object error, StackTrace stackTrace) => Center(
-                    child: Text('Error: $error'),
+            if (_locationPermissionGranted) {
+              return Stack(
+                children: [
+                  GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: _kGooglePlex,
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: false,
+                    zoomControlsEnabled: false,
+                    onMapCreated: (GoogleMapController controller) {
+                      _mapController = controller;
+                      _loadCustomIcons(selectedMarkerId);
+                      setState(() {
+                        _mapCreated = true;
+                      });
+                    },
+                    onTap: (LatLng position) async {
+                      ref
+                          .read(selectedMarkerProvider.notifier)
+                          .clearSelection();
+                      _loadCustomIcons();
+                    },
+                    markers: Set<Marker>.of(_markers.values),
                   ),
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (Object error, StackTrace stackTrace) => Center(
-                child: Text('Error: $error'),
-              ),
-            );
+                  if (!_mapCreated)
+                    const Center(child: CircularProgressIndicator()),
+                ],
+              );
+            } else {
+              return Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final permissionGranted = await _checkLocationPermission();
+
+                    // 権限が許可された場合にGoogleMapを再ビルド
+                    if (permissionGranted) {
+                      setState(() {
+                        _locationPermissionGranted = true;
+                      });
+                    }
+                  },
+                  child: Text('位置情報を許可する'),
+                ),
+              );
+            }
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (Object error, StackTrace stackTrace) => Center(
