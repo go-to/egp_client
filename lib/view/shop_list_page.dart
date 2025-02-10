@@ -12,8 +12,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../const/config.dart';
 import '../provider/marker_provider.dart';
-import '../provider/default_marker_icon_provider.dart';
-import '../provider/selected_marker_icon_provider.dart';
 import '../provider/shop_provider.dart';
 import '../view/shop_detail_page.dart';
 
@@ -532,9 +530,6 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                         .read(selectedMarkerProvider.notifier)
                         .selectMarker(markerId);
 
-                    // 選択した店舗のマーカーを変更
-                    _loadCustomIcons(markerId);
-
                     //現在のズームレベルを取得
                     final zoomLevel = await _mapController.getZoomLevel();
                     final shop = shops!.shops[index];
@@ -548,6 +543,9 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                         ),
                       ),
                     );
+
+                    // 選択した店舗のマーカーを変更
+                    _loadCustomIcons(markerId);
                   },
                   itemBuilder: (context, index) {
                     final shop = shops!.shops[index];
