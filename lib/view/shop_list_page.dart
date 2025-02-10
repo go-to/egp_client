@@ -203,15 +203,16 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       iconPath = Config.shopSelectedImagePath;
       fontSize = 30;
       displayTextPositionCoefficient = 32;
-      if (marker.inCurrentSales) {
-        // スタンプ獲得済み
-        if (marker.isStamped) {
-          fontSize = 70;
-          textLabel = Config.isStampedLabel;
-          textColor = Colors.red;
-          displayTextPositionCoefficient = 14;
-          // 不定休
-        } else if (marker.isIrregularHoliday) {
+      // スタンプ獲得済み
+      if (marker.isStamped) {
+        fontSize = 70;
+        textLabel = Config.isStampedLabel;
+        textColor = Colors.red;
+        displayTextPositionCoefficient = 14;
+        // 営業時間内
+      } else if (marker.inCurrentSales) {
+        // 不定休
+        if (marker.isIrregularHoliday) {
           textLabel = Config.irregularHoliday;
           textColor = Colors.black;
           // 要予約
@@ -221,14 +222,15 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         }
       }
       // スタンプ獲得済み
+    } else if (marker.isStamped) {
+      textLabel = Config.isStampedLabel;
+      textColor = Colors.red;
+      fontSize = 40;
+      displayTextPositionCoefficient = 10;
+      // 営業時間内
     } else if (marker.inCurrentSales) {
-      if (marker.isStamped) {
-        textLabel = Config.isStampedLabel;
-        textColor = Colors.red;
-        fontSize = 40;
-        displayTextPositionCoefficient = 10;
-        // 不定休
-      } else if (marker.isIrregularHoliday) {
+      // 不定休
+      if (marker.isIrregularHoliday) {
         textLabel = Config.irregularHoliday;
         textColor = Colors.black;
         // 要予約
