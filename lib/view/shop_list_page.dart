@@ -165,9 +165,9 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
   Future<Marker> _createCustomMarker(CustomMarker marker,
       [MarkerId? selectedMarkerId]) async {
-    double zIndex = 3.0;
-    if (selectedMarkerId == null || selectedMarkerId.value != marker.id) {
-      zIndex = marker.inCurrentSales ? 2.0 : 1.0;
+    double zIndex = marker.inCurrentSales ? 2.0 : 1.0;
+    if (selectedMarkerId != null && selectedMarkerId.value == marker.id) {
+      zIndex = 3.0;
     }
     final icon = await _createCustomMarkerBitmap(marker, selectedMarkerId);
     return Marker(
@@ -526,26 +526,18 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                   itemCount: _markers.length,
                   onPageChanged: (index) async {
                     final markerId = _markers.values.toList()[index].markerId;
-                    ref
-                        .read(selectedMarkerProvider.notifier)
-                        .selectMarker(markerId);
-
-                    //現在のズームレベルを取得
-                    final zoomLevel = await _mapController.getZoomLevel();
-                    final shop = shops!.shops[index];
-
+                    if (index != selectedIndex) {
+                      // 選択状態のマーカーを更新
+                      ref
+                          .read(selectedMarkerProvider.notifier)
+                          .selectMarker(markerId);
+                      // 選択した店舗のマーカーを変更
+                      _loadCustomIcons(markerId);
+                    }
                     //スワイプ後のお店の座標までカメラを移動
-                    _mapController.animateCamera(
-                      CameraUpdate.newCameraPosition(
-                        CameraPosition(
-                          target: LatLng(shop.latitude, shop.longitude),
-                          zoom: zoomLevel,
-                        ),
-                      ),
-                    );
-
-                    // 選択した店舗のマーカーを変更
-                    _loadCustomIcons(markerId);
+                    final shop = shops!.shops[index];
+                    _mapController.animateCamera(CameraUpdate.newLatLng(
+                        LatLng(shop.latitude, shop.longitude)));
                   },
                   itemBuilder: (context, index) {
                     final shop = shops!.shops[index];
