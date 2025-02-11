@@ -197,10 +197,12 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     String textLabel = Config.notInCurrentSalesText;
     Color textColor = Colors.white;
     int displayTextPositionCoefficient = 16; // テキスト表示位置調整用の係数
+    var isStampedIconPath = Config.isStampedImagePath;
     // 店舗選択時の拡大表示
     if (selectedMarkerId != null && selectedMarkerId.value == marker.id) {
       size = 80;
       iconPath = Config.shopSelectedImagePath;
+      isStampedIconPath = Config.isStampedSelectedImagePath;
       fontSize = 22;
       displayTextPositionCoefficient = 26;
       // 営業時間内
@@ -255,8 +257,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
     // スタンプ獲得済み
     if (marker.isStamped) {
-      final ByteData isStampedData =
-          await rootBundle.load(Config.isStampedImagePath);
+      final ByteData isStampedData = await rootBundle.load(isStampedIconPath);
       final Uint8List isStampedBytes = isStampedData.buffer.asUint8List();
       final ui.Codec isStampedCodec =
           await ui.instantiateImageCodec(isStampedBytes);

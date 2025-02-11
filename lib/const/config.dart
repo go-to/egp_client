@@ -12,6 +12,7 @@ class Config {
   static const String shopCloseImagePath = 'assets/shop_close.png';
   static const String shopSelectedImagePath = 'assets/shop_selected.png';
   static const String isStampedImagePath = 'assets/done.png';
+  static const String isStampedSelectedImagePath = 'assets/done_selected.png';
   static const double shopImageWidth = 50;
   static const double shopImageHeight = 50;
   static const double shopSelectedImageWidth = 80;
