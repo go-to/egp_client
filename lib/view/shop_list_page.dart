@@ -12,8 +12,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../const/config.dart';
 import '../provider/marker_provider.dart';
-import '../provider/default_marker_icon_provider.dart';
-import '../provider/selected_marker_icon_provider.dart';
 import '../provider/shop_provider.dart';
 import '../view/shop_detail_page.dart';
 
@@ -167,9 +165,11 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
   Future<Marker> _createCustomMarker(CustomMarker marker,
       [MarkerId? selectedMarkerId]) async {
-    double zIndex = 3.0;
-    if (selectedMarkerId == null || selectedMarkerId.value != marker.id) {
-      zIndex = marker.inCurrentSales ? 2.0 : 1.0;
+    double zIndex = marker.inCurrentSales ? 2.0 : 1.0;
+    if (selectedMarkerId != null && selectedMarkerId.value == marker.id) {
+      zIndex = 3.0;
+    } else if (marker.isStamped) {
+      zIndex = 1.0;
     }
     final icon = await _createCustomMarkerBitmap(marker, selectedMarkerId);
     return Marker(
@@ -191,27 +191,24 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     final canvas = Canvas(pictureRecorder);
 
     // 各種変数定義（デフォルトは営業時間外）
-    double fontSize = 18;
-    double size = 65;
+    double fontSize = 14;
+    double size = 50;
     String iconPath = Config.shopOpenImagePath;
     String textLabel = Config.notInCurrentSalesText;
     Color textColor = Colors.white;
-    int displayTextPositionCoefficient = 22; // テキスト表示位置調整用の係数
+    int displayTextPositionCoefficient = 16; // テキスト表示位置調整用の係数
+    var isStampedIconPath = Config.isStampedImagePath;
     // 店舗選択時の拡大表示
     if (selectedMarkerId != null && selectedMarkerId.value == marker.id) {
-      size = 100;
+      size = 80;
       iconPath = Config.shopSelectedImagePath;
-      fontSize = 30;
-      displayTextPositionCoefficient = 32;
+      isStampedIconPath = Config.isStampedSelectedImagePath;
+      fontSize = 22;
+      displayTextPositionCoefficient = 26;
+      // 営業時間内
       if (marker.inCurrentSales) {
-        // スタンプ獲得済み
-        if (marker.isStamped) {
-          fontSize = 70;
-          textLabel = Config.isStampedLabel;
-          textColor = Colors.red;
-          displayTextPositionCoefficient = 14;
-          // 不定休
-        } else if (marker.isIrregularHoliday) {
+        // 不定休
+        if (marker.isIrregularHoliday) {
           textLabel = Config.irregularHoliday;
           textColor = Colors.black;
           // 要予約
@@ -220,15 +217,10 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
           textColor = Colors.black;
         }
       }
-      // スタンプ獲得済み
+      // 営業時間内
     } else if (marker.inCurrentSales) {
-      if (marker.isStamped) {
-        textLabel = Config.isStampedLabel;
-        textColor = Colors.red;
-        fontSize = 40;
-        displayTextPositionCoefficient = 10;
-        // 不定休
-      } else if (marker.isIrregularHoliday) {
+      // 不定休
+      if (marker.isIrregularHoliday) {
         textLabel = Config.irregularHoliday;
         textColor = Colors.black;
         // 要予約
@@ -254,13 +246,37 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         Offset((size - image.width) / 2, (size - image.height) / 2), Paint());
 
     // 背景の円を描画（暗くする用）
-    if (!marker.inCurrentSales) {
-      final bgPaint2 = Paint()..color = Colors.black.withAlpha(150);
+    if (marker.isStamped) {
+      final bgPaint2 = Paint()
+        ..color = Color(0xFFF3EEDA).withAlpha(200).withAlpha(255);
       canvas.drawCircle(Offset(size / 2, size / 2), size / 2, bgPaint2);
+    } else if (!marker.inCurrentSales) {
+      final bgPaint3 = Paint()..color = Colors.black.withAlpha(150);
+      canvas.drawCircle(Offset(size / 2, size / 2), size / 2, bgPaint3);
     }
 
-    if (marker.isStamped ||
-        !marker.inCurrentSales ||
+    // スタンプ獲得済み
+    if (marker.isStamped) {
+      final ByteData isStampedData = await rootBundle.load(isStampedIconPath);
+      final Uint8List isStampedBytes = isStampedData.buffer.asUint8List();
+      final ui.Codec isStampedCodec =
+          await ui.instantiateImageCodec(isStampedBytes);
+      final ui.FrameInfo isStampedFi = await isStampedCodec.getNextFrame();
+      final ui.Image isStampedImage = isStampedFi.image;
+
+      final imageSize = size;
+      final imageOffset = Offset(0, 0);
+      final imageRect =
+          Rect.fromLTWH(imageOffset.dx, imageOffset.dy, imageSize, imageSize);
+      canvas.drawImageRect(
+          isStampedImage,
+          Rect.fromLTWH(0, 0, isStampedImage.width.toDouble(),
+              isStampedImage.height.toDouble()),
+          imageRect,
+          Paint());
+
+      // 営業時間外・不定休・要予約
+    } else if (!marker.inCurrentSales ||
         marker.isIrregularHoliday ||
         marker.needsReservation) {
       // テキストを描画
@@ -388,89 +404,57 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     final selectedMarkerId = ref.watch(selectedMarkerProvider);
     // 選択中のマーカーID
     final shopListAsync = ref.watch(shopProvider);
-    // アイコンを取得（非同期）
-    final defaultIconOpenAsync = ref.watch(defaultMarkerIconOpenProvider);
-    final defaultIconCloseAsync = ref.watch(defaultMarkerIconCloseProvider);
-    final selectedIconAsync = ref.watch(selectedMarkerIconProvider);
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
         // マップ表示
         shopListAsync.when(
           data: (shops) {
-            return defaultIconOpenAsync.when(
-              data: (defaultIconOpen) {
-                return defaultIconCloseAsync.when(
-                  data: (defaultIconClose) {
-                    return selectedIconAsync.when(
-                      data: (selectedIcon) {
-                        if (_locationPermissionGranted) {
-                          return Stack(
-                            children: [
-                              GoogleMap(
-                                mapType: MapType.normal,
-                                initialCameraPosition: _kGooglePlex,
-                                myLocationEnabled: true,
-                                myLocationButtonEnabled: false,
-                                zoomControlsEnabled: false,
-                                onMapCreated: (GoogleMapController controller) {
-                                  _mapController = controller;
-                                  _loadCustomIcons(selectedMarkerId);
-                                  setState(() {
-                                    _mapCreated = true;
-                                  });
-                                },
-                                onTap: (LatLng position) async {
-                                  ref
-                                      .read(selectedMarkerProvider.notifier)
-                                      .clearSelection();
-                                  _loadCustomIcons();
-                                },
-                                markers: Set<Marker>.of(_markers.values),
-                              ),
-                              if (!_mapCreated)
-                                const Center(
-                                    child: CircularProgressIndicator()),
-                            ],
-                          );
-                        } else {
-                          return Center(
-                            child: ElevatedButton(
-                              onPressed: () async {
-                                final permissionGranted =
-                                    await _checkLocationPermission();
-
-                                // 権限が許可された場合にGoogleMapを再ビルド
-                                if (permissionGranted) {
-                                  setState(() {
-                                    _locationPermissionGranted = true;
-                                  });
-                                }
-                              },
-                              child: Text('位置情報を許可する'),
-                            ),
-                          );
-                        }
-                      },
-                      loading: () =>
-                          const Center(child: CircularProgressIndicator()),
-                      error: (Object error, StackTrace stackTrace) => Center(
-                        child: Text('Error: $error'),
-                      ),
-                    );
-                  },
-                  loading: () =>
-                      const Center(child: CircularProgressIndicator()),
-                  error: (Object error, StackTrace stackTrace) => Center(
-                    child: Text('Error: $error'),
+            if (_locationPermissionGranted) {
+              return Stack(
+                children: [
+                  GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: _kGooglePlex,
+                    myLocationEnabled: true,
+                    myLocationButtonEnabled: false,
+                    zoomControlsEnabled: false,
+                    onMapCreated: (GoogleMapController controller) {
+                      _mapController = controller;
+                      _loadCustomIcons(selectedMarkerId);
+                      setState(() {
+                        _mapCreated = true;
+                      });
+                    },
+                    onTap: (LatLng position) async {
+                      ref
+                          .read(selectedMarkerProvider.notifier)
+                          .clearSelection();
+                      _loadCustomIcons();
+                    },
+                    markers: Set<Marker>.of(_markers.values),
                   ),
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (Object error, StackTrace stackTrace) => Center(
-                child: Text('Error: $error'),
-              ),
-            );
+                  if (!_mapCreated)
+                    const Center(child: CircularProgressIndicator()),
+                ],
+              );
+            } else {
+              return Center(
+                child: ElevatedButton(
+                  onPressed: () async {
+                    final permissionGranted = await _checkLocationPermission();
+
+                    // 権限が許可された場合にGoogleMapを再ビルド
+                    if (permissionGranted) {
+                      setState(() {
+                        _locationPermissionGranted = true;
+                      });
+                    }
+                  },
+                  child: Text('位置情報を許可する'),
+                ),
+              );
+            }
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (Object error, StackTrace stackTrace) => Center(
@@ -545,26 +529,18 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                   itemCount: _markers.length,
                   onPageChanged: (index) async {
                     final markerId = _markers.values.toList()[index].markerId;
-                    ref
-                        .read(selectedMarkerProvider.notifier)
-                        .selectMarker(markerId);
-
-                    // 選択した店舗のマーカーを変更
-                    _loadCustomIcons(markerId);
-
-                    //現在のズームレベルを取得
-                    final zoomLevel = await _mapController.getZoomLevel();
-                    final shop = shops!.shops[index];
-
+                    if (index != selectedIndex) {
+                      // 選択状態のマーカーを更新
+                      ref
+                          .read(selectedMarkerProvider.notifier)
+                          .selectMarker(markerId);
+                      // 選択した店舗のマーカーを変更
+                      _loadCustomIcons(markerId);
+                    }
                     //スワイプ後のお店の座標までカメラを移動
-                    _mapController.animateCamera(
-                      CameraUpdate.newCameraPosition(
-                        CameraPosition(
-                          target: LatLng(shop.latitude, shop.longitude),
-                          zoom: zoomLevel,
-                        ),
-                      ),
-                    );
+                    final shop = shops!.shops[index];
+                    _mapController.animateCamera(CameraUpdate.newLatLng(
+                        LatLng(shop.latitude, shop.longitude)));
                   },
                   itemBuilder: (context, index) {
                     final shop = shops!.shops[index];
