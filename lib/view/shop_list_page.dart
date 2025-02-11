@@ -168,6 +168,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     double zIndex = marker.inCurrentSales ? 2.0 : 1.0;
     if (selectedMarkerId != null && selectedMarkerId.value == marker.id) {
       zIndex = 3.0;
+    } else if (marker.isStamped) {
+      zIndex = 1.0;
     }
     final icon = await _createCustomMarkerBitmap(marker, selectedMarkerId);
     return Marker(
