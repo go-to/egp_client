@@ -191,18 +191,18 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     final canvas = Canvas(pictureRecorder);
 
     // 各種変数定義（デフォルトは営業時間外）
-    double fontSize = 18;
-    double size = 65;
+    double fontSize = 14;
+    double size = 50;
     String iconPath = Config.shopOpenImagePath;
     String textLabel = Config.notInCurrentSalesText;
     Color textColor = Colors.white;
-    int displayTextPositionCoefficient = 22; // テキスト表示位置調整用の係数
+    int displayTextPositionCoefficient = 16; // テキスト表示位置調整用の係数
     // 店舗選択時の拡大表示
     if (selectedMarkerId != null && selectedMarkerId.value == marker.id) {
-      size = 100;
+      size = 80;
       iconPath = Config.shopSelectedImagePath;
-      fontSize = 30;
-      displayTextPositionCoefficient = 32;
+      fontSize = 22;
+      displayTextPositionCoefficient = 26;
       // 営業時間内
       if (marker.inCurrentSales) {
         // 不定休
