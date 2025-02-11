@@ -169,7 +169,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     if (selectedMarkerId != null && selectedMarkerId.value == marker.id) {
       zIndex = 3.0;
     } else if (marker.isStamped) {
-      zIndex = 1.0;
+      zIndex = 0.0;
     }
     final icon = await _createCustomMarkerBitmap(marker, selectedMarkerId);
     return Marker(
@@ -207,26 +207,24 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       displayTextPositionCoefficient = 26;
       // 営業時間内
       if (marker.inCurrentSales) {
+        textColor = Colors.black;
         // 不定休
         if (marker.isIrregularHoliday) {
           textLabel = Config.irregularHoliday;
-          textColor = Colors.black;
           // 要予約
         } else if (marker.needsReservation) {
           textLabel = Config.needsReservation;
-          textColor = Colors.black;
         }
       }
       // 営業時間内
     } else if (marker.inCurrentSales) {
+      textColor = Colors.black;
       // 不定休
       if (marker.isIrregularHoliday) {
         textLabel = Config.irregularHoliday;
-        textColor = Colors.black;
         // 要予約
       } else if (marker.needsReservation) {
         textLabel = Config.needsReservation;
-        textColor = Colors.black;
       }
     }
 
@@ -274,29 +272,51 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
               isStampedImage.height.toDouble()),
           imageRect,
           Paint());
-
-      // 営業時間外・不定休・要予約
-    } else if (!marker.inCurrentSales ||
-        marker.isIrregularHoliday ||
-        marker.needsReservation) {
-      // テキストを描画
-      final textPainter = TextPainter(
+    } else {
+      // 店舗No.を描画
+      final textPainterNo = TextPainter(
         text: TextSpan(
-          text: textLabel,
+          text: marker.no.toString(),
           style: TextStyle(
             color: textColor,
-            fontSize: fontSize,
+            fontSize: fontSize * 0.8,
             fontWeight: FontWeight.bold,
           ),
         ),
         textDirection: TextDirection.ltr,
+        textAlign: TextAlign.center,
       );
-      textPainter.layout();
-      textPainter.paint(
+      textPainterNo.layout();
+      textPainterNo.paint(
         canvas,
-        Offset(size / 2 - textPainter.width / 2,
-            size - textPainter.height - displayTextPositionCoefficient),
+        Offset(
+            size / 2 - textPainterNo.width / 2,
+            size / 8 - (textPainterNo.height) / 8),
       );
+
+      // 通常営業以外の場合は情報を描画
+      if (!marker.inCurrentSales ||
+          marker.isIrregularHoliday ||
+          marker.needsReservation) {
+        final textPainter = TextPainter(
+          text: TextSpan(
+            text: textLabel,
+            style: TextStyle(
+              color: textColor,
+              fontSize: fontSize,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          textDirection: TextDirection.ltr,
+          textAlign: TextAlign.center,
+        );
+        textPainter.layout();
+        textPainter.paint(
+          canvas,
+          Offset(size / 2 - textPainter.width / 2,
+              size - textPainter.height - displayTextPositionCoefficient),
+        );
+      }
     }
 
     // 枠線にカテゴリの色を表示
