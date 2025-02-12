@@ -3,6 +3,7 @@ import 'package:egp_client/service/grpc_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../service/auth_service.dart';
 import '../widget/stamp_card_widget.dart';
 
 class StampManagementPage extends ConsumerStatefulWidget {
@@ -20,6 +21,10 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
 
   @override
   Widget build(BuildContext context) {
+    final user = ref.read(authServiceProvider.notifier).getCurrentUser();
+    // FIXME 取得したユーザー情報を使用
+    print(user);
+
     return FutureBuilder<ShopsResponse>(
       future: _fetchShops(),
       builder: (BuildContext context, AsyncSnapshot<ShopsResponse> snapshot) {
