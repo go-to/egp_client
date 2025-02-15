@@ -19,7 +19,9 @@ protoc:
 	if [ ! -e "${GRPC_GEN_PATH}" ]; then mkdir -p "${GRPC_GEN_PATH}"; fi
 	protoc --dart_out=grpc:${GRPC_GEN_PATH} -I ${PROTOBUF_SRC_PATH} ${PROTOBUF_SRC_PATH}/*.proto google/protobuf/timestamp.proto
 clean-branch:
-	git switch main && git branch | xargs git branch -d
+	git switch main
+	git branch | grep -v "main" | xargs git branch -d
+	git pull
 build-runner:
 	flutter pub run build_runner build --delete-conflicting-outputs
 build-app:
