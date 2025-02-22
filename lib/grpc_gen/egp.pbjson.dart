@@ -274,57 +274,29 @@ const ShopsResponse$json = {
 final $typed_data.Uint8List shopsResponseDescriptor = $convert.base64Decode(
     'Cg1TaG9wc1Jlc3BvbnNlEh8KBVNob3BzGAEgAygLMgkuZWdwLlNob3BSBVNob3Bz');
 
-@$core.Deprecated('Use addStampRequestDescriptor instead')
-const AddStampRequest$json = {
-  '1': 'AddStampRequest',
+@$core.Deprecated('Use stampRequestDescriptor instead')
+const StampRequest$json = {
+  '1': 'StampRequest',
   '2': [
     {'1': 'UserId', '3': 1, '4': 1, '5': 9, '10': 'UserId'},
     {'1': 'ShopId', '3': 2, '4': 1, '5': 3, '10': 'ShopId'},
   ],
 };
 
-/// Descriptor for `AddStampRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List addStampRequestDescriptor = $convert.base64Decode(
-    'Cg9BZGRTdGFtcFJlcXVlc3QSFgoGVXNlcklkGAEgASgJUgZVc2VySWQSFgoGU2hvcElkGAIgAS'
-    'gDUgZTaG9wSWQ=');
+/// Descriptor for `StampRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List stampRequestDescriptor = $convert.base64Decode(
+    'CgxTdGFtcFJlcXVlc3QSFgoGVXNlcklkGAEgASgJUgZVc2VySWQSFgoGU2hvcElkGAIgASgDUg'
+    'ZTaG9wSWQ=');
 
-@$core.Deprecated('Use addStampResponseDescriptor instead')
-const AddStampResponse$json = {
-  '1': 'AddStampResponse',
+@$core.Deprecated('Use stampResponseDescriptor instead')
+const StampResponse$json = {
+  '1': 'StampResponse',
   '2': [
     {'1': 'NumberOfTimes', '3': 1, '4': 1, '5': 5, '10': 'NumberOfTimes'},
   ],
 };
 
-/// Descriptor for `AddStampResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List addStampResponseDescriptor = $convert.base64Decode(
-    'ChBBZGRTdGFtcFJlc3BvbnNlEiQKDU51bWJlck9mVGltZXMYASABKAVSDU51bWJlck9mVGltZX'
-    'M=');
-
-@$core.Deprecated('Use deleteStampRequestDescriptor instead')
-const DeleteStampRequest$json = {
-  '1': 'DeleteStampRequest',
-  '2': [
-    {'1': 'UserId', '3': 1, '4': 1, '5': 9, '10': 'UserId'},
-    {'1': 'ShopId', '3': 2, '4': 1, '5': 3, '10': 'ShopId'},
-  ],
-};
-
-/// Descriptor for `DeleteStampRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List deleteStampRequestDescriptor = $convert.base64Decode(
-    'ChJEZWxldGVTdGFtcFJlcXVlc3QSFgoGVXNlcklkGAEgASgJUgZVc2VySWQSFgoGU2hvcElkGA'
-    'IgASgDUgZTaG9wSWQ=');
-
-@$core.Deprecated('Use deleteStampResponseDescriptor instead')
-const DeleteStampResponse$json = {
-  '1': 'DeleteStampResponse',
-  '2': [
-    {'1': 'NumberOfTimes', '3': 1, '4': 1, '5': 5, '10': 'NumberOfTimes'},
-  ],
-};
-
-/// Descriptor for `DeleteStampResponse`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List deleteStampResponseDescriptor = $convert.base64Decode(
-    'ChNEZWxldGVTdGFtcFJlc3BvbnNlEiQKDU51bWJlck9mVGltZXMYASABKAVSDU51bWJlck9mVG'
-    'ltZXM=');
+/// Descriptor for `StampResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List stampResponseDescriptor = $convert.base64Decode(
+    'Cg1TdGFtcFJlc3BvbnNlEiQKDU51bWJlck9mVGltZXMYASABKAVSDU51bWJlck9mVGltZXM=');
 

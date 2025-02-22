@@ -1332,8 +1332,8 @@ class ShopsResponse extends $pb.GeneratedMessage {
   $core.List<Shop> get shops => $_getList(0);
 }
 
-class AddStampRequest extends $pb.GeneratedMessage {
-  factory AddStampRequest({
+class StampRequest extends $pb.GeneratedMessage {
+  factory StampRequest({
     $core.String? userId,
     $fixnum.Int64? shopId,
   }) {
@@ -1346,11 +1346,11 @@ class AddStampRequest extends $pb.GeneratedMessage {
     }
     return $result;
   }
-  AddStampRequest._() : super();
-  factory AddStampRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory AddStampRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  StampRequest._() : super();
+  factory StampRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory StampRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'AddStampRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'StampRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'UserId', protoName: 'UserId')
     ..aInt64(2, _omitFieldNames ? '' : 'ShopId', protoName: 'ShopId')
     ..hasRequiredFields = false
@@ -1360,22 +1360,22 @@ class AddStampRequest extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  AddStampRequest clone() => AddStampRequest()..mergeFromMessage(this);
+  StampRequest clone() => StampRequest()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddStampRequest copyWith(void Function(AddStampRequest) updates) => super.copyWith((message) => updates(message as AddStampRequest)) as AddStampRequest;
+  StampRequest copyWith(void Function(StampRequest) updates) => super.copyWith((message) => updates(message as StampRequest)) as StampRequest;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static AddStampRequest create() => AddStampRequest._();
-  AddStampRequest createEmptyInstance() => create();
-  static $pb.PbList<AddStampRequest> createRepeated() => $pb.PbList<AddStampRequest>();
+  static StampRequest create() => StampRequest._();
+  StampRequest createEmptyInstance() => create();
+  static $pb.PbList<StampRequest> createRepeated() => $pb.PbList<StampRequest>();
   @$core.pragma('dart2js:noInline')
-  static AddStampRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddStampRequest>(create);
-  static AddStampRequest? _defaultInstance;
+  static StampRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<StampRequest>(create);
+  static StampRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.String get userId => $_getSZ(0);
@@ -1396,8 +1396,8 @@ class AddStampRequest extends $pb.GeneratedMessage {
   void clearShopId() => clearField(2);
 }
 
-class AddStampResponse extends $pb.GeneratedMessage {
-  factory AddStampResponse({
+class StampResponse extends $pb.GeneratedMessage {
+  factory StampResponse({
     $core.int? numberOfTimes,
   }) {
     final $result = create();
@@ -1406,11 +1406,11 @@ class AddStampResponse extends $pb.GeneratedMessage {
     }
     return $result;
   }
-  AddStampResponse._() : super();
-  factory AddStampResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory AddStampResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  StampResponse._() : super();
+  factory StampResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory StampResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'AddStampResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'StampResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
     ..a<$core.int>(1, _omitFieldNames ? '' : 'NumberOfTimes', $pb.PbFieldType.O3, protoName: 'NumberOfTimes')
     ..hasRequiredFields = false
   ;
@@ -1419,136 +1419,22 @@ class AddStampResponse extends $pb.GeneratedMessage {
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  AddStampResponse clone() => AddStampResponse()..mergeFromMessage(this);
+  StampResponse clone() => StampResponse()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddStampResponse copyWith(void Function(AddStampResponse) updates) => super.copyWith((message) => updates(message as AddStampResponse)) as AddStampResponse;
+  StampResponse copyWith(void Function(StampResponse) updates) => super.copyWith((message) => updates(message as StampResponse)) as StampResponse;
 
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static AddStampResponse create() => AddStampResponse._();
-  AddStampResponse createEmptyInstance() => create();
-  static $pb.PbList<AddStampResponse> createRepeated() => $pb.PbList<AddStampResponse>();
+  static StampResponse create() => StampResponse._();
+  StampResponse createEmptyInstance() => create();
+  static $pb.PbList<StampResponse> createRepeated() => $pb.PbList<StampResponse>();
   @$core.pragma('dart2js:noInline')
-  static AddStampResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddStampResponse>(create);
-  static AddStampResponse? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.int get numberOfTimes => $_getIZ(0);
-  @$pb.TagNumber(1)
-  set numberOfTimes($core.int v) { $_setSignedInt32(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasNumberOfTimes() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearNumberOfTimes() => clearField(1);
-}
-
-class DeleteStampRequest extends $pb.GeneratedMessage {
-  factory DeleteStampRequest({
-    $core.String? userId,
-    $fixnum.Int64? shopId,
-  }) {
-    final $result = create();
-    if (userId != null) {
-      $result.userId = userId;
-    }
-    if (shopId != null) {
-      $result.shopId = shopId;
-    }
-    return $result;
-  }
-  DeleteStampRequest._() : super();
-  factory DeleteStampRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory DeleteStampRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'DeleteStampRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'UserId', protoName: 'UserId')
-    ..aInt64(2, _omitFieldNames ? '' : 'ShopId', protoName: 'ShopId')
-    ..hasRequiredFields = false
-  ;
-
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  DeleteStampRequest clone() => DeleteStampRequest()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  DeleteStampRequest copyWith(void Function(DeleteStampRequest) updates) => super.copyWith((message) => updates(message as DeleteStampRequest)) as DeleteStampRequest;
-
-  $pb.BuilderInfo get info_ => _i;
-
-  @$core.pragma('dart2js:noInline')
-  static DeleteStampRequest create() => DeleteStampRequest._();
-  DeleteStampRequest createEmptyInstance() => create();
-  static $pb.PbList<DeleteStampRequest> createRepeated() => $pb.PbList<DeleteStampRequest>();
-  @$core.pragma('dart2js:noInline')
-  static DeleteStampRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DeleteStampRequest>(create);
-  static DeleteStampRequest? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get userId => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set userId($core.String v) { $_setString(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasUserId() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearUserId() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $fixnum.Int64 get shopId => $_getI64(1);
-  @$pb.TagNumber(2)
-  set shopId($fixnum.Int64 v) { $_setInt64(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasShopId() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearShopId() => clearField(2);
-}
-
-class DeleteStampResponse extends $pb.GeneratedMessage {
-  factory DeleteStampResponse({
-    $core.int? numberOfTimes,
-  }) {
-    final $result = create();
-    if (numberOfTimes != null) {
-      $result.numberOfTimes = numberOfTimes;
-    }
-    return $result;
-  }
-  DeleteStampResponse._() : super();
-  factory DeleteStampResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory DeleteStampResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'DeleteStampResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..a<$core.int>(1, _omitFieldNames ? '' : 'NumberOfTimes', $pb.PbFieldType.O3, protoName: 'NumberOfTimes')
-    ..hasRequiredFields = false
-  ;
-
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  DeleteStampResponse clone() => DeleteStampResponse()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  DeleteStampResponse copyWith(void Function(DeleteStampResponse) updates) => super.copyWith((message) => updates(message as DeleteStampResponse)) as DeleteStampResponse;
-
-  $pb.BuilderInfo get info_ => _i;
-
-  @$core.pragma('dart2js:noInline')
-  static DeleteStampResponse create() => DeleteStampResponse._();
-  DeleteStampResponse createEmptyInstance() => create();
-  static $pb.PbList<DeleteStampResponse> createRepeated() => $pb.PbList<DeleteStampResponse>();
-  @$core.pragma('dart2js:noInline')
-  static DeleteStampResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DeleteStampResponse>(create);
-  static DeleteStampResponse? _defaultInstance;
+  static StampResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<StampResponse>(create);
+  static StampResponse? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.int get numberOfTimes => $_getIZ(0);
