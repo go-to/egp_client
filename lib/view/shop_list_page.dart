@@ -13,7 +13,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../const/config.dart';
 import '../provider/marker_provider.dart';
 import '../provider/shop_provider.dart';
-import '../service/auth_service.dart';
 import '../view/shop_detail_page.dart';
 
 class CustomMarker {
@@ -578,6 +577,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                 return ShopDetailPage(
                                     year: shop.year,
                                     no: shop.no,
+                                    shopId: shop.iD.toInt(),
                                     shopName: shop.shopName,
                                     address: shop.address);
                               },

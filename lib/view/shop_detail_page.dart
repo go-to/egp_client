@@ -1,11 +1,15 @@
+import 'package:egp_client/provider/stamp_provider.dart';
+import 'package:egp_client/service/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../const/config.dart';
 
-class ShopDetailPage extends StatefulWidget {
+class ShopDetailPage extends ConsumerStatefulWidget {
   final int year;
   final int no;
+  final int shopId;
   final String shopName;
   final String address;
 
@@ -13,15 +17,16 @@ class ShopDetailPage extends StatefulWidget {
     super.key,
     required this.year,
     required this.no,
+    required this.shopId,
     required this.shopName,
     required this.address,
   });
 
   @override
-  State<ShopDetailPage> createState() => _ShopPageDetail();
+  ConsumerState<ShopDetailPage> createState() => _ShopPageDetail();
 }
 
-class _ShopPageDetail extends State<ShopDetailPage> {
+class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
   late final WebViewController _controller;
 
   @override
@@ -45,12 +50,56 @@ class _ShopPageDetail extends State<ShopDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('${widget.no}: ${widget.shopName}'),
-      ),
-      body: WebViewWidget(
-        controller: _controller,
+    final user = ref.read(authServiceProvider.notifier).getCurrentUser();
+    final userId = user!.uid;
+    final shopId = widget.shopId;
+    final stampNumAsync = ref.watch(StampProvider(userId, shopId));
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('${widget.no}: ${widget.shopName}'),
+        ),
+        body: Stack(
+          children: [
+            WebViewWidget(controller: _controller),
+            stampNumAsync.when(
+              data: (int stampNum) {
+                return Positioned(
+                  left: 20,
+                  right: 20,
+                  bottom: 20,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          ref
+                              .read(StampProvider(userId, shopId).notifier)
+                              .addStamp(userId, shopId);
+                        },
+                        child: Text(
+                            stampNum > 0 ? '獲得済み(${stampNum}個)' : 'スタンプを獲得する'),
+                      ),
+                      // TODO 別メニューに移動する
+                      ElevatedButton(
+                        onPressed: () {
+                          ref
+                              .read(StampProvider(userId, shopId).notifier)
+                              .deleteStamp(userId, shopId);
+                        },
+                        child: Text('スタンプ取り消し'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (Object error, StackTrace stackTrace) => Center(
+                child: Text('Error: $error'),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
