@@ -1,13 +1,16 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../const/config.dart';
 import '../grpc_gen/egp.pb.dart';
 
 class StampCard extends StatelessWidget {
+  final String userId;
   final Shop shop;
 
-  const StampCard({Key? key, required this.shop}) : super(key: key);
+  const StampCard({super.key, required this.userId, required this.shop});
 
   @override
   Widget build(BuildContext context) {
@@ -32,20 +35,6 @@ class StampCard extends StatelessWidget {
             child: Stack(
               fit: StackFit.expand,
               children: [
-                // Image.network(
-                //   shop.menuImageUrl,
-                //   fit: BoxFit.cover,
-                //   loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
-                //     if (loadingProgress == null) return child;
-                //     return Center(
-                //       child: CircularProgressIndicator(
-                //         value: loadingProgress.expectedTotalBytes != null
-                //             ? loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes!
-                //             : null,
-                //       ),
-                //     );
-                //   },
-                // ),
                 Container(
                   color: Colors.white.withAlpha(0),
                   child: Center(
@@ -63,10 +52,43 @@ class StampCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                // スタンプ描画
+                Stack(
+                  children: [
+                    for (int i = 0; i < shop.numberOfTimes; i++) ...{
+                      paintStamp(userId, shop.iD.toInt(), i)
+                    }
+                  ],
+                ),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // スタンプ描画
+  Widget paintStamp(String userId, int shopId, int index) {
+    // 1つめ
+    if (index == 0) {
+      return Positioned(
+        child: Transform.rotate(
+          angle: index * 2 * math.pi / 180,
+          child: Image.asset(Config.isStampedSelectedImagePath,
+              width: 200, height: 200),
+        ),
+      );
+    }
+
+    // 2つめ以降
+    return Positioned(
+      top: (-10 - 20 * index).toDouble(),
+      left: (0 + 20 * index).toDouble(),
+      child: Transform.rotate(
+        angle: index * 2 * math.pi / 180,
+        child: Image.asset(Config.isStampedSelectedImagePath,
+            width: 200, height: 200),
       ),
     );
   }

@@ -22,8 +22,9 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
   @override
   Widget build(BuildContext context) {
     final user = ref.read(authServiceProvider.notifier).getCurrentUser();
+    final userId = user!.uid;
     return FutureBuilder<ShopsResponse>(
-      future: _fetchShops(user!.uid),
+      future: _fetchShops(userId),
       builder: (BuildContext context, AsyncSnapshot<ShopsResponse> snapshot) {
         final data = snapshot.data;
         if (data == null) {
@@ -37,10 +38,10 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
-          itemCount: data.shops.length, // 仮のスタンプ数
+          itemCount: data.shops.length,
           itemBuilder: (context, index) {
             final shop = data.shops.toList()[index];
-            return StampCard(shop: shop);
+            return StampCard(userId: userId, shop: shop);
           },
         );
       },
