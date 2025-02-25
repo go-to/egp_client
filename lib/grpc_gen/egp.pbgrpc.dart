@@ -25,6 +25,14 @@ class EgpServiceClient extends $grpc.Client {
       '/egp.EgpService/GetShops',
       ($0.ShopsRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.ShopsResponse.fromBuffer(value));
+  static final _$addStamp = $grpc.ClientMethod<$0.StampRequest, $0.StampResponse>(
+      '/egp.EgpService/AddStamp',
+      ($0.StampRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.StampResponse.fromBuffer(value));
+  static final _$deleteStamp = $grpc.ClientMethod<$0.StampRequest, $0.StampResponse>(
+      '/egp.EgpService/DeleteStamp',
+      ($0.StampRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.StampResponse.fromBuffer(value));
 
   EgpServiceClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -34,6 +42,14 @@ class EgpServiceClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.ShopsResponse> getShops($0.ShopsRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getShops, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.StampResponse> addStamp($0.StampRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$addStamp, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.StampResponse> deleteStamp($0.StampRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$deleteStamp, request, options: options);
   }
 }
 
@@ -49,11 +65,35 @@ abstract class EgpServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.ShopsRequest.fromBuffer(value),
         ($0.ShopsResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.StampRequest, $0.StampResponse>(
+        'AddStamp',
+        addStamp_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.StampRequest.fromBuffer(value),
+        ($0.StampResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.StampRequest, $0.StampResponse>(
+        'DeleteStamp',
+        deleteStamp_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.StampRequest.fromBuffer(value),
+        ($0.StampResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.ShopsResponse> getShops_Pre($grpc.ServiceCall call, $async.Future<$0.ShopsRequest> request) async {
     return getShops(call, await request);
   }
 
+  $async.Future<$0.StampResponse> addStamp_Pre($grpc.ServiceCall call, $async.Future<$0.StampRequest> request) async {
+    return addStamp(call, await request);
+  }
+
+  $async.Future<$0.StampResponse> deleteStamp_Pre($grpc.ServiceCall call, $async.Future<$0.StampRequest> request) async {
+    return deleteStamp(call, await request);
+  }
+
   $async.Future<$0.ShopsResponse> getShops($grpc.ServiceCall call, $0.ShopsRequest request);
+  $async.Future<$0.StampResponse> addStamp($grpc.ServiceCall call, $0.StampRequest request);
+  $async.Future<$0.StampResponse> deleteStamp($grpc.ServiceCall call, $0.StampRequest request);
 }

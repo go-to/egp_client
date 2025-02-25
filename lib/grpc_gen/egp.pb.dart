@@ -460,6 +460,8 @@ class Shop extends $pb.GeneratedMessage {
     $core.int? year,
     $core.String? categoryName,
     $core.String? menuImageUrl,
+    $core.bool? isStamped,
+    $core.int? numberOfTimes,
   }) {
     final $result = create();
     if (iD != null) {
@@ -570,6 +572,12 @@ class Shop extends $pb.GeneratedMessage {
     if (menuImageUrl != null) {
       $result.menuImageUrl = menuImageUrl;
     }
+    if (isStamped != null) {
+      $result.isStamped = isStamped;
+    }
+    if (numberOfTimes != null) {
+      $result.numberOfTimes = numberOfTimes;
+    }
     return $result;
   }
   Shop._() : super();
@@ -613,6 +621,8 @@ class Shop extends $pb.GeneratedMessage {
     ..a<$core.int>(34, _omitFieldNames ? '' : 'Year', $pb.PbFieldType.O3, protoName: 'Year')
     ..aOS(35, _omitFieldNames ? '' : 'CategoryName', protoName: 'CategoryName')
     ..aOS(36, _omitFieldNames ? '' : 'MenuImageUrl', protoName: 'MenuImageUrl')
+    ..aOB(37, _omitFieldNames ? '' : 'IsStamped', protoName: 'IsStamped')
+    ..a<$core.int>(38, _omitFieldNames ? '' : 'NumberOfTimes', $pb.PbFieldType.O3, protoName: 'NumberOfTimes')
     ..hasRequiredFields = false
   ;
 
@@ -960,6 +970,24 @@ class Shop extends $pb.GeneratedMessage {
   $core.bool hasMenuImageUrl() => $_has(35);
   @$pb.TagNumber(36)
   void clearMenuImageUrl() => clearField(36);
+
+  @$pb.TagNumber(37)
+  $core.bool get isStamped => $_getBF(36);
+  @$pb.TagNumber(37)
+  set isStamped($core.bool v) { $_setBool(36, v); }
+  @$pb.TagNumber(37)
+  $core.bool hasIsStamped() => $_has(36);
+  @$pb.TagNumber(37)
+  void clearIsStamped() => clearField(37);
+
+  @$pb.TagNumber(38)
+  $core.int get numberOfTimes => $_getIZ(37);
+  @$pb.TagNumber(38)
+  set numberOfTimes($core.int v) { $_setSignedInt32(37, v); }
+  @$pb.TagNumber(38)
+  $core.bool hasNumberOfTimes() => $_has(37);
+  @$pb.TagNumber(38)
+  void clearNumberOfTimes() => clearField(38);
 }
 
 class ShopLocation extends $pb.GeneratedMessage {
@@ -1205,10 +1233,14 @@ class ShopTime extends $pb.GeneratedMessage {
 class ShopsRequest extends $pb.GeneratedMessage {
   factory ShopsRequest({
     $core.Iterable<SearchType>? searchTypes,
+    $core.String? userId,
   }) {
     final $result = create();
     if (searchTypes != null) {
       $result.searchTypes.addAll(searchTypes);
+    }
+    if (userId != null) {
+      $result.userId = userId;
     }
     return $result;
   }
@@ -1218,6 +1250,7 @@ class ShopsRequest extends $pb.GeneratedMessage {
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopsRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
     ..pc<SearchType>(1, _omitFieldNames ? '' : 'SearchTypes', $pb.PbFieldType.KE, protoName: 'SearchTypes', valueOf: SearchType.valueOf, enumValues: SearchType.values, defaultEnumValue: SearchType.SEARCH_TYPE_IN_CURRENT_SALES)
+    ..aOS(2, _omitFieldNames ? '' : 'UserId', protoName: 'UserId')
     ..hasRequiredFields = false
   ;
 
@@ -1244,6 +1277,15 @@ class ShopsRequest extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(1)
   $core.List<SearchType> get searchTypes => $_getList(0);
+
+  @$pb.TagNumber(2)
+  $core.String get userId => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set userId($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasUserId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearUserId() => clearField(2);
 }
 
 class ShopsResponse extends $pb.GeneratedMessage {
@@ -1288,6 +1330,120 @@ class ShopsResponse extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(1)
   $core.List<Shop> get shops => $_getList(0);
+}
+
+class StampRequest extends $pb.GeneratedMessage {
+  factory StampRequest({
+    $core.String? userId,
+    $fixnum.Int64? shopId,
+  }) {
+    final $result = create();
+    if (userId != null) {
+      $result.userId = userId;
+    }
+    if (shopId != null) {
+      $result.shopId = shopId;
+    }
+    return $result;
+  }
+  StampRequest._() : super();
+  factory StampRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory StampRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'StampRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'UserId', protoName: 'UserId')
+    ..aInt64(2, _omitFieldNames ? '' : 'ShopId', protoName: 'ShopId')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  StampRequest clone() => StampRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  StampRequest copyWith(void Function(StampRequest) updates) => super.copyWith((message) => updates(message as StampRequest)) as StampRequest;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static StampRequest create() => StampRequest._();
+  StampRequest createEmptyInstance() => create();
+  static $pb.PbList<StampRequest> createRepeated() => $pb.PbList<StampRequest>();
+  @$core.pragma('dart2js:noInline')
+  static StampRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<StampRequest>(create);
+  static StampRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get userId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set userId($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasUserId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearUserId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get shopId => $_getI64(1);
+  @$pb.TagNumber(2)
+  set shopId($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasShopId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearShopId() => clearField(2);
+}
+
+class StampResponse extends $pb.GeneratedMessage {
+  factory StampResponse({
+    $core.int? numberOfTimes,
+  }) {
+    final $result = create();
+    if (numberOfTimes != null) {
+      $result.numberOfTimes = numberOfTimes;
+    }
+    return $result;
+  }
+  StampResponse._() : super();
+  factory StampResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory StampResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'StampResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'NumberOfTimes', $pb.PbFieldType.O3, protoName: 'NumberOfTimes')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  StampResponse clone() => StampResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  StampResponse copyWith(void Function(StampResponse) updates) => super.copyWith((message) => updates(message as StampResponse)) as StampResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static StampResponse create() => StampResponse._();
+  StampResponse createEmptyInstance() => create();
+  static $pb.PbList<StampResponse> createRepeated() => $pb.PbList<StampResponse>();
+  @$core.pragma('dart2js:noInline')
+  static StampResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<StampResponse>(create);
+  static StampResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get numberOfTimes => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set numberOfTimes($core.int v) { $_setSignedInt32(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasNumberOfTimes() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearNumberOfTimes() => clearField(1);
 }
 
 

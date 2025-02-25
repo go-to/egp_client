@@ -13,7 +13,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../const/config.dart';
 import '../provider/marker_provider.dart';
 import '../provider/shop_provider.dart';
-import '../service/auth_service.dart';
 import '../view/shop_detail_page.dart';
 
 class CustomMarker {
@@ -124,8 +123,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
           position: LatLng(shop.latitude, shop.longitude),
           zIndex: 0.0,
           inCurrentSales: shop.inCurrentSales,
-          // TODO スタンプ管理機能を実装したら値を動的に設定
-          isStamped: shop.no % 3 == 0 ? true : false,
+          isStamped: shop.isStamped,
           isIrregularHoliday: shop.isIrregularHoliday,
           needsReservation: shop.normalizedNeedsReservation,
           imageUrl: shop.menuImageUrl,
@@ -420,10 +418,6 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.read(authServiceProvider.notifier).getCurrentUser();
-    // FIXME 取得したユーザー情報を使用
-    print(user);
-
     // マーカーリストを取得
     final selectedMarkerId = ref.watch(selectedMarkerProvider);
     // 選択中のマーカーID
@@ -583,6 +577,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                 return ShopDetailPage(
                                     year: shop.year,
                                     no: shop.no,
+                                    shopId: shop.iD.toInt(),
                                     shopName: shop.shopName,
                                     address: shop.address);
                               },

@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
         '/shop_detail': (_) => ShopDetailPage(
               year: 0,
               no: 0,
+              shopId: 0,
               shopName: '',
               address: '',
             ),
