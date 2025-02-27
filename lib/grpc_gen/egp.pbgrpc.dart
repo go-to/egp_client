@@ -25,6 +25,10 @@ class EgpServiceClient extends $grpc.Client {
       '/egp.EgpService/GetShops',
       ($0.ShopsRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.ShopsResponse.fromBuffer(value));
+  static final _$getShop = $grpc.ClientMethod<$0.ShopRequest, $0.ShopResponse>(
+      '/egp.EgpService/GetShop',
+      ($0.ShopRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.ShopResponse.fromBuffer(value));
   static final _$addStamp = $grpc.ClientMethod<$0.StampRequest, $0.StampResponse>(
       '/egp.EgpService/AddStamp',
       ($0.StampRequest value) => value.writeToBuffer(),
@@ -42,6 +46,10 @@ class EgpServiceClient extends $grpc.Client {
 
   $grpc.ResponseFuture<$0.ShopsResponse> getShops($0.ShopsRequest request, {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$getShops, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.ShopResponse> getShop($0.ShopRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$getShop, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.StampResponse> addStamp($0.StampRequest request, {$grpc.CallOptions? options}) {
@@ -65,6 +73,13 @@ abstract class EgpServiceBase extends $grpc.Service {
         false,
         ($core.List<$core.int> value) => $0.ShopsRequest.fromBuffer(value),
         ($0.ShopsResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.ShopRequest, $0.ShopResponse>(
+        'GetShop',
+        getShop_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.ShopRequest.fromBuffer(value),
+        ($0.ShopResponse value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.StampRequest, $0.StampResponse>(
         'AddStamp',
         addStamp_Pre,
@@ -85,6 +100,10 @@ abstract class EgpServiceBase extends $grpc.Service {
     return getShops(call, await request);
   }
 
+  $async.Future<$0.ShopResponse> getShop_Pre($grpc.ServiceCall call, $async.Future<$0.ShopRequest> request) async {
+    return getShop(call, await request);
+  }
+
   $async.Future<$0.StampResponse> addStamp_Pre($grpc.ServiceCall call, $async.Future<$0.StampRequest> request) async {
     return addStamp(call, await request);
   }
@@ -94,6 +113,7 @@ abstract class EgpServiceBase extends $grpc.Service {
   }
 
   $async.Future<$0.ShopsResponse> getShops($grpc.ServiceCall call, $0.ShopsRequest request);
+  $async.Future<$0.ShopResponse> getShop($grpc.ServiceCall call, $0.ShopRequest request);
   $async.Future<$0.StampResponse> addStamp($grpc.ServiceCall call, $0.StampRequest request);
   $async.Future<$0.StampResponse> deleteStamp($grpc.ServiceCall call, $0.StampRequest request);
 }

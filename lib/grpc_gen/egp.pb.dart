@@ -1332,6 +1332,122 @@ class ShopsResponse extends $pb.GeneratedMessage {
   $core.List<Shop> get shops => $_getList(0);
 }
 
+class ShopRequest extends $pb.GeneratedMessage {
+  factory ShopRequest({
+    $core.String? userId,
+    $fixnum.Int64? shopId,
+  }) {
+    final $result = create();
+    if (userId != null) {
+      $result.userId = userId;
+    }
+    if (shopId != null) {
+      $result.shopId = shopId;
+    }
+    return $result;
+  }
+  ShopRequest._() : super();
+  factory ShopRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ShopRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'UserId', protoName: 'UserId')
+    ..aInt64(2, _omitFieldNames ? '' : 'ShopId', protoName: 'ShopId')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ShopRequest clone() => ShopRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ShopRequest copyWith(void Function(ShopRequest) updates) => super.copyWith((message) => updates(message as ShopRequest)) as ShopRequest;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ShopRequest create() => ShopRequest._();
+  ShopRequest createEmptyInstance() => create();
+  static $pb.PbList<ShopRequest> createRepeated() => $pb.PbList<ShopRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ShopRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ShopRequest>(create);
+  static ShopRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get userId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set userId($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasUserId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearUserId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get shopId => $_getI64(1);
+  @$pb.TagNumber(2)
+  set shopId($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasShopId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearShopId() => clearField(2);
+}
+
+class ShopResponse extends $pb.GeneratedMessage {
+  factory ShopResponse({
+    Shop? shop,
+  }) {
+    final $result = create();
+    if (shop != null) {
+      $result.shop = shop;
+    }
+    return $result;
+  }
+  ShopResponse._() : super();
+  factory ShopResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ShopResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
+    ..aOM<Shop>(1, _omitFieldNames ? '' : 'Shop', protoName: 'Shop', subBuilder: Shop.create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ShopResponse clone() => ShopResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ShopResponse copyWith(void Function(ShopResponse) updates) => super.copyWith((message) => updates(message as ShopResponse)) as ShopResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ShopResponse create() => ShopResponse._();
+  ShopResponse createEmptyInstance() => create();
+  static $pb.PbList<ShopResponse> createRepeated() => $pb.PbList<ShopResponse>();
+  @$core.pragma('dart2js:noInline')
+  static ShopResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ShopResponse>(create);
+  static ShopResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  Shop get shop => $_getN(0);
+  @$pb.TagNumber(1)
+  set shop(Shop v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasShop() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearShop() => clearField(1);
+  @$pb.TagNumber(1)
+  Shop ensureShop() => $_ensure(0);
+}
+
 class StampRequest extends $pb.GeneratedMessage {
   factory StampRequest({
     $core.String? userId,
