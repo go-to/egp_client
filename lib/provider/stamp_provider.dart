@@ -12,11 +12,9 @@ class Stamp extends _$Stamp {
   }
 
   Future<int> getStampNum(String userId, int shopId) async {
-    final shops = await ShopService.getShops(userId);
-    for (final shop in shops!.shops) {
-      if (shop.iD == shopId) {
-        return shop.numberOfTimes;
-      }
+    final shop = await ShopService.getShop(userId, shopId);
+    if (shop!.shop.numberOfTimes > 0) {
+      return shop.shop.numberOfTimes;
     }
     return 0;
   }

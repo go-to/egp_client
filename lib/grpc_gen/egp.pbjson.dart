@@ -274,6 +274,32 @@ const ShopsResponse$json = {
 final $typed_data.Uint8List shopsResponseDescriptor = $convert.base64Decode(
     'Cg1TaG9wc1Jlc3BvbnNlEh8KBVNob3BzGAEgAygLMgkuZWdwLlNob3BSBVNob3Bz');
 
+@$core.Deprecated('Use shopRequestDescriptor instead')
+const ShopRequest$json = {
+  '1': 'ShopRequest',
+  '2': [
+    {'1': 'UserId', '3': 1, '4': 1, '5': 9, '10': 'UserId'},
+    {'1': 'ShopId', '3': 2, '4': 1, '5': 3, '10': 'ShopId'},
+  ],
+};
+
+/// Descriptor for `ShopRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List shopRequestDescriptor = $convert.base64Decode(
+    'CgtTaG9wUmVxdWVzdBIWCgZVc2VySWQYASABKAlSBlVzZXJJZBIWCgZTaG9wSWQYAiABKANSBl'
+    'Nob3BJZA==');
+
+@$core.Deprecated('Use shopResponseDescriptor instead')
+const ShopResponse$json = {
+  '1': 'ShopResponse',
+  '2': [
+    {'1': 'Shop', '3': 1, '4': 1, '5': 11, '6': '.egp.Shop', '10': 'Shop'},
+  ],
+};
+
+/// Descriptor for `ShopResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List shopResponseDescriptor = $convert.base64Decode(
+    'CgxTaG9wUmVzcG9uc2USHQoEU2hvcBgBIAEoCzIJLmVncC5TaG9wUgRTaG9w');
+
 @$core.Deprecated('Use stampRequestDescriptor instead')
 const StampRequest$json = {
   '1': 'StampRequest',
