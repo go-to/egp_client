@@ -32,6 +32,16 @@ class GrpcService {
     return res;
   }
 
+  static Future<ShopResponse> getShop(String userId, int shopId) async {
+    final channel = getChannel();
+    final client = EgpServiceClient(channel);
+
+    final res = await client.getShop(
+      ShopRequest(userId: userId, shopId: Int64(shopId)),
+    );
+    return res;
+  }
+
   static Future<StampResponse> addStamp(String userId, int shopId) async {
     final channel = getChannel();
     final client = EgpServiceClient(channel);

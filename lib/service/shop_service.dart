@@ -19,4 +19,20 @@ class ShopService {
 
     return shops;
   }
+
+  static Future<ShopResponse?> getShop(String userId, int shopId) async {
+    // 店舗情報を取得
+    final channel = GrpcService.getChannel();
+    ShopResponse? shop;
+
+    try {
+      shop = await GrpcService.getShop(userId, shopId);
+    } catch (e) {
+      print('Caught error: $e');
+    } finally {
+      channel.shutdown();
+    }
+
+    return shop;
+  }
 }
