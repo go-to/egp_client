@@ -1,3 +1,5 @@
+import 'package:grpc/grpc.dart';
+
 import '../grpc_gen/egp.pbgrpc.dart';
 import 'grpc_service.dart';
 
@@ -8,6 +10,8 @@ class StampService {
 
     try {
       stamp = await GrpcService.addStamp(userId, shopId);
+    } on GrpcError catch (e) {
+      print('Caught error: $e');
     } catch (e) {
       print('Caught error: $e');
     } finally {
@@ -23,6 +27,8 @@ class StampService {
 
     try {
       stamp = await GrpcService.deleteStamp(userId, shopId);
+    } on GrpcError catch (e) {
+      print('Caught error: $e');
     } catch (e) {
       print('Caught error: $e');
     } finally {

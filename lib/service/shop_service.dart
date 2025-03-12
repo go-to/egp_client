@@ -1,3 +1,5 @@
+import 'package:grpc/grpc.dart';
+
 import '../grpc_gen/egp.pbgrpc.dart';
 import 'grpc_service.dart';
 
@@ -11,6 +13,8 @@ class ShopService {
     try {
       final searchParams = searchCondition ?? [];
       shops = await GrpcService.getShops(userId, searchParams);
+    } on GrpcError catch (e) {
+      print('Caught error: $e');
     } catch (e) {
       print('Caught error: $e');
     } finally {
@@ -27,6 +31,8 @@ class ShopService {
 
     try {
       shop = await GrpcService.getShop(userId, shopId);
+    } on GrpcError catch (e) {
+      print('Caught error: $e');
     } catch (e) {
       print('Caught error: $e');
     } finally {
