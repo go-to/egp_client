@@ -4,6 +4,14 @@ import 'package:grpc/grpc.dart';
 import 'package:egp_client/grpc_gen/egp.pbgrpc.dart';
 
 class GrpcService {
+  static CallOptions getCallOptions() {
+    return CallOptions(
+      metadata: {
+        'api-key': dotenv.get('API_KEY'),
+      }
+    );
+  }
+
   static ClientChannel getChannel() {
     return ClientChannel(
       dotenv.get('GRPC_SERVER_HOST'),
@@ -28,6 +36,7 @@ class GrpcService {
     }
     final res = await client.getShops(
       ShopsRequest(searchTypes: searchTypes, userId: userId),
+      options: getCallOptions(),
     );
     return res;
   }
@@ -38,6 +47,7 @@ class GrpcService {
 
     final res = await client.getShop(
       ShopRequest(userId: userId, shopId: Int64(shopId)),
+      options: getCallOptions(),
     );
     return res;
   }
@@ -48,6 +58,7 @@ class GrpcService {
 
     final res = await client.addStamp(
       StampRequest(userId: userId, shopId: Int64(shopId)),
+      options: getCallOptions(),
     );
     return res;
   }
@@ -58,6 +69,7 @@ class GrpcService {
 
     final res = await client.deleteStamp(
       StampRequest(userId: userId, shopId: Int64(shopId)),
+      options: getCallOptions(),
     );
     return res;
   }
