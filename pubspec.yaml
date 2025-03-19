@@ -54,6 +54,8 @@ dependencies:
   cloud_firestore: ^5.6.3
   provider: ^6.1.2
   fixnum: ^1.1.1
+  flutter_launcher_icons: ^0.14.3
+  flutter_native_splash: ^2.4.4
 
 dev_dependencies:
   flutter_test:
@@ -121,3 +123,16 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_icons:
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/icon.png"
+  adaptive_icon_background: "#fff422"
+  adaptive_icon_foreground: "assets/icon.png"
+
+flutter_native_splash:
+  image: "assets/splash.png"
+  color: "#e4d012"
+  icon_background_color: "#e4d012"
