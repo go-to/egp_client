@@ -58,6 +58,14 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('${widget.no}: ${widget.shopName}'),
+          automaticallyImplyLeading: false,
+          // 戻るアイコン
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
         ),
         body: Stack(
           children: [

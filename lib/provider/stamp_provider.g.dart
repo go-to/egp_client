@@ -6,7 +6,7 @@ part of 'stamp_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$stampHash() => r'e2bdf19c9bf2e9fba7ae7c18dc5f9ee4d9da2e83';
+String _$stampHash() => r'c597f087fc40a25dd900f3fed5c8bb3bfb8efdf0';
 
 /// Copied from Dart SDK
 class _SystemHash {

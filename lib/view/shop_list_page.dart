@@ -568,21 +568,40 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                       '提供時間': shop.businessHours,
                     };
                     return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                final shop = shops.shops.elementAt(index);
-                                return ShopDetailPage(
-                                    year: shop.year,
-                                    no: shop.no,
-                                    shopId: shop.iD.toInt(),
-                                    shopName: shop.shopName,
-                                    address: shop.address);
-                              },
-                            ),
+                        onTap: () async {
+                          final result = await Navigator.of(context).push<bool>(
+                            MaterialPageRoute(builder: (context) {
+                              final shop = shops.shops.elementAt(index);
+                              return ShopDetailPage(
+                                  year: shop.year,
+                                  no: shop.no,
+                                  shopId: shop.iD.toInt(),
+                                  shopName: shop.shopName,
+                                  address: shop.address);
+                            }),
                           );
+                          if (result == true && context.mounted) {
+                            // 検索条件を取得
+                            final searchCondition = ref
+                                .read(searchConditionProvider.notifier)
+                                .getSearchCondition();
+                            // 店舗情報を取得
+                            final shops = await ref
+                                .read(shopProvider.notifier)
+                                .getShops(searchCondition);
+                            if (shops != null) {
+                              // マーカー情報を更新
+                              Future.sync(() => _setMarkers(shops));
+                              final selectedMarkerId = ref
+                                  .read(selectedMarkerProvider.notifier)
+                                  .getSelectedMarker();
+                              _loadCustomIcons(selectedMarkerId);
+                            }
+                            // マーカーの選択状態を解除
+                            ref
+                                .read(selectedMarkerProvider.notifier)
+                                .clearSelection();
+                          }
                         },
                         child: Card(
                           elevation: 5,

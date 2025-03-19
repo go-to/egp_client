@@ -80,20 +80,20 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
                 itemBuilder: (context, index) {
                   final shop = data.shops.toList()[index];
                   return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return ShopDetailPage(
-                                year: shop.year,
-                                no: shop.no,
-                                shopId: shop.iD.toInt(),
-                                shopName: shop.shopName,
-                                address: shop.address);
-                          },
-                        ),
+                    onTap: () async {
+                      final result = await Navigator.of(context).push<bool>(
+                        MaterialPageRoute(builder: (context) {
+                          return ShopDetailPage(
+                              year: shop.year,
+                              no: shop.no,
+                              shopId: shop.iD.toInt(),
+                              shopName: shop.shopName,
+                              address: shop.address);
+                        }),
                       );
+                      if (result == true && context.mounted) {
+                        setState(() {});
+                      }
                     },
                     child: StampCard(userId: userId, shop: shop),
                   );

@@ -19,12 +19,16 @@ class SearchCondition extends _$SearchCondition {
     return searchItemList;
   }
 
+  List<int> getSearchCondition() {
+    return state.toList();
+  }
+
   List<int> setSearchCondition(int key) {
     if (state.contains(key)) {
       state = {...state}..removeWhere((value) => value == key);
     } else {
       state = {...state, key};
     }
-    return state.toList();
+    return getSearchCondition();
   }
 }
