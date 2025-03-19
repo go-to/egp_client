@@ -12,3 +12,6 @@ secret.properties
 key.properties
 **/*.keystore
 **/*.jks
+
+# fastlane
+fastlane/release_note.txt

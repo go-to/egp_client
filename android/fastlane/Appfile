@@ -1,0 +1,5 @@
+require 'dotenv'
+Dotenv.load
+
+json_key_file("")
+package_name(ENV['PACKAGE_NAME'])

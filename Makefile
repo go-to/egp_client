@@ -28,3 +28,7 @@ build-runner:
 build-app:
 	flutter build apk --release && mv build/app/outputs/flutter-apk/app-release.apk ./build/egp.apk
 	flutter build ipa && sed -i -e 's|<key>method</key>|<key>destination</key>\n    <string>upload</string>\n    <key>method</key>|' build/ios/ipa/ExportOptions.plist && flutter build ipa --export-options-plist="build/ios/ipa/ExportOptions.plist"
+deploy-android:
+	(cd android && fastlane android deploy)
+deploy-ios:
+	(cd ios && fastlane ios deploy)
