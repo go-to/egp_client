@@ -1,5 +1,6 @@
 import 'package:egp_client/grpc_gen/egp.pb.dart';
 import 'package:egp_client/service/grpc_service.dart';
+import 'package:egp_client/view/shop_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -78,7 +79,24 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
                 itemCount: data.shops.length,
                 itemBuilder: (context, index) {
                   final shop = data.shops.toList()[index];
-                  return StampCard(userId: userId, shop: shop);
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return ShopDetailPage(
+                                year: shop.year,
+                                no: shop.no,
+                                shopId: shop.iD.toInt(),
+                                shopName: shop.shopName,
+                                address: shop.address);
+                          },
+                        ),
+                      );
+                    },
+                    child: StampCard(userId: userId, shop: shop),
+                  );
                 },
               ),
             ),
