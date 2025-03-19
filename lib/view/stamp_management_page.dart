@@ -1,5 +1,6 @@
 import 'package:egp_client/grpc_gen/egp.pb.dart';
 import 'package:egp_client/service/grpc_service.dart';
+import 'package:egp_client/view/shop_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,18 +32,75 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
           return const Center(child: CircularProgressIndicator());
         }
 
-        return GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            childAspectRatio: 1.0,
-            crossAxisSpacing: 10,
-            mainAxisSpacing: 10,
-          ),
-          itemCount: data.shops.length,
-          itemBuilder: (context, index) {
-            final shop = data.shops.toList()[index];
-            return StampCard(userId: userId, shop: shop);
-          },
+        return Column(
+          children: [
+            Container(
+              // color: Colors.white,
+              height: 100,
+              width: double.infinity,
+              child: Center(
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'スタンプ獲得数：',
+                        style: TextStyle(color: Colors.black, fontSize: 20),
+                      ),
+                      TextSpan(
+                        text:
+                            '${data.shops.where((shop) => shop.isStamped == true).length} ',
+                        style: TextStyle(color: Colors.black, fontSize: 36),
+                      ),
+                      TextSpan(
+                        text: '/',
+                        style: TextStyle(color: Colors.black, fontSize: 24),
+                      ),
+                      TextSpan(
+                        text: ' ${data.shops.length} ',
+                        style: TextStyle(color: Colors.black, fontSize: 36),
+                      ),
+                      TextSpan(
+                        text: '個',
+                        style: TextStyle(color: Colors.black, fontSize: 20),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 1.0,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                ),
+                itemCount: data.shops.length,
+                itemBuilder: (context, index) {
+                  final shop = data.shops.toList()[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return ShopDetailPage(
+                                year: shop.year,
+                                no: shop.no,
+                                shopId: shop.iD.toInt(),
+                                shopName: shop.shopName,
+                                address: shop.address);
+                          },
+                        ),
+                      );
+                    },
+                    child: StampCard(userId: userId, shop: shop),
+                  );
+                },
+              ),
+            ),
+          ],
         );
       },
     );
