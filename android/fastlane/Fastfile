@@ -1,0 +1,27 @@
+default_platform(:android)
+platform :android do
+
+desc "deploy android app"
+lane :deploy do
+
+  apk_path = "../build/app/outputs/apk/release/app-release.apk"
+  release_notes_file = ENV['PWD'] + "/fastlane/release_note.txt"
+
+  # flutter build
+  Dir.chdir "../.." do
+    sh("flutter", "clean")
+    sh("flutter", "pub", "get")
+    sh("flutter", "build", "apk", "--release")
+  end
+
+  # deploy
+  firebase_app_distribution(
+          app: ENV['FIREBASE_APP_ID'],
+          firebase_cli_token: ENV['FIREBASE_CLI_TOKEN'],
+          android_artifact_type: "APK",
+          android_artifact_path: apk_path,
+          groups: ENV['GROUPS'],
+          release_notes_file: release_notes_file,
+      )
+  end
+end
