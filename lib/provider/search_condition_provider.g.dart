@@ -6,7 +6,7 @@ part of 'search_condition_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$searchConditionHash() => r'de29a21556ad55e671401a959b844bd66fc272df';
+String _$searchConditionHash() => r'3da308e4f37b4a0f6859b4c317299493f5c747e9';
 
 /// See also [SearchCondition].
 @ProviderFor(SearchCondition)
