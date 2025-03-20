@@ -207,23 +207,23 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       // 営業時間内
       if (marker.inCurrentSales) {
         textColor = Colors.black;
-        // 不定休
-        if (marker.isIrregularHoliday) {
-          textLabel = Config.irregularHoliday;
-          // 要予約
-        } else if (marker.needsReservation) {
+        // 要予約
+        if (marker.needsReservation) {
           textLabel = Config.needsReservation;
+        } else if (marker.isIrregularHoliday) {
+          // 不定休
+          textLabel = Config.irregularHoliday;
         }
       }
       // 営業時間内
     } else if (marker.inCurrentSales) {
       textColor = Colors.black;
-      // 不定休
-      if (marker.isIrregularHoliday) {
-        textLabel = Config.irregularHoliday;
-        // 要予約
-      } else if (marker.needsReservation) {
+      // 要予約
+      if (marker.needsReservation) {
         textLabel = Config.needsReservation;
+        // 不定休
+      } else if (marker.isIrregularHoliday) {
+        textLabel = Config.irregularHoliday;
       }
     }
 
