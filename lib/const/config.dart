@@ -27,7 +27,7 @@ class Config {
   static const double currentPositionButtonWidth = 55;
   static const double currentPositionButtonHeight = 55;
   static const double currentPositionButtonPositionRight = 10;
-  static const double currentPositionButtonPositionBottom = 70;
+  static const double currentPositionButtonPositionBottom = 20;
 
   // 検索項目
   static const Map<int, String> searchItemList = {
