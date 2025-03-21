@@ -90,10 +90,9 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
                               shopName: shop.shopName,
                               address: shop.address);
                         }),
-                      );
-                      if (result == true && context.mounted) {
+                      ).then((onValue) {
                         setState(() {});
-                      }
+                      });
                     },
                     child: StampCard(userId: userId, shop: shop),
                   );
