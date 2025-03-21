@@ -704,7 +704,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         _locationPermissionGranted
             ? Positioned(
                 right: Config.currentPositionButtonPositionRight,
-                bottom: Config.currentPositionButtonPositionBottom,
+                bottom: Config.currentPositionButtonPositionBottom + (selectedMarkerId != null ? 180 : 0),
                 child: _goToCurrentPositionButton(),
               )
             : Container(),
