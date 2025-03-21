@@ -133,6 +133,6 @@ flutter_icons:
   adaptive_icon_foreground: "assets/icon.png"
 
 flutter_native_splash:
-  image: "assets/splash.png"
+  image: "assets/icon.png"
   color: "#e4d012"
   icon_background_color: "#e4d012"
