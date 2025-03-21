@@ -2,6 +2,7 @@ import 'package:egp_client/provider/stamp_provider.dart';
 import 'package:egp_client/service/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../const/config.dart';
@@ -70,6 +71,34 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
         body: Stack(
           children: [
             WebViewWidget(controller: _controller),
+            Positioned(
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 10, top: 15),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      minimumSize: Size(110, 60),
+                      maximumSize: Size(110, 60),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    onPressed: () {
+                      _launchMap();
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.map_sharp, size: 30.0),
+                        SizedBox(height: 4),
+                        Text('地図を開く', style: TextStyle(fontSize: 12)),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
             stampNumAsync.when(
               data: (int stampNum) {
                 return Positioned(
@@ -110,5 +139,29 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _launchMap() async {
+    String searchQuery = '恵比寿 ${widget.shopName}';
+    final googleMapsUrl = Uri.parse('comgooglemaps://?q=${searchQuery}');
+    final appleMapsUrl = Uri.parse('http://maps.apple.com/?q=${searchQuery}');
+    final browserUrl = Uri.parse(
+        'https://www.google.com/maps/search/?api=1&query=${searchQuery}');
+
+    // Google Mapsアプリがインストールされているか確認
+    if (await canLaunchUrl(googleMapsUrl)) {
+      await launchUrl(googleMapsUrl);
+    }
+    // iPhoneのデフォルトマップアプリ（Apple Maps）を起動
+    else if (await canLaunchUrl(appleMapsUrl)) {
+      await launchUrl(appleMapsUrl);
+    }
+    // ブラウザでGoogle Mapsを開く
+    else if (await canLaunchUrl(browserUrl)) {
+      await launchUrl(browserUrl);
+    } else {
+      // どれも起動できない場合のエラーメッセージ
+      print('マップを開けませんでした');
+    }
   }
 }
