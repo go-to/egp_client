@@ -768,12 +768,14 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
           });
         }
 
+        // 現在のズームレベルを取得
+        double zoomLevel = await _mapController.getZoomLevel();
         // 現在位置に移動
         final position = await Geolocator.getCurrentPosition(
             locationSettings: locationSettings);
         final currentLatLng = LatLng(position.latitude, position.longitude);
         _mapController.animateCamera(
-          CameraUpdate.newLatLngZoom(currentLatLng, Config.defaultMapZoom),
+          CameraUpdate.newLatLngZoom(currentLatLng, zoomLevel),
         );
       },
       child: const Icon(Icons.my_location_outlined),
