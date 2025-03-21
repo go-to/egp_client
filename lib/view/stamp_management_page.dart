@@ -91,6 +91,7 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
                               address: shop.address);
                         }),
                       ).then((onValue) {
+                        // 遷移先ページから戻ってきたあとの処理
                         setState(() {});
                       });
                     },
