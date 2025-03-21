@@ -579,8 +579,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                   shopName: shop.shopName,
                                   address: shop.address);
                             }),
-                          );
-                          if (result == true && context.mounted) {
+                          ).then((onValue) async {
+                            // 遷移先ページから戻ってきたあとの処理
                             // 検索条件を取得
                             final searchCondition = ref
                                 .read(searchConditionProvider.notifier)
@@ -601,7 +601,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                             ref
                                 .read(selectedMarkerProvider.notifier)
                                 .clearSelection();
-                          }
+                          });
                         },
                         child: Card(
                           elevation: 5,
