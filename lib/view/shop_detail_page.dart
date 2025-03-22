@@ -142,7 +142,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
   }
 
   Future<void> _launchMap() async {
-    String searchQuery = '恵比寿 ${widget.shopName} ${widget.address}';
+    String searchQuery = Uri.encodeFull('恵比寿 ${widget.shopName} ${widget.address}'.replaceAll('&', ' '));
     final googleMapsUrl = Uri.parse('comgooglemaps://?q=${searchQuery}');
     final appleMapsUrl = Uri.parse('http://maps.apple.com/?q=${searchQuery}');
     final browserUrl = Uri.parse(
