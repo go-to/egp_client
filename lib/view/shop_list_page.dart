@@ -54,6 +54,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   bool _locationPermissionGranted = false;
   bool _mapCreated = false;
   late GoogleMapController _mapController;
+  final TextEditingController _searchController = TextEditingController();
   late StreamSubscription<Position>? _positionStream;
   late Map<String, Marker> _markers;
   late List<CustomMarker> _customMarkers;
@@ -416,6 +417,18 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     }
   }
 
+  // キーワード検索
+  void _performSearch() {
+    final query = _searchController.text.trim();
+    if (query.isNotEmpty) {
+      final searchItemList =
+          ref.read(searchConditionProvider.notifier).getSearchCondition();
+      // TODO 検索処理をここに実装
+      print('検索文字列: $query');
+      print(searchItemList);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // マーカーリストを取得
@@ -493,6 +506,27 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'キーワードを入力',
+                      prefixIcon: IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: _performSearch,
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(Icons.clear),
+                        onPressed: () => _searchController.clear(),
+                      ),
+                    ),
+                    onSubmitted: (text) => _performSearch(),
+                  ),
                   Wrap(
                     alignment: WrapAlignment.start,
                     spacing: 8.0,
@@ -704,7 +738,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         _locationPermissionGranted
             ? Positioned(
                 right: Config.currentPositionButtonPositionRight,
-                bottom: Config.currentPositionButtonPositionBottom + (selectedMarkerId != null ? 180 : 0),
+                bottom: Config.currentPositionButtonPositionBottom +
+                    (selectedMarkerId != null ? 180 : 0),
                 child: _goToCurrentPositionButton(),
               )
             : Container(),
