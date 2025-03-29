@@ -40,6 +40,8 @@ class Config {
 
   // スタンプ
   static const String isStampedLabel = '済';
+  static const String stampNumLabelPerShop = '店舗別';
+  static const String stampNumLabelTotal = '合計';
 
   // イベントページ
   static const String eventBaseUrl = 'https://ebisu-gp.com';
