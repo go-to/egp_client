@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../service/auth_service.dart';
 import '../widget/stamp_card_widget.dart';
+import '../const/config.dart';
 
 class StampManagementPage extends ConsumerStatefulWidget {
   const StampManagementPage({super.key});
@@ -20,6 +21,12 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
     return await GrpcService.getShops(userId, []);
   }
 
+  final List<String> dropdownItems = [
+    Config.stampNumLabelPerShop,
+    Config.stampNumLabelTotal,
+  ];
+  String selectedValue = Config.stampNumLabelPerShop;
+
   @override
   Widget build(BuildContext context) {
     final user = ref.read(authServiceProvider.notifier).getCurrentUser();
@@ -31,40 +38,65 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
         if (data == null) {
           return const Center(child: CircularProgressIndicator());
         }
+        int stampNum = 0;
+        if (data.shops.where((shop) => shop.isStamped == true).isNotEmpty) {
+          stampNum = selectedValue == Config.stampNumLabelPerShop
+              ? data.shops.where((shop) => shop.isStamped == true).length
+              : data.shops
+                  .where((shop) => shop.isStamped == true)
+                  .map((shop) => shop.numberOfTimes)
+                  .reduce((a, b) => a + b);
+        }
 
         return Column(
           children: [
-            Container(
+            SizedBox(
               // color: Colors.white,
               height: 100,
               width: double.infinity,
               child: Center(
-                child: RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'スタンプ獲得数：',
-                        style: TextStyle(color: Colors.black, fontSize: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    DropdownButton(
+                      value: selectedValue,
+                      isDense: true,
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        color: Colors.black,
                       ),
-                      TextSpan(
-                        text:
-                            '${data.shops.where((shop) => shop.isStamped == true).length} ',
-                        style: TextStyle(color: Colors.black, fontSize: 36),
+                      items: dropdownItems.map((String item) {
+                        return DropdownMenuItem<String>(
+                          value: item,
+                          child: Text(item),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          selectedValue = newValue!;
+                        });
+                      },
+                    ),
+                    SizedBox(width: 5),
+                    RichText(
+                      text: TextSpan(
+                        children: [
+                          TextSpan(
+                            text: 'スタンプ獲得数：',
+                            style: TextStyle(color: Colors.black, fontSize: 20),
+                          ),
+                          TextSpan(
+                            text: '$stampNum ',
+                            style: TextStyle(color: Colors.black, fontSize: 36),
+                          ),
+                          TextSpan(
+                            text: '個',
+                            style: TextStyle(color: Colors.black, fontSize: 20),
+                          ),
+                        ],
                       ),
-                      TextSpan(
-                        text: '/',
-                        style: TextStyle(color: Colors.black, fontSize: 24),
-                      ),
-                      TextSpan(
-                        text: ' ${data.shops.length} ',
-                        style: TextStyle(color: Colors.black, fontSize: 36),
-                      ),
-                      TextSpan(
-                        text: '個',
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
