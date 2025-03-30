@@ -5,11 +5,9 @@ import 'package:egp_client/grpc_gen/egp.pbgrpc.dart';
 
 class GrpcService {
   static CallOptions getCallOptions() {
-    return CallOptions(
-      metadata: {
-        'api-key': dotenv.get('API_KEY'),
-      }
-    );
+    return CallOptions(metadata: {
+      'api-key': dotenv.get('API_KEY'),
+    });
   }
 
   static ClientChannel getChannel() {
@@ -22,7 +20,7 @@ class GrpcService {
   }
 
   static Future<ShopsResponse> getShops(String userId,
-      [List<int>? searchParams]) async {
+      [List<int>? searchParams, String? searchKeyword]) async {
     final channel = getChannel();
     final client = EgpServiceClient(channel);
     List<SearchType> searchTypes = [];
@@ -35,7 +33,8 @@ class GrpcService {
       searchTypes.add(value);
     }
     final res = await client.getShops(
-      ShopsRequest(searchTypes: searchTypes, userId: userId),
+      ShopsRequest(
+          searchTypes: searchTypes, userId: userId, keyword: searchKeyword),
       options: getCallOptions(),
     );
     return res;
