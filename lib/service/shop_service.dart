@@ -5,14 +5,14 @@ import 'grpc_service.dart';
 
 class ShopService {
   static Future<ShopsResponse?> getShops(String userId,
-      [List<int>? searchCondition]) async {
+      [List<int>? searchCondition, String? searchKeyword]) async {
     // 店舗情報を取得
     final channel = GrpcService.getChannel();
     ShopsResponse? shops;
 
     try {
       final searchParams = searchCondition ?? [];
-      shops = await GrpcService.getShops(userId, searchParams);
+      shops = await GrpcService.getShops(userId, searchParams, searchKeyword);
     } on GrpcError catch (e) {
       print('Caught error: $e');
     } catch (e) {

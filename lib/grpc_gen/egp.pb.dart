@@ -1234,6 +1234,7 @@ class ShopsRequest extends $pb.GeneratedMessage {
   factory ShopsRequest({
     $core.Iterable<SearchType>? searchTypes,
     $core.String? userId,
+    $core.String? keyword,
   }) {
     final $result = create();
     if (searchTypes != null) {
@@ -1241,6 +1242,9 @@ class ShopsRequest extends $pb.GeneratedMessage {
     }
     if (userId != null) {
       $result.userId = userId;
+    }
+    if (keyword != null) {
+      $result.keyword = keyword;
     }
     return $result;
   }
@@ -1251,6 +1255,7 @@ class ShopsRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopsRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
     ..pc<SearchType>(1, _omitFieldNames ? '' : 'SearchTypes', $pb.PbFieldType.KE, protoName: 'SearchTypes', valueOf: SearchType.valueOf, enumValues: SearchType.values, defaultEnumValue: SearchType.SEARCH_TYPE_IN_CURRENT_SALES)
     ..aOS(2, _omitFieldNames ? '' : 'UserId', protoName: 'UserId')
+    ..aOS(3, _omitFieldNames ? '' : 'Keyword', protoName: 'Keyword')
     ..hasRequiredFields = false
   ;
 
@@ -1286,6 +1291,15 @@ class ShopsRequest extends $pb.GeneratedMessage {
   $core.bool hasUserId() => $_has(1);
   @$pb.TagNumber(2)
   void clearUserId() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get keyword => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set keyword($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasKeyword() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearKeyword() => clearField(3);
 }
 
 class ShopsResponse extends $pb.GeneratedMessage {

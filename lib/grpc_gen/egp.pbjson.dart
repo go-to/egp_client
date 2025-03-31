@@ -254,13 +254,15 @@ const ShopsRequest$json = {
   '2': [
     {'1': 'SearchTypes', '3': 1, '4': 3, '5': 14, '6': '.egp.SearchType', '10': 'SearchTypes'},
     {'1': 'UserId', '3': 2, '4': 1, '5': 9, '10': 'UserId'},
+    {'1': 'Keyword', '3': 3, '4': 1, '5': 9, '10': 'Keyword'},
   ],
 };
 
 /// Descriptor for `ShopsRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List shopsRequestDescriptor = $convert.base64Decode(
     'CgxTaG9wc1JlcXVlc3QSMQoLU2VhcmNoVHlwZXMYASADKA4yDy5lZ3AuU2VhcmNoVHlwZVILU2'
-    'VhcmNoVHlwZXMSFgoGVXNlcklkGAIgASgJUgZVc2VySWQ=');
+    'VhcmNoVHlwZXMSFgoGVXNlcklkGAIgASgJUgZVc2VySWQSGAoHS2V5d29yZBgDIAEoCVIHS2V5'
+    'd29yZA==');
 
 @$core.Deprecated('Use shopsResponseDescriptor instead')
 const ShopsResponse$json = {

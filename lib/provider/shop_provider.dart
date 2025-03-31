@@ -19,10 +19,12 @@ class Shop extends _$Shop {
     return ShopService.getShops(userId);
   }
 
-  Future<ShopsResponse?> getShops([List<int>? searchCondition]) async {
+  Future<ShopsResponse?> getShops(
+      [List<int>? searchCondition, String? searchKeyword]) async {
     User? user = ref.read(authServiceProvider.notifier).getCurrentUser();
     String userId = user != null ? user.uid : '';
-    final shops = await ShopService.getShops(userId, searchCondition);
+    final shops =
+        await ShopService.getShops(userId, searchCondition, searchKeyword);
     state = AsyncData(shops);
     return shops;
   }

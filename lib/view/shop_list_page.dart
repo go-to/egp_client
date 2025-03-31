@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 
 import 'package:egp_client/grpc_gen/egp.pb.dart';
 import 'package:egp_client/provider/search_condition_provider.dart';
+import 'package:egp_client/provider/search_keyword_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -54,6 +55,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   bool _locationPermissionGranted = false;
   bool _mapCreated = false;
   late GoogleMapController _mapController;
+  final TextEditingController _searchController = TextEditingController();
   late StreamSubscription<Position>? _positionStream;
   late Map<String, Marker> _markers;
   late List<CustomMarker> _customMarkers;
@@ -416,6 +418,30 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     }
   }
 
+  // キーワード検索
+  void _keywordSearch() async {
+    final query = _searchController.text.trim();
+    // 検索条件を取得
+    final searchCondition =
+        ref.read(searchConditionProvider.notifier).getSearchCondition();
+    // 検索キーワードを取得
+    final searchKeyword =
+        ref.read(searchKeywordProvider.notifier).setSearchKeyword(query);
+    // 店舗情報を取得
+    final shops = await ref
+        .read(shopProvider.notifier)
+        .getShops(searchCondition, searchKeyword);
+    if (shops != null) {
+      // マーカー情報を更新
+      Future.sync(() => _setMarkers(shops));
+      final selectedMarkerId =
+          ref.read(selectedMarkerProvider.notifier).getSelectedMarker();
+      _loadCustomIcons(selectedMarkerId);
+    }
+    // マーカーの選択状態を解除
+    ref.read(selectedMarkerProvider.notifier).clearSelection();
+  }
+
   @override
   Widget build(BuildContext context) {
     // マーカーリストを取得
@@ -484,6 +510,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         shopListAsync.when(
           data: (shops) {
             final searchCondition = ref.watch(searchConditionProvider);
+            final searchKeyword = ref.watch(searchKeywordProvider);
             final searchItemList =
                 ref.read(searchConditionProvider.notifier).getSearchItemList();
             return Positioned(
@@ -493,6 +520,29 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      hintText: 'キーワードを入力',
+                      prefixIcon: IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: _keywordSearch,
+                      ),
+                      suffixIcon: IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: (() {
+                            _searchController.clear();
+                            _keywordSearch();
+                          })),
+                    ),
+                    onSubmitted: (text) => _keywordSearch(),
+                  ),
                   Wrap(
                     alignment: WrapAlignment.start,
                     spacing: 8.0,
@@ -501,7 +551,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                       for (final MapEntry(:key, :value)
                           in searchItemList.entries) ...{
                         _buildSearchTypeButton(
-                            ref, key, value, searchCondition),
+                            ref, key, value, searchCondition, searchKeyword),
                       },
                     ],
                   ),
@@ -585,10 +635,14 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                             final searchCondition = ref
                                 .read(searchConditionProvider.notifier)
                                 .getSearchCondition();
+                            // 検索キーワードを取得
+                            final searchKeyword = ref
+                                .read(searchKeywordProvider.notifier)
+                                .getSearchKeyword();
                             // 店舗情報を取得
                             final shops = await ref
                                 .read(shopProvider.notifier)
-                                .getShops(searchCondition);
+                                .getShops(searchCondition, searchKeyword);
                             if (shops != null) {
                               // マーカー情報を更新
                               Future.sync(() => _setMarkers(shops));
@@ -704,7 +758,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         _locationPermissionGranted
             ? Positioned(
                 right: Config.currentPositionButtonPositionRight,
-                bottom: Config.currentPositionButtonPositionBottom + (selectedMarkerId != null ? 180 : 0),
+                bottom: Config.currentPositionButtonPositionBottom +
+                    (selectedMarkerId != null ? 180 : 0),
                 child: _goToCurrentPositionButton(),
               )
             : Container(),
@@ -713,17 +768,21 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   }
 
   // 検索条件更新Widget
-  Widget _buildSearchTypeButton(
-      WidgetRef ref, int searchKey, String label, Set<int> selectedKeys) {
+  Widget _buildSearchTypeButton(WidgetRef ref, int searchKey, String label,
+      Set<int> selectedKeys, keyword) {
     return ElevatedButton(
       onPressed: () async {
         // ボタンの状態を更新
         final searchCondition = ref
             .read(searchConditionProvider.notifier)
             .setSearchCondition(searchKey);
+        // 検索キーワードを取得
+        final searchKeyword =
+            ref.read(searchKeywordProvider.notifier).setSearchKeyword(keyword);
         // 店舗情報を取得
-        final shops =
-            await ref.read(shopProvider.notifier).getShops(searchCondition);
+        final shops = await ref
+            .read(shopProvider.notifier)
+            .getShops(searchCondition, searchKeyword);
         if (shops != null) {
           // マーカー情報を更新
           Future.sync(() => _setMarkers(shops));
