@@ -1,6 +1,7 @@
 import 'package:egp_client/provider/stamp_provider.dart';
 import 'package:egp_client/service/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -67,6 +68,20 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
               Navigator.of(context).pop(true);
             },
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.copy),
+              onPressed: () async {
+                // 現在のURLを取得してクリップボードにコピー
+                String? currentUrl = await _controller.currentUrl();
+                if (currentUrl != null) {
+                  Clipboard.setData(ClipboardData(text: currentUrl));
+                  String message = 'URLをコピーしました: $currentUrl';
+                  _showTopSnackBar(context, message);
+                }
+              },
+            ),
+          ],
         ),
         body: Stack(
           children: [
@@ -141,8 +156,43 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
     );
   }
 
+  void _showTopSnackBar(BuildContext context, String message) {
+    final overlay = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: 0,
+        left: 0,
+        right: 0,
+        child: Material(
+          elevation: 4.0,
+          color: Colors.transparent,
+          child: Container(
+            padding: EdgeInsets.all(2.0),
+            color: Color.fromRGBO(161, 152, 34, 0.9),
+            child: SafeArea(
+              child: Text(
+                message,
+                style: TextStyle(color: Colors.white, fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    // Overlayに追加
+    overlay.insert(overlayEntry);
+
+    // 数秒後に削除
+    Future.delayed(Duration(seconds: 3), () {
+      overlayEntry.remove();
+    });
+  }
+
   Future<void> _launchMap() async {
-    String searchQuery = Uri.encodeFull('恵比寿 ${widget.shopName} ${widget.address}'.replaceAll('&', ' '));
+    String searchQuery = Uri.encodeFull(
+        '恵比寿 ${widget.shopName} ${widget.address}'.replaceAll('&', ' '));
     final googleMapsUrl = Uri.parse('comgooglemaps://?q=${searchQuery}');
     final appleMapsUrl = Uri.parse('http://maps.apple.com/?q=${searchQuery}');
     final browserUrl = Uri.parse(
