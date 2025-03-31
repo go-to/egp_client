@@ -1,6 +1,7 @@
 import 'package:egp_client/provider/stamp_provider.dart';
 import 'package:egp_client/service/auth_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -67,6 +68,21 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
               Navigator.of(context).pop(true);
             },
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.copy),
+              onPressed: () async {
+                // 現在のURLを取得してクリップボードにコピー
+                String? currentUrl = await _controller.currentUrl();
+                if (currentUrl != null) {
+                  Clipboard.setData(ClipboardData(text: currentUrl));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('URLをコピーしました: $currentUrl')),
+                  );
+                }
+              },
+            ),
+          ],
         ),
         body: Stack(
           children: [
@@ -142,7 +158,8 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
   }
 
   Future<void> _launchMap() async {
-    String searchQuery = Uri.encodeFull('恵比寿 ${widget.shopName} ${widget.address}'.replaceAll('&', ' '));
+    String searchQuery = Uri.encodeFull(
+        '恵比寿 ${widget.shopName} ${widget.address}'.replaceAll('&', ' '));
     final googleMapsUrl = Uri.parse('comgooglemaps://?q=${searchQuery}');
     final appleMapsUrl = Uri.parse('http://maps.apple.com/?q=${searchQuery}');
     final browserUrl = Uri.parse(
