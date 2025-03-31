@@ -5,6 +5,8 @@ import 'package:egp_client/view/stamp_management_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../icon/custom_icons.dart' as custom_icon;
+
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
 
@@ -22,7 +24,7 @@ class _HomePageState extends ConsumerState<HomePage> {
       'color': Colors.amberAccent,
     },
     {
-      'icon': Icons.star,
+      'icon': custom_icon.Custom.stamp,
       'label': 'スタンプ',
       'color': Colors.amberAccent,
     },
@@ -78,11 +80,17 @@ class _HomePageState extends ConsumerState<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: Colors.black),
+            Icon(
+                icon,
+                color: Colors.black,
+                size: 18,
+            ),
+            SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
                 color: Colors.black,
+                fontSize: 12,
                 fontWeight: isSelected ? FontWeight.bold : null,
               ),
             ),
