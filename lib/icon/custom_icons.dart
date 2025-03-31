@@ -41,5 +41,6 @@ class Custom {
   static const IconData cancel = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData beer_2 = IconData(0xe808, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData beer = IconData(0xf0fc, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData map = IconData(0xf279, fontFamily: _kFontFam, fontPackage: _kFontPkg);
   static const IconData stamp = IconData(0xf5bf, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

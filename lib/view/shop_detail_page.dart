@@ -77,7 +77,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                 String? currentUrl = await _controller.currentUrl();
                 if (currentUrl != null) {
                   Clipboard.setData(ClipboardData(text: currentUrl));
-                  String message = 'URLをコピーしました: $currentUrl';
+                  String message = 'URLをコピーしました\n$currentUrl';
                   _showTopSnackBar(context, message);
                 }
               },
@@ -94,6 +94,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                   padding: const EdgeInsets.only(right: 10, top: 15),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
+                      backgroundColor: Color.fromRGBO(255, 255, 255, 0.9),
                       minimumSize: Size(110, 60),
                       maximumSize: Size(110, 60),
                       shape: RoundedRectangleBorder(
@@ -106,9 +107,19 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.map_sharp, size: 30.0),
+                        Icon(
+                          custom_icon.Custom.map,
+                          size: 24.0,
+                          color: Colors.black,
+                        ),
                         SizedBox(height: 4),
-                        Text('地図を開く', style: TextStyle(fontSize: 12)),
+                        Text(
+                          '地図を開く',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -133,7 +144,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.black,
-                          backgroundColor: Colors.amberAccent,
+                          backgroundColor: Color.fromRGBO(255, 215, 64, 0.9),
                           padding: EdgeInsets.symmetric(
                               vertical: 12, horizontal: 20),
                         ),
@@ -141,7 +152,11 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(custom_icon.Custom.stamp, size: 16),
+                            Icon(
+                              custom_icon.Custom.stamp,
+                              size: 16,
+                              color: Colors.black,
+                            ),
                             SizedBox(width: 4),
                             Text(
                               stampNum > 0 ? '獲得済み ($stampNum個)' : 'スタンプを獲得する',
@@ -167,8 +182,8 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                           foregroundColor:
                               stampNum > 0 ? Colors.black : Colors.grey,
                           backgroundColor: stampNum > 0
-                              ? Color.fromRGBO(220, 150, 150, 1.0)
-                              : Color.fromRGBO(204, 204, 204, 1.0),
+                              ? Color.fromRGBO(220, 150, 150, 0.9)
+                              : Color.fromRGBO(204, 204, 204, 0.9),
                           padding: EdgeInsets.symmetric(
                               vertical: 12, horizontal: 20),
                         ),
@@ -176,7 +191,11 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Icon(custom_icon.Custom.cancel, size: 16),
+                            Icon(
+                              custom_icon.Custom.cancel,
+                              size: 16,
+                              color: stampNum > 0 ? Colors.black : Colors.grey,
+                            ),
                             SizedBox(width: 4),
                             Text(
                               'スタンプ取り消し',
@@ -219,7 +238,11 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
             child: SafeArea(
               child: Text(
                 message,
-                style: TextStyle(color: Colors.white, fontSize: 16),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),
