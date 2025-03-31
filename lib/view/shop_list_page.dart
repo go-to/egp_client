@@ -795,7 +795,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       },
       style: ElevatedButton.styleFrom(
         backgroundColor:
-            selectedKeys.contains(searchKey) ? Colors.yellow : null,
+            selectedKeys.contains(searchKey) ? Colors.amberAccent : null,
       ),
       child: Text(label,
           style: TextStyle(
