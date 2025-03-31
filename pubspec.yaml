@@ -94,6 +94,11 @@ flutter:
     - assets/done.png
     - assets/done_selected.png
 
+  fonts:
+    - family: Custom
+      fonts:
+        - asset: assets/fonts/Custom.ttf
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

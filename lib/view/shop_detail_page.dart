@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../const/config.dart';
+import '../icon/custom_icons.dart' as custom_icon;
 
 class ShopDetailPage extends ConsumerStatefulWidget {
   final int year;
@@ -123,23 +124,69 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
+                      // スタンプ獲得ボタン
                       ElevatedButton(
                         onPressed: () {
                           ref
                               .read(StampProvider(userId, shopId).notifier)
                               .addStamp(userId, shopId);
                         },
-                        child: Text(
-                            stampNum > 0 ? '獲得済み(${stampNum}個)' : 'スタンプを獲得する'),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.black,
+                          backgroundColor: Colors.amberAccent,
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(custom_icon.Custom.stamp, size: 16),
+                            SizedBox(width: 4),
+                            Text(
+                              stampNum > 0 ? '獲得済み ($stampNum個)' : 'スタンプを獲得する',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      // TODO 別メニューに移動する
+                      // スタンプ取り消しボタン
                       ElevatedButton(
                         onPressed: () {
+                          if (stampNum == 0) {
+                            return;
+                          }
                           ref
                               .read(StampProvider(userId, shopId).notifier)
                               .deleteStamp(userId, shopId);
                         },
-                        child: Text('スタンプ取り消し'),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor:
+                              stampNum > 0 ? Colors.black : Colors.grey,
+                          backgroundColor: stampNum > 0
+                              ? Color.fromRGBO(220, 150, 150, 1.0)
+                              : Color.fromRGBO(204, 204, 204, 1.0),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(custom_icon.Custom.cancel, size: 16),
+                            SizedBox(width: 4),
+                            Text(
+                              'スタンプ取り消し',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
