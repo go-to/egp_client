@@ -30,7 +30,8 @@ class ShopDetailPage extends ConsumerStatefulWidget {
 }
 
 class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
-  late final WebViewController _controller;
+  bool isLoading = true;
+  late WebViewController _controller;
 
   @override
   void initState() {
@@ -38,17 +39,22 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
 
     final String webViewUrl =
         '${Config.eventBaseUrl}/${widget.year}/${widget.no}';
-    final String webViewName = 'test';
     _controller = WebViewController()
-      ..loadRequest(Uri.parse(webViewUrl))
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..addJavaScriptChannel(
-        webViewName,
-        onMessageReceived: (message) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(message.message)));
+      ..setNavigationDelegate(NavigationDelegate(
+        onNavigationRequest: (request) {
+          if (request.url.contains('ads')) {
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
         },
-      );
+        onPageFinished: (_) {
+          setState(() {
+            isLoading = false;
+          });
+        },
+      ))
+      ..loadRequest(Uri.parse(webViewUrl));
   }
 
   @override
@@ -87,6 +93,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
         body: Stack(
           children: [
             WebViewWidget(controller: _controller),
+            if (isLoading) Center(child: CircularProgressIndicator()),
             Positioned(
               child: Align(
                 alignment: Alignment.topRight,
