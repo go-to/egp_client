@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 class Config {
   // タイトル
   static const String appTitle = 'ヱビスビールに合う逸品グランプリ';
@@ -38,6 +40,17 @@ class Config {
     4: 'ビアカクテル部門',
   };
 
+  // 店舗詳細
+  static const String openMap = '地図を開く';
+  static const String hasStamp = '獲得済み (%d個)';
+  static const String receiveStamp = 'スタンプを獲得する';
+  static const String cancelStamp = 'スタンプ取り消し';
+  static const String mapSearchFirstKeyword = '恵比寿 %s %s';
+  static const String googleMapsUrl = 'comgooglemaps://%s?q=%s';
+  static const String appleMapsUrl = 'https://maps.apple.com/?q=%s';
+  static const String browserUrl =
+      'https://www.google.com/maps/search/?api=1&query=%s';
+
   // スタンプ
   static const String isStampedLabel = '済';
   static const String stampNumLabelPerShop = '店舗別';
@@ -45,4 +58,38 @@ class Config {
 
   // イベントページ
   static const String eventBaseUrl = 'https://ebisu-gp.com';
+
+  // メッセージ
+  static const String messageUrlCopied = 'URLをコピーしました';
+  static const String messageMapCannotOpened = 'マップを開けませんでした';
+
+  // ボタンのラベル
+  static const String buttonLabelOk = 'OK';
+  static const String buttonLabelClose = '閉じる';
+
+  // カラーコード
+  static final Color colorFromRGBOCancel =
+      Color.fromRGBO(220, 150, 150, 0.9); // #dc9696;
+  static final Color colorFromRGBODisabled =
+      Color.fromRGBO(204, 204, 204, 0.9); // #cccccc
+  static final Color colorFromRGBOBeerDark =
+      Color.fromRGBO(161, 152, 34, 0.9); // #a19822
+  static final Color colorFromRGBOBeer =
+      Color.fromRGBO(255, 215, 64, 0.9); // #ffd740
+  static final Color colorFromRGBOWhite =
+      Color.fromRGBO(255, 255, 255, 0.9); // #ffffff
+
+  // 文字サイズ
+  static final double fontSizeVeryLarge = 36;
+  static final double fontSizeLarge = 20;
+  static final double fontSizeMiddleLarge = 16;
+  static final double fontSizeNormal = 14;
+  static final double fontSizeSmall = 12;
+  static final double fontSizeVerySmall = 10;
+
+  // アイコンサイズ
+  static final double iconSize = 18;
+
+  // 秒数
+  static final int overlayRemoveDelayedTime = 3;
 }
