@@ -668,7 +668,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                 child: Text(
                                   '${shop.no}: ${shop.shopName}',
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: Config.fontSizeMiddleLarge,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -728,8 +728,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                             padding: EdgeInsets.only(bottom: 4),
                                             child: Text(
                                               '${entry.key}: ${entry.value}',
-                                              // style: TextStyle(fontSize: 14),
-                                              style: TextStyle(fontSize: 10),
+                                              style: TextStyle(fontSize: Config.fontSizeVerySmall),
                                             ),
                                           );
                                         }).toList(),
@@ -799,7 +798,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       ),
       child: Text(label,
           style: TextStyle(
-              fontSize: 12,
+              fontSize: Config.fontSizeSmall,
               color: Colors.black,
               fontWeight:
                   selectedKeys.contains(searchKey) ? FontWeight.bold : null)),

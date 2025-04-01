@@ -62,7 +62,7 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
                       value: selectedValue,
                       isDense: true,
                       style: TextStyle(
-                        fontSize: 20.0,
+                        fontSize: Config.fontSizeLarge,
                         color: Colors.black,
                       ),
                       items: dropdownItems.map((String item) {
@@ -83,15 +83,15 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
                         children: [
                           TextSpan(
                             text: 'スタンプ獲得数：',
-                            style: TextStyle(color: Colors.black, fontSize: 20),
+                            style: TextStyle(color: Colors.black, fontSize: Config.fontSizeLarge),
                           ),
                           TextSpan(
                             text: '$stampNum ',
-                            style: TextStyle(color: Colors.black, fontSize: 36),
+                            style: TextStyle(color: Colors.black, fontSize: Config.fontSizeVeryLarge),
                           ),
                           TextSpan(
                             text: '個',
-                            style: TextStyle(color: Colors.black, fontSize: 20),
+                            style: TextStyle(color: Colors.black, fontSize: Config.fontSizeLarge),
                           ),
                         ],
                       ),

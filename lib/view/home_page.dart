@@ -5,6 +5,7 @@ import 'package:egp_client/view/stamp_management_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../const/config.dart';
 import '../icon/custom_icons.dart' as custom_icon;
 
 class HomePage extends ConsumerStatefulWidget {
@@ -81,16 +82,16 @@ class _HomePageState extends ConsumerState<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-                icon,
-                color: Colors.black,
-                size: 18,
+              icon,
+              color: Colors.black,
+              size: Config.iconSizeMiddleSmall,
             ),
             SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
                 color: Colors.black,
-                fontSize: 12,
+                fontSize: Config.fontSizeSmall,
                 fontWeight: isSelected ? FontWeight.bold : null,
               ),
             ),

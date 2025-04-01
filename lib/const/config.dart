@@ -88,7 +88,9 @@ class Config {
   static final double fontSizeVerySmall = 10;
 
   // アイコンサイズ
-  static final double iconSize = 18;
+  static final double iconSizeLarge = 24;
+  static final double iconSizeMiddleSmall = 18;
+  static final double iconSizeSmall = 16;
 
   // 秒数
   static final int overlayRemoveDelayedTime = 3;
