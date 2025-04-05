@@ -63,7 +63,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
     final user = ref.read(authServiceProvider.notifier).getCurrentUser();
     final userId = user!.uid;
     final shopId = widget.shopId;
-    final stampNumAsync = ref.watch(StampProvider(userId, shopId));
+    final stampNumAsync = ref.watch(StampProvider(context, userId, shopId));
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -147,8 +147,9 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                       ElevatedButton(
                         onPressed: () {
                           ref
-                              .read(StampProvider(userId, shopId).notifier)
-                              .addStamp(userId, shopId);
+                              .read(StampProvider(context, userId, shopId)
+                                  .notifier)
+                              .addStamp(context, userId, shopId);
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.black,
@@ -185,8 +186,9 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                             return;
                           }
                           ref
-                              .read(StampProvider(userId, shopId).notifier)
-                              .deleteStamp(userId, shopId);
+                              .read(StampProvider(context, userId, shopId)
+                                  .notifier)
+                              .deleteStamp(context, userId, shopId);
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor:
