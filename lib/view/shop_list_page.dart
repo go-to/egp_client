@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../common/util.dart';
 import '../const/config.dart';
 import '../provider/marker_provider.dart';
 import '../provider/shop_provider.dart';
@@ -76,26 +77,11 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     zoom: Config.defaultMapZoom,
   );
 
-  // 店舗の営業中か否かを識別するためのアイコン
+  // 店舗のデフォルトアイコン
   final shopDefaultIcon = AssetMapBitmap(
     Config.shopDefaultImagePath,
     width: Config.shopImageWidth,
     height: Config.shopImageHeight,
-  );
-  final shopOpenIcon = AssetMapBitmap(
-    Config.shopOpenImagePath,
-    width: Config.shopImageWidth,
-    height: Config.shopImageHeight,
-  );
-  final shopCloseIcon = AssetMapBitmap(
-    Config.shopCloseImagePath,
-    width: Config.shopImageWidth,
-    height: Config.shopImageHeight,
-  );
-  final shopSelectedIcon = AssetMapBitmap(
-    Config.shopSelectedImagePath,
-    width: Config.shopSelectedImageWidth,
-    height: Config.shopSelectedImageHeight,
   );
 
   @override
@@ -108,7 +94,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   }
 
   void _loadMarkers() async {
-    final shops = await ref.read(shopProvider.notifier).getShops();
+    final shops =
+        await ref.read(shopProvider(context).notifier).getShops(context);
     if (shops != null) {
       _setMarkers(shops);
     }
@@ -413,6 +400,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         },
         onError: (e) {
           print('位置情報取得エラー: $e');
+          Util.showAlertDialog(
+              context, '位置情報の取得に失敗しました', Config.buttonLabelClose);
         },
       );
     }
@@ -429,8 +418,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         ref.read(searchKeywordProvider.notifier).setSearchKeyword(query);
     // 店舗情報を取得
     final shops = await ref
-        .read(shopProvider.notifier)
-        .getShops(searchCondition, searchKeyword);
+        .read(shopProvider(context).notifier)
+        .getShops(context, searchCondition, searchKeyword);
     if (shops != null) {
       // マーカー情報を更新
       Future.sync(() => _setMarkers(shops));
@@ -447,7 +436,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     // マーカーリストを取得
     final selectedMarkerId = ref.watch(selectedMarkerProvider);
     // 選択中のマーカーID
-    final shopListAsync = ref.watch(shopProvider);
+    final shopListAsync = ref.watch(shopProvider(context));
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -641,8 +630,9 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                 .getSearchKeyword();
                             // 店舗情報を取得
                             final shops = await ref
-                                .read(shopProvider.notifier)
-                                .getShops(searchCondition, searchKeyword);
+                                .read(shopProvider(context).notifier)
+                                .getShops(
+                                    context, searchCondition, searchKeyword);
                             if (shops != null) {
                               // マーカー情報を更新
                               Future.sync(() => _setMarkers(shops));
@@ -668,7 +658,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                 child: Text(
                                   '${shop.no}: ${shop.shopName}',
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: Config.fontSizeMiddleLarge,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -728,8 +718,9 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                             padding: EdgeInsets.only(bottom: 4),
                                             child: Text(
                                               '${entry.key}: ${entry.value}',
-                                              // style: TextStyle(fontSize: 14),
-                                              style: TextStyle(fontSize: 10),
+                                              style: TextStyle(
+                                                  fontSize:
+                                                      Config.fontSizeVerySmall),
                                             ),
                                           );
                                         }).toList(),
@@ -781,8 +772,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
             ref.read(searchKeywordProvider.notifier).setSearchKeyword(keyword);
         // 店舗情報を取得
         final shops = await ref
-            .read(shopProvider.notifier)
-            .getShops(searchCondition, searchKeyword);
+            .read(shopProvider(context).notifier)
+            .getShops(context, searchCondition, searchKeyword);
         if (shops != null) {
           // マーカー情報を更新
           Future.sync(() => _setMarkers(shops));
@@ -799,7 +790,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       ),
       child: Text(label,
           style: TextStyle(
-              fontSize: 12,
+              fontSize: Config.fontSizeSmall,
               color: Colors.black,
               fontWeight:
                   selectedKeys.contains(searchKey) ? FontWeight.bold : null)),

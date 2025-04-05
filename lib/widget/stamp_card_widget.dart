@@ -25,7 +25,7 @@ class StampCard extends StatelessWidget {
             child: Text(
               shopName,
               style: TextStyle(
-                fontSize: 16,
+                fontSize: Config.fontSizeMiddleLarge,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -41,7 +41,7 @@ class StampCard extends StatelessWidget {
                     child: Text(
                       '${shop.no}',
                       style: TextStyle(
-                        fontSize: 36,
+                        fontSize: Config.fontSizeVeryLarge,
                         fontFamily: GoogleFonts.notoSansJp(
                           textStyle: TextStyle(
                             fontWeight: FontWeight.w500,

@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../const/config.dart';
+import '../common/util.dart';
 import '../icon/custom_icons.dart' as custom_icon;
 
 class ShopDetailPage extends ConsumerStatefulWidget {
@@ -30,7 +31,8 @@ class ShopDetailPage extends ConsumerStatefulWidget {
 }
 
 class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
-  late final WebViewController _controller;
+  bool isLoading = true;
+  late WebViewController _controller;
 
   @override
   void initState() {
@@ -38,17 +40,22 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
 
     final String webViewUrl =
         '${Config.eventBaseUrl}/${widget.year}/${widget.no}';
-    final String webViewName = 'test';
     _controller = WebViewController()
-      ..loadRequest(Uri.parse(webViewUrl))
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..addJavaScriptChannel(
-        webViewName,
-        onMessageReceived: (message) {
-          ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(message.message)));
+      ..setNavigationDelegate(NavigationDelegate(
+        onNavigationRequest: (request) {
+          if (request.url.contains('ads')) {
+            return NavigationDecision.prevent;
+          }
+          return NavigationDecision.navigate;
         },
-      );
+        onPageFinished: (_) {
+          setState(() {
+            isLoading = false;
+          });
+        },
+      ))
+      ..loadRequest(Uri.parse(webViewUrl));
   }
 
   @override
@@ -56,7 +63,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
     final user = ref.read(authServiceProvider.notifier).getCurrentUser();
     final userId = user!.uid;
     final shopId = widget.shopId;
-    final stampNumAsync = ref.watch(StampProvider(userId, shopId));
+    final stampNumAsync = ref.watch(StampProvider(context, userId, shopId));
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -77,7 +84,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                 String? currentUrl = await _controller.currentUrl();
                 if (currentUrl != null) {
                   Clipboard.setData(ClipboardData(text: currentUrl));
-                  String message = 'URLをコピーしました\n$currentUrl';
+                  String message = '${Config.messageUrlCopied}\n$currentUrl';
                   _showTopSnackBar(context, message);
                 }
               },
@@ -87,6 +94,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
         body: Stack(
           children: [
             WebViewWidget(controller: _controller),
+            if (isLoading) Center(child: CircularProgressIndicator()),
             Positioned(
               child: Align(
                 alignment: Alignment.topRight,
@@ -94,7 +102,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                   padding: const EdgeInsets.only(right: 10, top: 15),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color.fromRGBO(255, 255, 255, 0.9),
+                      backgroundColor: Config.colorFromRGBOWhite,
                       minimumSize: Size(110, 60),
                       maximumSize: Size(110, 60),
                       shape: RoundedRectangleBorder(
@@ -109,14 +117,14 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                       children: [
                         Icon(
                           custom_icon.Custom.map,
-                          size: 24.0,
+                          size: Config.iconSizeLarge,
                           color: Colors.black,
                         ),
                         SizedBox(height: 4),
                         Text(
-                          '地図を開く',
+                          Config.openMap,
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: Config.fontSizeSmall,
                             color: Colors.black,
                           ),
                         ),
@@ -139,12 +147,13 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                       ElevatedButton(
                         onPressed: () {
                           ref
-                              .read(StampProvider(userId, shopId).notifier)
-                              .addStamp(userId, shopId);
+                              .read(StampProvider(context, userId, shopId)
+                                  .notifier)
+                              .addStamp(context, userId, shopId);
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor: Colors.black,
-                          backgroundColor: Color.fromRGBO(255, 215, 64, 0.9),
+                          backgroundColor: Config.colorFromRGBOBeer,
                           padding: EdgeInsets.symmetric(
                               vertical: 12, horizontal: 20),
                         ),
@@ -154,14 +163,16 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                           children: [
                             Icon(
                               custom_icon.Custom.stamp,
-                              size: 16,
+                              size: Config.iconSizeSmall,
                               color: Colors.black,
                             ),
                             SizedBox(width: 4),
                             Text(
-                              stampNum > 0 ? '獲得済み ($stampNum個)' : 'スタンプを獲得する',
+                              stampNum > 0
+                                  ? Util.sprintf(Config.hasStamp, [stampNum])
+                                  : Config.receiveStamp,
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: Config.fontSizeNormal,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -175,15 +186,16 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                             return;
                           }
                           ref
-                              .read(StampProvider(userId, shopId).notifier)
-                              .deleteStamp(userId, shopId);
+                              .read(StampProvider(context, userId, shopId)
+                                  .notifier)
+                              .deleteStamp(context, userId, shopId);
                         },
                         style: ElevatedButton.styleFrom(
                           foregroundColor:
                               stampNum > 0 ? Colors.black : Colors.grey,
                           backgroundColor: stampNum > 0
-                              ? Color.fromRGBO(220, 150, 150, 0.9)
-                              : Color.fromRGBO(204, 204, 204, 0.9),
+                              ? Config.colorFromRGBOCancel
+                              : Config.colorFromRGBODisabled,
                           padding: EdgeInsets.symmetric(
                               vertical: 12, horizontal: 20),
                         ),
@@ -193,14 +205,14 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                           children: [
                             Icon(
                               custom_icon.Custom.cancel,
-                              size: 16,
+                              size: Config.iconSizeSmall,
                               color: stampNum > 0 ? Colors.black : Colors.grey,
                             ),
                             SizedBox(width: 4),
                             Text(
-                              'スタンプ取り消し',
+                              Config.cancelStamp,
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: Config.fontSizeNormal,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -234,13 +246,13 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
           color: Colors.transparent,
           child: Container(
             padding: EdgeInsets.all(2.0),
-            color: Color.fromRGBO(161, 152, 34, 0.9),
+            color: Config.colorFromRGBOBeerDark,
             child: SafeArea(
               child: Text(
                 message,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 16,
+                  fontSize: Config.fontSizeMiddleLarge,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
@@ -255,18 +267,21 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
     overlay.insert(overlayEntry);
 
     // 数秒後に削除
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(Duration(seconds: Config.overlayRemoveDelayedTime), () {
       overlayEntry.remove();
     });
   }
 
   Future<void> _launchMap() async {
-    String searchQuery = Uri.encodeFull(
-        '恵比寿 ${widget.shopName} ${widget.address}'.replaceAll('&', ' '));
-    final googleMapsUrl = Uri.parse('comgooglemaps://?q=${searchQuery}');
-    final appleMapsUrl = Uri.parse('http://maps.apple.com/?q=${searchQuery}');
-    final browserUrl = Uri.parse(
-        'https://www.google.com/maps/search/?api=1&query=${searchQuery}');
+    String searchQuery = Uri.encodeFull(Util.sprintf(
+        Config.mapSearchFirstKeyword,
+        [widget.shopName, widget.address.replaceAll('&', ' ')]));
+    final googleMapsUrl =
+        Uri.parse(Util.sprintf(Config.googleMapsUrl, [searchQuery]));
+    final appleMapsUrl =
+        Uri.parse(Util.sprintf(Config.appleMapsUrl, [searchQuery]));
+    final browserUrl =
+        Uri.parse(Util.sprintf(Config.browserUrl, [searchQuery]));
 
     // Google Mapsアプリがインストールされているか確認
     if (await canLaunchUrl(googleMapsUrl)) {
@@ -281,7 +296,8 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
       await launchUrl(browserUrl);
     } else {
       // どれも起動できない場合のエラーメッセージ
-      print('マップを開けませんでした');
+      Util.showAlertDialog(
+          context, Config.messageMapCannotOpened, Config.buttonLabelClose);
     }
   }
 }

@@ -6,7 +6,7 @@ part of 'stamp_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$stampHash() => r'c597f087fc40a25dd900f3fed5c8bb3bfb8efdf0';
+String _$stampHash() => r'59f9b786c4ea721ad9da6d03f765e6935a9e8ff0';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,10 +30,12 @@ class _SystemHash {
 }
 
 abstract class _$Stamp extends BuildlessAutoDisposeAsyncNotifier<int> {
+  late final BuildContext context;
   late final String userId;
   late final int shopId;
 
   FutureOr<int> build(
+    BuildContext context,
     String userId,
     int shopId,
   );
@@ -50,10 +52,12 @@ class StampFamily extends Family<AsyncValue<int>> {
 
   /// See also [Stamp].
   StampProvider call(
+    BuildContext context,
     String userId,
     int shopId,
   ) {
     return StampProvider(
+      context,
       userId,
       shopId,
     );
@@ -64,6 +68,7 @@ class StampFamily extends Family<AsyncValue<int>> {
     covariant StampProvider provider,
   ) {
     return call(
+      provider.context,
       provider.userId,
       provider.shopId,
     );
@@ -88,10 +93,12 @@ class StampFamily extends Family<AsyncValue<int>> {
 class StampProvider extends AutoDisposeAsyncNotifierProviderImpl<Stamp, int> {
   /// See also [Stamp].
   StampProvider(
+    BuildContext context,
     String userId,
     int shopId,
   ) : this._internal(
           () => Stamp()
+            ..context = context
             ..userId = userId
             ..shopId = shopId,
           from: stampProvider,
@@ -102,6 +109,7 @@ class StampProvider extends AutoDisposeAsyncNotifierProviderImpl<Stamp, int> {
                   : _$stampHash,
           dependencies: StampFamily._dependencies,
           allTransitiveDependencies: StampFamily._allTransitiveDependencies,
+          context: context,
           userId: userId,
           shopId: shopId,
         );
@@ -113,10 +121,12 @@ class StampProvider extends AutoDisposeAsyncNotifierProviderImpl<Stamp, int> {
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
     required super.from,
+    required this.context,
     required this.userId,
     required this.shopId,
   }) : super.internal();
 
+  final BuildContext context;
   final String userId;
   final int shopId;
 
@@ -125,6 +135,7 @@ class StampProvider extends AutoDisposeAsyncNotifierProviderImpl<Stamp, int> {
     covariant Stamp notifier,
   ) {
     return notifier.build(
+      context,
       userId,
       shopId,
     );
@@ -136,6 +147,7 @@ class StampProvider extends AutoDisposeAsyncNotifierProviderImpl<Stamp, int> {
       origin: this,
       override: StampProvider._internal(
         () => create()
+          ..context = context
           ..userId = userId
           ..shopId = shopId,
         from: from,
@@ -143,6 +155,7 @@ class StampProvider extends AutoDisposeAsyncNotifierProviderImpl<Stamp, int> {
         dependencies: null,
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
+        context: context,
         userId: userId,
         shopId: shopId,
       ),
@@ -157,6 +170,7 @@ class StampProvider extends AutoDisposeAsyncNotifierProviderImpl<Stamp, int> {
   @override
   bool operator ==(Object other) {
     return other is StampProvider &&
+        other.context == context &&
         other.userId == userId &&
         other.shopId == shopId;
   }
@@ -164,6 +178,7 @@ class StampProvider extends AutoDisposeAsyncNotifierProviderImpl<Stamp, int> {
   @override
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
+    hash = _SystemHash.combine(hash, context.hashCode);
     hash = _SystemHash.combine(hash, userId.hashCode);
     hash = _SystemHash.combine(hash, shopId.hashCode);
 
@@ -174,6 +189,9 @@ class StampProvider extends AutoDisposeAsyncNotifierProviderImpl<Stamp, int> {
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin StampRef on AutoDisposeAsyncNotifierProviderRef<int> {
+  /// The parameter `context` of this provider.
+  BuildContext get context;
+
   /// The parameter `userId` of this provider.
   String get userId;
 
@@ -185,6 +203,8 @@ class _StampProviderElement
     extends AutoDisposeAsyncNotifierProviderElement<Stamp, int> with StampRef {
   _StampProviderElement(super.provider);
 
+  @override
+  BuildContext get context => (origin as StampProvider).context;
   @override
   String get userId => (origin as StampProvider).userId;
   @override
