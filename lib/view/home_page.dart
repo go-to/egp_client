@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:egp_client/view/setting_page.dart';
 import 'package:egp_client/view/shop_list_page.dart';
 import 'package:egp_client/view/stamp_management_page.dart';
 import 'package:flutter/material.dart';
@@ -29,17 +30,17 @@ class _HomePageState extends ConsumerState<HomePage> {
       'label': 'スタンプ',
       'color': Colors.amberAccent,
     },
-    // {
-    //   'icon': Icons.settings,
-    //   'label': '設定',
-    //   'color': Colors.yellow,
-    // },
+    {
+      'icon': Icons.settings,
+      'label': '設定',
+      'color': Colors.yellow,
+    },
   ];
 
   static final List<Widget> _widgetOptions = <Widget>[
     ShopListPage(),
     StampManagementPage(),
-    // UserProfilePage(),
+    SettingPage(),
   ];
 
   @override
