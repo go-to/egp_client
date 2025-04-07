@@ -433,6 +433,10 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 現在のテーマから背景色と文字色を取得
+    final backgroundColor = Theme.of(context).colorScheme.surface;
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
+
     // マーカーリストを取得
     final selectedMarkerId = ref.watch(selectedMarkerProvider);
     // 選択中のマーカーID
@@ -539,8 +543,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                     children: [
                       for (final MapEntry(:key, :value)
                           in searchItemList.entries) ...{
-                        _buildSearchTypeButton(
-                            ref, key, value, searchCondition, searchKeyword),
+                        _buildSearchTypeButton(ref, key, value, searchCondition,
+                            searchKeyword, textColor, backgroundColor),
                       },
                     ],
                   ),
@@ -759,8 +763,14 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   }
 
   // 検索条件更新Widget
-  Widget _buildSearchTypeButton(WidgetRef ref, int searchKey, String label,
-      Set<int> selectedKeys, keyword) {
+  Widget _buildSearchTypeButton(
+      WidgetRef ref,
+      int searchKey,
+      String label,
+      Set<int> selectedKeys,
+      String keyword,
+      Color? textColor,
+      Color? backgroundColor) {
     return ElevatedButton(
       onPressed: () async {
         // ボタンの状態を更新
@@ -791,7 +801,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       child: Text(label,
           style: TextStyle(
               fontSize: Config.fontSizeSmall,
-              color: Colors.black,
+              color:
+                  selectedKeys.contains(searchKey) ? Colors.black : textColor,
               fontWeight:
                   selectedKeys.contains(searchKey) ? FontWeight.bold : null)),
     );
