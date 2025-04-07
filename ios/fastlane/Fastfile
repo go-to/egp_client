@@ -43,7 +43,7 @@ platform :ios do
     # deploy
     firebase_app_distribution(
       app: ENV['FIREBASE_APP_ID'],
-      firebase_cli_token: ENV['FIREBASE_CLI_TOKEN'],
+      service_credentials_file: ENV['GOOGLE_APPLICATION_CREDENTIALS'],
       ipa_path: ipa_path,
       groups: ENV['GROUPS'],
       release_notes_file: release_notes_file,
