@@ -17,7 +17,7 @@ lane :deploy do
   # deploy
   firebase_app_distribution(
           app: ENV['FIREBASE_APP_ID'],
-          firebase_cli_token: ENV['FIREBASE_CLI_TOKEN'],
+          service_credentials_file: ENV['GOOGLE_APPLICATION_CREDENTIALS'],
           android_artifact_type: "APK",
           android_artifact_path: apk_path,
           groups: ENV['GROUPS'],
