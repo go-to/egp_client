@@ -31,6 +31,9 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
   Widget build(BuildContext context) {
     final user = ref.read(authServiceProvider.notifier).getCurrentUser();
     final userId = user!.uid;
+    // 現在のテーマからカラースキームを取得
+    final colorScheme = Theme.of(context).colorScheme;
+
     return FutureBuilder<ShopsResponse>(
       future: _fetchShops(userId),
       builder: (BuildContext context, AsyncSnapshot<ShopsResponse> snapshot) {
@@ -51,7 +54,6 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
         return Column(
           children: [
             SizedBox(
-              // color: Colors.white,
               height: 100,
               width: double.infinity,
               child: Center(
@@ -63,7 +65,7 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
                       isDense: true,
                       style: TextStyle(
                         fontSize: Config.fontSizeLarge,
-                        color: Colors.black,
+                        color: colorScheme.primary,
                       ),
                       items: dropdownItems.map((String item) {
                         return DropdownMenuItem<String>(
@@ -83,15 +85,21 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
                         children: [
                           TextSpan(
                             text: 'スタンプ獲得数：',
-                            style: TextStyle(color: Colors.black, fontSize: Config.fontSizeLarge),
+                            style: TextStyle(
+                                color: colorScheme.primary,
+                                fontSize: Config.fontSizeLarge),
                           ),
                           TextSpan(
                             text: '$stampNum ',
-                            style: TextStyle(color: Colors.black, fontSize: Config.fontSizeVeryLarge),
+                            style: TextStyle(
+                                color: colorScheme.primary,
+                                fontSize: Config.fontSizeVeryLarge),
                           ),
                           TextSpan(
                             text: '個',
-                            style: TextStyle(color: Colors.black, fontSize: Config.fontSizeLarge),
+                            style: TextStyle(
+                                color: colorScheme.primary,
+                                fontSize: Config.fontSizeLarge),
                           ),
                         ],
                       ),

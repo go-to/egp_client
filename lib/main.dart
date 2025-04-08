@@ -24,8 +24,25 @@ class MyApp extends ConsumerWidget {
     final themeMode = ref.watch(themeNotifierProvider);
     return MaterialApp(
       title: 'Flutter Google Maps Sample',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+      theme: ThemeData(
+        brightness: Brightness.light,
+        colorScheme: ColorScheme.light(
+          primary: Colors.black,
+          secondary: Colors.white,
+          surface: Colors.white,
+          onSurface: Colors.black,
+        ),
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.dark(
+          primary: Colors.white,
+          secondary: Colors.black,
+          // surface: Colors.black,
+          surface: Color.fromRGBO(18, 18, 18, 1.0),
+          onSurface: Colors.white,
+        ),
+      ),
       themeMode: themeMode,
       routes: <String, WidgetBuilder>{
         '/': (_) => AuthWrapper(),

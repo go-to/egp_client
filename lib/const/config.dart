@@ -9,6 +9,7 @@ class Config {
   static const double defaultMapLongitude = 139.71008179999998;
   static const double defaultMapZoom = 17;
   static const int locationDistanceFilter = 100;
+  static const String googleMapStyleJsonPath = 'assets/google_map_style.json';
   static const String shopDefaultImagePath = 'assets/shop_default.png';
   static const String shopOpenImagePath = 'assets/shop_open.png';
   static const String shopCloseImagePath = 'assets/shop_close.png';

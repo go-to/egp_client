@@ -86,7 +86,7 @@ flutter:
 
   assets:
     - .env
-    - assets/locations.json
+    - assets/google_map_style.json
     - assets/shop_default.png
     - assets/shop_open.png
     - assets/shop_close.png

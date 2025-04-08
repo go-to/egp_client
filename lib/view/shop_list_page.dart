@@ -433,14 +433,14 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
   @override
   Widget build(BuildContext context) {
-    // 現在のテーマから背景色と文字色を取得
-    final backgroundColor = Theme.of(context).colorScheme.surface;
-    final textColor = Theme.of(context).textTheme.bodyLarge?.color;
-
     // マーカーリストを取得
     final selectedMarkerId = ref.watch(selectedMarkerProvider);
     // 選択中のマーカーID
     final shopListAsync = ref.watch(shopProvider(context));
+
+    // 現在のテーマからカラースキームを取得
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -456,7 +456,12 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                     myLocationEnabled: true,
                     myLocationButtonEnabled: false,
                     zoomControlsEnabled: false,
-                    onMapCreated: (GoogleMapController controller) {
+                    onMapCreated: (GoogleMapController controller) async {
+                      final googleMapStyle = await rootBundle
+                          .loadString(Config.googleMapStyleJsonPath);
+                      if (Theme.of(context).brightness == Brightness.dark) {
+                        await controller.setMapStyle(googleMapStyle);
+                      }
                       _mapController = controller;
                       _loadCustomIcons(selectedMarkerId);
                       setState(() {
@@ -521,7 +526,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: colorScheme.surface,
                       hintText: 'キーワードを入力',
                       prefixIcon: IconButton(
                         icon: Icon(Icons.search),
@@ -543,8 +548,14 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                     children: [
                       for (final MapEntry(:key, :value)
                           in searchItemList.entries) ...{
-                        _buildSearchTypeButton(ref, key, value, searchCondition,
-                            searchKeyword, textColor, backgroundColor),
+                        _buildSearchTypeButton(
+                          context,
+                          ref,
+                          key,
+                          value,
+                          searchCondition,
+                          searchKeyword,
+                        ),
                       },
                     ],
                   ),
@@ -755,7 +766,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                 right: Config.currentPositionButtonPositionRight,
                 bottom: Config.currentPositionButtonPositionBottom +
                     (selectedMarkerId != null ? 180 : 0),
-                child: _goToCurrentPositionButton(),
+                child: _goToCurrentPositionButton(context),
               )
             : Container(),
       ],
@@ -763,14 +774,11 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   }
 
   // 検索条件更新Widget
-  Widget _buildSearchTypeButton(
-      WidgetRef ref,
-      int searchKey,
-      String label,
-      Set<int> selectedKeys,
-      String keyword,
-      Color? textColor,
-      Color? backgroundColor) {
+  Widget _buildSearchTypeButton(BuildContext context, WidgetRef ref,
+      int searchKey, String label, Set<int> selectedKeys, String keyword) {
+    // 現在のテーマからカラースキームを取得
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ElevatedButton(
       onPressed: () async {
         // ボタンの状態を更新
@@ -801,21 +809,25 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       child: Text(label,
           style: TextStyle(
               fontSize: Config.fontSizeSmall,
-              color:
-                  selectedKeys.contains(searchKey) ? Colors.black : textColor,
+              color: selectedKeys.contains(searchKey)
+                  ? Colors.black
+                  : colorScheme.primary,
               fontWeight:
                   selectedKeys.contains(searchKey) ? FontWeight.bold : null)),
     );
   }
 
   // 現在値ボタンWidget
-  Widget _goToCurrentPositionButton() {
+  Widget _goToCurrentPositionButton(BuildContext context) {
+    // 現在のテーマからカラースキームを取得
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(Config.currentPositionButtonWidth,
             Config.currentPositionButtonHeight),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: colorScheme.secondary,
+        foregroundColor: colorScheme.primary,
         shape: const CircleBorder(),
       ),
       onPressed: () async {
