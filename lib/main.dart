@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'const/config.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -23,7 +24,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeNotifierProvider);
     return MaterialApp(
-      title: 'Flutter Google Maps Sample',
+      title: Config.appTitle,
       theme: ThemeData(
         brightness: Brightness.light,
         colorScheme: ColorScheme.light(
