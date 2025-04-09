@@ -512,7 +512,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
             final searchItemList =
                 ref.read(searchConditionProvider.notifier).getSearchItemList();
             return Positioned(
-              top: 16,
+              top: 8,
               left: 16,
               right: 16,
               child: Column(
@@ -541,6 +541,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                     ),
                     onSubmitted: (text) => _keywordSearch(),
                   ),
+                  const SizedBox(height: 4.0),
                   Wrap(
                     alignment: WrapAlignment.start,
                     spacing: 8.0,
