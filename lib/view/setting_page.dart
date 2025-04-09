@@ -8,35 +8,32 @@ class SettingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeNotifier = ref.read(themeNotifierProvider.notifier);
+    final currentTheme = ref.watch(themeNotifierProvider).value;
 
     return Scaffold(
       appBar: AppBar(title: const Text('設定画面')),
       body: Column(
         children: [
-          ListTile(
+          RadioListTile<ThemeMode>(
             title: const Text('ライトモード'),
-            trailing: Radio<ThemeMode>(
-              value: ThemeMode.light,
-              groupValue: ref.watch(themeNotifierProvider),
-              onChanged: (mode) => themeNotifier.toggleTheme(mode!),
-            ),
+            value: ThemeMode.light,
+            groupValue: currentTheme,
+            onChanged: (mode) =>
+                ref.read(themeNotifierProvider.notifier).updateTheme(mode!),
           ),
-          ListTile(
+          RadioListTile<ThemeMode>(
             title: const Text('ダークモード'),
-            trailing: Radio<ThemeMode>(
-              value: ThemeMode.dark,
-              groupValue: ref.watch(themeNotifierProvider),
-              onChanged: (mode) => themeNotifier.toggleTheme(mode!),
-            ),
+            value: ThemeMode.dark,
+            groupValue: currentTheme,
+            onChanged: (mode) =>
+                ref.read(themeNotifierProvider.notifier).updateTheme(mode!),
           ),
-          ListTile(
+          RadioListTile<ThemeMode>(
             title: const Text('システム設定に従う'),
-            trailing: Radio<ThemeMode>(
-              value: ThemeMode.system,
-              groupValue: ref.watch(themeNotifierProvider),
-              onChanged: (mode) => themeNotifier.toggleTheme(mode!),
-            ),
+            value: ThemeMode.system,
+            groupValue: currentTheme,
+            onChanged: (mode) =>
+                ref.read(themeNotifierProvider.notifier).updateTheme(mode!),
           ),
         ],
       ),

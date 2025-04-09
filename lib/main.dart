@@ -22,39 +22,45 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final themeMode = ref.watch(themeNotifierProvider);
-    return MaterialApp(
-      title: Config.appTitle,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        colorScheme: ColorScheme.light(
-          primary: Colors.black,
-          secondary: Colors.white,
-          surface: Colors.white,
-          onSurface: Colors.black,
-        ),
-      ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
-        colorScheme: ColorScheme.dark(
-          primary: Colors.white,
-          secondary: Colors.black,
-          // surface: Colors.black,
-          surface: Color.fromRGBO(18, 18, 18, 1.0),
-          onSurface: Colors.white,
-        ),
-      ),
-      themeMode: themeMode,
-      routes: <String, WidgetBuilder>{
-        '/': (_) => AuthWrapper(),
-        '/shop_detail': (_) => ShopDetailPage(
-              year: 0,
-              no: 0,
-              shopId: 0,
-              shopName: '',
-              address: '',
+    final themeAsync = ref.watch(themeNotifierProvider);
+
+    return themeAsync.when(
+        loading: () => const MaterialApp(home: CircularProgressIndicator()),
+        error: (error, stack) => MaterialApp(home: Text('Error: $error')),
+        data: (themeMode) {
+          return MaterialApp(
+            title: Config.appTitle,
+            theme: ThemeData(
+              brightness: Brightness.light,
+              colorScheme: ColorScheme.light(
+                primary: Colors.black,
+                secondary: Colors.white,
+                surface: Colors.white,
+                onSurface: Colors.black,
+              ),
             ),
-      },
-    );
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+              colorScheme: ColorScheme.dark(
+                primary: Colors.white,
+                secondary: Colors.black,
+                // surface: Colors.black,
+                surface: Color.fromRGBO(18, 18, 18, 1.0),
+                onSurface: Colors.white,
+              ),
+            ),
+            themeMode: themeMode,
+            home: AuthWrapper(),
+            routes: <String, WidgetBuilder>{
+              '/shop_detail': (_) => ShopDetailPage(
+                    year: 0,
+                    no: 0,
+                    shopId: 0,
+                    shopName: '',
+                    address: '',
+                  ),
+            },
+          );
+        });
   }
 }
