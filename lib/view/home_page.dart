@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:egp_client/view/setting_page.dart';
 import 'package:egp_client/view/shop_list_page.dart';
 import 'package:egp_client/view/stamp_management_page.dart';
 import 'package:flutter/material.dart';
@@ -22,24 +23,21 @@ class _HomePageState extends ConsumerState<HomePage> {
     {
       'icon': Icons.list,
       'label': '店舗情報',
-      'color': Colors.amberAccent,
     },
     {
       'icon': custom_icon.Custom.stamp,
       'label': 'スタンプ',
-      'color': Colors.amberAccent,
     },
-    // {
-    //   'icon': Icons.settings,
-    //   'label': '設定',
-    //   'color': Colors.yellow,
-    // },
+    {
+      'icon': Icons.settings,
+      'label': '設定',
+    },
   ];
 
   static final List<Widget> _widgetOptions = <Widget>[
     ShopListPage(),
     StampManagementPage(),
-    // UserProfilePage(),
+    SettingPage(),
   ];
 
   @override
@@ -53,8 +51,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               for (int i = 0; i < _items.length; i++) ...{
-                _buildTabItem(i, _items[i]['icon'], _items[i]['label'],
-                    _items[i]['color'])
+                _buildTabItem(context, i, _items[i]['icon'], _items[i]['label'])
               }
             ],
           ),
@@ -64,8 +61,9 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Widget _buildTabItem(
-      int index, IconData icon, String label, Color selectedColor) {
+      BuildContext context, int index, IconData icon, String label) {
     final isSelected = index == _currentIndex;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return GestureDetector(
       onTap: () {
@@ -76,21 +74,21 @@ class _HomePageState extends ConsumerState<HomePage> {
       child: Container(
         width: MediaQuery.of(context).size.width / _items.length,
         decoration: BoxDecoration(
-          color: isSelected ? selectedColor : Colors.grey[200],
+          color: isSelected ? Colors.amberAccent : colorScheme.surface,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
-              color: Colors.black,
+              color: isSelected ? Colors.black : colorScheme.primary,
               size: Config.iconSizeMiddleSmall,
             ),
             SizedBox(height: 4),
             Text(
               label,
               style: TextStyle(
-                color: Colors.black,
+                color: isSelected ? Colors.black : colorScheme.primary,
                 fontSize: Config.fontSizeSmall,
                 fontWeight: isSelected ? FontWeight.bold : null,
               ),

@@ -437,6 +437,10 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     final selectedMarkerId = ref.watch(selectedMarkerProvider);
     // 選択中のマーカーID
     final shopListAsync = ref.watch(shopProvider(context));
+
+    // 現在のテーマからカラースキームを取得
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -452,7 +456,12 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                     myLocationEnabled: true,
                     myLocationButtonEnabled: false,
                     zoomControlsEnabled: false,
-                    onMapCreated: (GoogleMapController controller) {
+                    onMapCreated: (GoogleMapController controller) async {
+                      final googleMapStyle = await rootBundle
+                          .loadString(Config.googleMapStyleJsonPath);
+                      if (Theme.of(context).brightness == Brightness.dark) {
+                        await controller.setMapStyle(googleMapStyle);
+                      }
                       _mapController = controller;
                       _loadCustomIcons(selectedMarkerId);
                       setState(() {
@@ -503,7 +512,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
             final searchItemList =
                 ref.read(searchConditionProvider.notifier).getSearchItemList();
             return Positioned(
-              top: 16,
+              top: 8,
               left: 16,
               right: 16,
               child: Column(
@@ -517,8 +526,10 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: colorScheme.surface,
                       hintText: 'キーワードを入力',
+                      hintStyle: TextStyle(
+                          color: colorScheme.primary.withOpacity(0.4)),
                       prefixIcon: IconButton(
                         icon: Icon(Icons.search),
                         onPressed: _keywordSearch,
@@ -532,6 +543,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                     ),
                     onSubmitted: (text) => _keywordSearch(),
                   ),
+                  const SizedBox(height: 4.0),
                   Wrap(
                     alignment: WrapAlignment.start,
                     spacing: 8.0,
@@ -540,7 +552,13 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                       for (final MapEntry(:key, :value)
                           in searchItemList.entries) ...{
                         _buildSearchTypeButton(
-                            ref, key, value, searchCondition, searchKeyword),
+                          context,
+                          ref,
+                          key,
+                          value,
+                          searchCondition,
+                          searchKeyword,
+                        ),
                       },
                     ],
                   ),
@@ -751,7 +769,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                 right: Config.currentPositionButtonPositionRight,
                 bottom: Config.currentPositionButtonPositionBottom +
                     (selectedMarkerId != null ? 180 : 0),
-                child: _goToCurrentPositionButton(),
+                child: _goToCurrentPositionButton(context),
               )
             : Container(),
       ],
@@ -759,8 +777,11 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   }
 
   // 検索条件更新Widget
-  Widget _buildSearchTypeButton(WidgetRef ref, int searchKey, String label,
-      Set<int> selectedKeys, keyword) {
+  Widget _buildSearchTypeButton(BuildContext context, WidgetRef ref,
+      int searchKey, String label, Set<int> selectedKeys, String keyword) {
+    // 現在のテーマからカラースキームを取得
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ElevatedButton(
       onPressed: () async {
         // ボタンの状態を更新
@@ -791,20 +812,25 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       child: Text(label,
           style: TextStyle(
               fontSize: Config.fontSizeSmall,
-              color: Colors.black,
+              color: selectedKeys.contains(searchKey)
+                  ? Colors.black
+                  : colorScheme.primary,
               fontWeight:
                   selectedKeys.contains(searchKey) ? FontWeight.bold : null)),
     );
   }
 
   // 現在値ボタンWidget
-  Widget _goToCurrentPositionButton() {
+  Widget _goToCurrentPositionButton(BuildContext context) {
+    // 現在のテーマからカラースキームを取得
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         minimumSize: const Size(Config.currentPositionButtonWidth,
             Config.currentPositionButtonHeight),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: colorScheme.secondary,
+        foregroundColor: colorScheme.primary,
         shape: const CircleBorder(),
       ),
       onPressed: () async {

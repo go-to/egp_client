@@ -57,6 +57,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.3
   flutter_native_splash: ^2.4.4
   url_launcher: ^6.3.1
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
@@ -86,13 +87,12 @@ flutter:
 
   assets:
     - .env
-    - assets/locations.json
-    - assets/shop_default.png
-    - assets/shop_open.png
-    - assets/shop_close.png
-    - assets/shop_selected.png
-    - assets/done.png
-    - assets/done_selected.png
+    - assets/jsons/google_map_style.json
+    - assets/images/shop_default.png
+    - assets/images/shop_open.png
+    - assets/images/shop_selected.png
+    - assets/images/done.png
+    - assets/images/done_selected.png
 
   fonts:
     - family: Custom
@@ -134,11 +134,11 @@ flutter_icons:
   android: true
   ios: true
   remove_alpha_ios: true
-  image_path: "assets/icon.png"
+  image_path: "assets/images/icon.png"
   adaptive_icon_background: "#fff422"
-  adaptive_icon_foreground: "assets/icon.png"
+  adaptive_icon_foreground: "assets/images/icon.png"
 
 flutter_native_splash:
-  image: "assets/icon.png"
+  image: "assets/images/icon.png"
   color: "#e4d012"
   icon_background_color: "#e4d012"
