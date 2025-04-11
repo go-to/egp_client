@@ -528,6 +528,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                       filled: true,
                       fillColor: colorScheme.surface,
                       hintText: 'キーワードを入力',
+                      hintStyle: TextStyle(
+                          color: colorScheme.primary.withOpacity(0.4)),
                       prefixIcon: IconButton(
                         icon: Icon(Icons.search),
                         onPressed: _keywordSearch,
