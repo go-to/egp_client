@@ -26,6 +26,7 @@ class Config {
   static const String notInCurrentSalesText = '時間外';
   static const String irregularHoliday = '不定休';
   static const String needsReservation = '要予約';
+  static const int customMarkerIconGenerateProcessBatchSize = 100;
 
   // 現在地ボタン
   static const double currentPositionButtonWidth = 55;
