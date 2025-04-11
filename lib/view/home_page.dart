@@ -71,29 +71,32 @@ class _HomePageState extends ConsumerState<HomePage> {
           _currentIndex = index;
         });
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width / _items.length,
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.amberAccent : colorScheme.surface,
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              color: isSelected ? Colors.black : colorScheme.primary,
-              size: Config.iconSizeMiddleSmall,
-            ),
-            SizedBox(height: 4),
-            Text(
-              label,
-              style: TextStyle(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 150),
+        child: Container(
+          width: MediaQuery.of(context).size.width / _items.length,
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.amberAccent : colorScheme.surface,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
                 color: isSelected ? Colors.black : colorScheme.primary,
-                fontSize: Config.fontSizeSmall,
-                fontWeight: isSelected ? FontWeight.bold : null,
+                size: Config.iconSizeMiddleSmall,
               ),
-            ),
-          ],
+              SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  color: isSelected ? Colors.black : colorScheme.primary,
+                  fontSize: Config.fontSizeSmall,
+                  fontWeight: isSelected ? FontWeight.bold : null,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
