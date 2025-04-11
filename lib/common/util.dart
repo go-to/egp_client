@@ -11,6 +11,9 @@ class Util {
   static void showAlertDialog(
       BuildContext context, String text, String buttonLabel,
       [Function? func]) {
+    // 現在のテーマからカラースキームを取得
+    final colorScheme = Theme.of(context).colorScheme;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -22,7 +25,7 @@ class Util {
               children: [
                 Text(text,
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black)),
+                    style: TextStyle(color: colorScheme.primary)),
               ],
             ),
           ),
@@ -42,7 +45,7 @@ class Util {
                 ),
                 child: Text(buttonLabel,
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.black)),
+                    style: TextStyle(color: colorScheme.primary)),
               ),
             ),
           ],
