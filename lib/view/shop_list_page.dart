@@ -146,7 +146,6 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   }
 
   void _createCustomMarkers([MarkerId? selectedMarkerId]) {
-    _markers = {};
     // カスタムマーカー生成をキューに追加
     _markerQueue.addAll(_customMarkers);
     _processQueue(selectedMarkerId);
@@ -399,6 +398,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
   void resetCustomMarkers() {
     setState(() {
+      _markers = {};
       _customMarkers = [];
     });
   }
