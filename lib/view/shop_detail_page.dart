@@ -64,6 +64,9 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
     final userId = user!.uid;
     final shopId = widget.shopId;
     final stampNumAsync = ref.watch(StampProvider(context, userId, shopId));
+    // 現在のテーマからカラースキームを取得
+    final colorScheme = Theme.of(context).colorScheme;
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -102,7 +105,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                   padding: const EdgeInsets.only(right: 10, top: 15),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Config.colorFromRGBOWhite,
+                      backgroundColor: colorScheme.surface.withOpacity(0.9),
                       minimumSize: Size(110, 60),
                       maximumSize: Size(110, 60),
                       shape: RoundedRectangleBorder(
@@ -118,14 +121,14 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                         Icon(
                           custom_icon.Custom.map,
                           size: Config.iconSizeLarge,
-                          color: Colors.black,
+                          color: colorScheme.primary.withOpacity(0.9),
                         ),
                         SizedBox(height: 4),
                         Text(
                           Config.openMap,
                           style: TextStyle(
                             fontSize: Config.fontSizeSmall,
-                            color: Colors.black,
+                            color: colorScheme.primary.withOpacity(0.9),
                           ),
                         ),
                       ],
