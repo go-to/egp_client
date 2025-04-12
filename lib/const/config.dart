@@ -46,7 +46,7 @@ class Config {
   // 店舗詳細
   static const String openMap = '地図を開く';
   static const String hasStamp = '獲得済み (%d個)';
-  static const String receiveStamp = 'スタンプを獲得する';
+  static const String receiveStamp = 'スタンプを獲得';
   static const String cancelStamp = 'スタンプ取り消し';
   static const String mapSearchFirstKeyword = '恵比寿 %s %s';
   static const String googleMapsUrl = 'comgooglemaps://%s?q=%s';
