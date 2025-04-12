@@ -64,6 +64,13 @@ class _HomePageState extends ConsumerState<HomePage> {
       BuildContext context, int index, IconData icon, String label) {
     final isSelected = index == _currentIndex;
     final colorScheme = Theme.of(context).colorScheme;
+    // 画面幅とSafeAreaの左右パディングを取得
+    final screenWidth = MediaQuery.of(context).size.width;
+    final safePadding = MediaQuery.of(context).padding;
+    // 利用可能な幅（左右のSafeAreaパディングを除外）
+    final usableWidth = screenWidth - safePadding.left - safePadding.right;
+    // 各ボタンの幅
+    final buttonWidth = usableWidth / _items.length;
 
     return GestureDetector(
       onTap: () {
@@ -72,7 +79,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         });
       },
       child: Container(
-        width: MediaQuery.of(context).size.width / _items.length,
+        width: buttonWidth,
         decoration: BoxDecoration(
           color: isSelected ? Colors.amberAccent : colorScheme.surface,
         ),

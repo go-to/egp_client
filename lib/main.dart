@@ -44,7 +44,6 @@ class MyApp extends ConsumerWidget {
               colorScheme: ColorScheme.dark(
                 primary: Colors.white,
                 secondary: Colors.black,
-                // surface: Colors.black,
                 surface: Color.fromRGBO(18, 18, 18, 1.0),
                 onSurface: Colors.white,
               ),
