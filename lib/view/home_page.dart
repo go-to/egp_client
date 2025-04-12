@@ -64,6 +64,13 @@ class _HomePageState extends ConsumerState<HomePage> {
       BuildContext context, int index, IconData icon, String label) {
     final isSelected = index == _currentIndex;
     final colorScheme = Theme.of(context).colorScheme;
+    // 画面幅とSafeAreaの左右パディングを取得
+    final screenWidth = MediaQuery.of(context).size.width;
+    final safePadding = MediaQuery.of(context).padding;
+    // 利用可能な幅（左右のSafeAreaパディングを除外）
+    final usableWidth = screenWidth - safePadding.left - safePadding.right;
+    // 各ボタンの幅
+    final buttonWidth = usableWidth / _items.length;
 
     return GestureDetector(
       onTap: () {
@@ -71,32 +78,29 @@ class _HomePageState extends ConsumerState<HomePage> {
           _currentIndex = index;
         });
       },
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 150),
-        child: Container(
-          width: MediaQuery.of(context).size.width / _items.length,
-          decoration: BoxDecoration(
-            color: isSelected ? Colors.amberAccent : colorScheme.surface,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
+      child: Container(
+        width: buttonWidth,
+        decoration: BoxDecoration(
+          color: isSelected ? Colors.amberAccent : colorScheme.surface,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? Colors.black : colorScheme.primary,
+              size: Config.iconSizeMiddleSmall,
+            ),
+            SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(
                 color: isSelected ? Colors.black : colorScheme.primary,
-                size: Config.iconSizeMiddleSmall,
+                fontSize: Config.fontSizeSmall,
+                fontWeight: isSelected ? FontWeight.bold : null,
               ),
-              SizedBox(height: 4),
-              Text(
-                label,
-                style: TextStyle(
-                  color: isSelected ? Colors.black : colorScheme.primary,
-                  fontSize: Config.fontSizeSmall,
-                  fontWeight: isSelected ? FontWeight.bold : null,
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
