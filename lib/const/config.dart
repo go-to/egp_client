@@ -9,12 +9,14 @@ class Config {
   static const double defaultMapLongitude = 139.71008179999998;
   static const double defaultMapZoom = 17;
   static const int locationDistanceFilter = 100;
-  static const String shopDefaultImagePath = 'assets/shop_default.png';
-  static const String shopOpenImagePath = 'assets/shop_open.png';
-  static const String shopCloseImagePath = 'assets/shop_close.png';
-  static const String shopSelectedImagePath = 'assets/shop_selected.png';
-  static const String isStampedImagePath = 'assets/done.png';
-  static const String isStampedSelectedImagePath = 'assets/done_selected.png';
+  static const String googleMapStyleJsonPath =
+      'assets/jsons/google_map_style.json';
+  static const String shopDefaultImagePath = 'assets/images/shop_default.png';
+  static const String shopOpenImagePath = 'assets/images/shop_open.png';
+  static const String shopSelectedImagePath = 'assets/images/shop_selected.png';
+  static const String isStampedImagePath = 'assets/images/done.png';
+  static const String isStampedSelectedImagePath =
+      'assets/images/done_selected.png';
   static const double shopImageWidth = 50;
   static const double shopImageHeight = 50;
   static const double shopSelectedImageWidth = 80;
@@ -24,6 +26,7 @@ class Config {
   static const String notInCurrentSalesText = '時間外';
   static const String irregularHoliday = '不定休';
   static const String needsReservation = '要予約';
+  static const int customMarkerIconGenerateProcessBatchSize = 100;
 
   // 現在地ボタン
   static const double currentPositionButtonWidth = 55;

@@ -15,7 +15,12 @@ class StampCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shopName = '${shop.no}: ${shop.shopName}';
+    // 現在のテーマからカラースキームを取得
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
+      shadowColor: colorScheme.primary,
+      surfaceTintColor: colorScheme.primary.withAlpha(0),
       elevation: 4,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -36,7 +41,7 @@ class StampCard extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 Container(
-                  color: Colors.white.withAlpha(0),
+                  color: colorScheme.primary.withAlpha(0),
                   child: Center(
                     child: Text(
                       '${shop.no}',

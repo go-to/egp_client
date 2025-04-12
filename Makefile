@@ -19,15 +19,18 @@ setup-firebase:
 protoc:
 	if [ ! -e "${GRPC_GEN_PATH}" ]; then mkdir -p "${GRPC_GEN_PATH}"; fi
 	protoc --dart_out=grpc:${GRPC_GEN_PATH} -I ${PROTOBUF_SRC_PATH} ${PROTOBUF_SRC_PATH}/*.proto google/protobuf/timestamp.proto
-clean-branch:
+main-branch:
 	git switch main
 	git branch | grep -v "main" | xargs git branch -d
+	git pull
+develop-branch:
+	git switch develop
+	git branch | grep -v "develop" | xargs git branch -d
 	git pull
 build-runner:
 	flutter pub run build_runner build --delete-conflicting-outputs
 build-app:
 	flutter build apk --release && mv build/app/outputs/flutter-apk/app-release.apk ./build/egp.apk
-	flutter build ipa && sed -i -e 's|<key>method</key>|<key>destination</key>\n    <string>upload</string>\n    <key>method</key>|' build/ios/ipa/ExportOptions.plist && flutter build ipa --export-options-plist="build/ios/ipa/ExportOptions.plist"
 release-note:
 	cat release_note.txt > android/fastlane/release_note.txt
 	cat release_note.txt > ios/fastlane/release_note.txt
