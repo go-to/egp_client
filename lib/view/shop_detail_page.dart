@@ -158,7 +158,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                           foregroundColor: Colors.black,
                           backgroundColor: Config.colorFromRGBOBeer,
                           padding: EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 20),
+                              vertical: 12, horizontal: 18),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
@@ -200,7 +200,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                               ? Config.colorFromRGBOCancel
                               : Config.colorFromRGBODisabled,
                           padding: EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 20),
+                              vertical: 12, horizontal: 18),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
