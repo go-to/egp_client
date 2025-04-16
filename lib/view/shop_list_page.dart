@@ -436,9 +436,10 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
           setState(() {});
         },
         onError: (e) {
-          print('位置情報取得エラー: $e');
-          Util.showAlertDialog(
-              context, '位置情報の取得に失敗しました', Config.buttonLabelClose);
+          print(Util.sprintf(
+              Config.errorDetail, [Config.failedToGetLocationInformation, e]));
+          Util.showAlertDialog(context, Config.failedToGetLocationInformation,
+              Config.buttonLabelClose);
         },
       );
     }
@@ -535,14 +536,15 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                         });
                       }
                     },
-                    child: Text('位置情報を許可する'),
+                    child: Text(Config.allowLocationInformation),
                   ),
                 );
               }
             },
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (Object error, StackTrace stackTrace) => Center(
-              child: Text('Error: $error'),
+              child:
+                  Text(Util.sprintf(Config.errorDetail, [Config.error, error])),
             ),
           ),
 
@@ -570,7 +572,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                         ),
                         filled: true,
                         fillColor: colorScheme.surface,
-                        hintText: 'キーワードを入力',
+                        hintText: Config.inputKeyword,
                         hintStyle: TextStyle(
                             color: colorScheme.primary.withOpacity(0.4)),
                         prefixIcon: IconButton(
@@ -611,7 +613,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
             },
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (Object error, StackTrace stackTrace) => Center(
-              child: Text('Error: $error'),
+              child:
+                  Text(Util.sprintf(Config.errorDetail, [Config.error, error])),
             ),
           ),
 
@@ -663,9 +666,10 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                     itemBuilder: (context, index) {
                       final shop = shops!.shops[index];
                       final attributes = {
-                        'メニュー名': shop.menuName,
-                        '住所': shop.address,
-                        '提供時間': shop.businessHours,
+                        Config.shopCardAttributeMenu: shop.menuName,
+                        Config.shopCardAttributeAddress: shop.address,
+                        Config.shopCardAttributeBusinessHours:
+                            shop.businessHours,
                       };
                       return GestureDetector(
                           onTap: () async {
@@ -806,7 +810,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
             },
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (Object error, StackTrace stackTrace) => Center(
-              child: Text('Error: $error'),
+              child:
+                  Text(Util.sprintf(Config.errorDetail, [Config.error, error])),
             ),
           ),
 
@@ -915,7 +920,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('位置情報サービスを有効にしてください。')),
+        SnackBar(content: Text(Config.pleaseEnableLocationServices)),
       );
       return false;
     }
@@ -926,7 +931,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('位置情報の権限が拒否されました。')),
+          SnackBar(content: Text(Config.locationPermissionDenied)),
         );
         return false;
       }
@@ -934,7 +939,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
     if (permission == LocationPermission.deniedForever) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('位置情報の権限が永久に拒否されています。')),
+        SnackBar(content: Text(Config.locationPermissionPermanentlyDenied)),
       );
       return false;
     }

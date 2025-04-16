@@ -90,7 +90,8 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: 'スタンプ獲得数：',
+                              text:
+                                  Config.numberOfStampsObtained + Config.colon,
                               style: TextStyle(
                                   color: colorScheme.primary,
                                   fontSize: Config.fontSizeLarge),
@@ -102,7 +103,7 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
                                   fontSize: Config.fontSizeVeryLarge),
                             ),
                             TextSpan(
-                              text: '個',
+                              text: Config.stampUnit,
                               style: TextStyle(
                                   color: colorScheme.primary,
                                   fontSize: Config.fontSizeLarge),

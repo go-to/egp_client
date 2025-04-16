@@ -4,6 +4,11 @@ class Config {
   // タイトル
   static const String appTitle = 'ヱビスビールに合う逸品グランプリ';
 
+  // メニュー
+  static const String menuLabelShop = '店舗情報';
+  static const String menuLabelStamp = 'スタンプ';
+  static const String menuLabelSetting = '設定';
+
   // マップ表示
   static const double defaultMapLatitude = 35.64691938518296;
   static const double defaultMapLongitude = 139.71008179999998;
@@ -26,6 +31,11 @@ class Config {
   static const String notInCurrentSalesText = '時間外';
   static const String irregularHoliday = '不定休';
   static const String needsReservation = '要予約';
+  static const String allowLocationInformation = '位置情報を許可する';
+  static const String inputKeyword = 'キーワードを入力';
+  static const String shopCardAttributeMenu = 'メニュー名';
+  static const String shopCardAttributeAddress = '住所';
+  static const String shopCardAttributeBusinessHours = '提供時間';
   static const int customMarkerIconGenerateProcessBatchSize = 100;
 
   // 現在地ボタン
@@ -55,6 +65,9 @@ class Config {
       'https://www.google.com/maps/search/?api=1&query=%s';
 
   // スタンプ
+  static const String numberOfStampsObtained = 'スタンプ獲得数';
+  static const String colon = '：';
+  static const String stampUnit = '個';
   static const String isStampedLabel = '済';
   static const String stampNumLabelPerShop = '店舗別';
   static const String stampNumLabelTotal = '合計';
@@ -62,9 +75,32 @@ class Config {
   // イベントページ
   static const String eventBaseUrl = 'https://ebisu-gp.com';
 
-  // メッセージ
+  // 設定
+  static const String settingPageTitle = '設定画面';
+  static const String themeLight = 'ライトモード';
+  static const String themeDark = 'ダークモード';
+  static const String themeSystemSetting = 'システム設定に従う';
+
+  // メッセージ(成功系)
   static const String messageUrlCopied = 'URLをコピーしました';
+
+  // メッセージ(促進系)
+  static const String pleaseEnableLocationServices = '位置情報サービスを有効にしてください';
+
+  // メッセージ(失敗系)
   static const String messageMapCannotOpened = 'マップを開けませんでした';
+  static const String locationPermissionDenied = '位置情報の権限が拒否されました';
+  static const String locationPermissionPermanentlyDenied =
+      '位置情報の権限が永久に拒否されています';
+  static const String failedToAnonymousLogin = '匿名ログインに失敗しました';
+  static const String failedToLogout = 'ログアウトに失敗しました';
+  static const String failedToGetAnonymousUserInformation =
+      '匿名ユーザー情報の取得に失敗しました';
+  static const String failedToGetLocationInformation = '位置情報の取得に失敗しました';
+  static const String failedToGetShopInformation = '店舗情報の取得に失敗しました';
+  static const String anErrorHasOccurred = 'エラーが発生しました';
+  static const String error = 'Error';
+  static const String errorDetail = '%s: %s';
 
   // ボタンのラベル
   static const String buttonLabelOk = 'OK';
