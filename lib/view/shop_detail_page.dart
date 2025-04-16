@@ -228,7 +228,8 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
               },
               loading: () => const Center(child: CircularProgressIndicator()),
               error: (Object error, StackTrace stackTrace) => Center(
-                child: Text('Error: $error'),
+                child: Text(
+                    Util.sprintf(Config.errorDetail, [Config.error, error])),
               ),
             ),
           ],

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../common/util.dart';
+import '../const/config.dart';
 import '../provider/firebase_provider.dart';
 import '../service/auth_service.dart';
 import 'home_page.dart';
@@ -28,7 +30,9 @@ class AuthWrapper extends ConsumerWidget {
         body: Center(child: CircularProgressIndicator()),
       ),
       error: (error, _) => Scaffold(
-        body: Center(child: Text('エラーが発生しました：$error')),
+        body: Center(
+            child: Text(Util.sprintf(
+                Config.errorDetail, [Config.anErrorHasOccurred, error]))),
       ),
     );
   }
