@@ -7,6 +7,28 @@ import '../grpc_gen/egp.pbgrpc.dart';
 import 'grpc_service.dart';
 
 class ShopService {
+  static Future<ShopsTotalResponse?> getShopsTotal(BuildContext context) async {
+    // 店舗情報を取得
+    final channel = GrpcService.getChannel();
+    ShopsTotalResponse? shopsTotal;
+
+    try {
+      shopsTotal = await GrpcService.getShopsTotal();
+    } on GrpcError catch (e) {
+      print('Caught error: $e');
+      Util.showAlertDialog(
+          context, Config.failedToGetShopInformation, Config.buttonLabelClose);
+    } catch (e) {
+      print('Caught error: $e');
+      Util.showAlertDialog(
+          context, Config.failedToGetShopInformation, Config.buttonLabelClose);
+    } finally {
+      channel.shutdown();
+    }
+
+    return shopsTotal;
+  }
+
   static Future<ShopsResponse?> getShops(BuildContext context, String userId,
       [List<int>? searchCondition, String? searchKeyword]) async {
     // 店舗情報を取得
