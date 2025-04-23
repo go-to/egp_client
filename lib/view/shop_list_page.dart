@@ -436,9 +436,10 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
           setState(() {});
         },
         onError: (e) {
-          print('位置情報取得エラー: $e');
-          Util.showAlertDialog(
-              context, '位置情報の取得に失敗しました', Config.buttonLabelClose);
+          print(Util.sprintf(
+              Config.errorDetail, [Config.failedToGetLocationInformation, e]));
+          Util.showAlertDialog(context, Config.failedToGetLocationInformation,
+              Config.buttonLabelClose);
         },
       );
     }
@@ -478,337 +479,353 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     // 現在のテーマからカラースキームを取得
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Stack(
-      alignment: Alignment.bottomCenter,
-      children: [
-        // マップ表示
-        shopListAsync.when(
-          data: (shops) {
-            if (_locationPermissionGranted) {
-              return Stack(
-                children: [
-                  GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: _kGooglePlex,
-                    myLocationEnabled: true,
-                    myLocationButtonEnabled: false,
-                    zoomControlsEnabled: false,
-                    onMapCreated: (GoogleMapController controller) async {
-                      final googleMapStyle = await rootBundle
-                          .loadString(Config.googleMapStyleJsonPath);
-                      if (Theme.of(context).brightness == Brightness.dark) {
-                        await controller.setMapStyle(googleMapStyle);
-                      }
-                      _mapController = controller;
-                      setState(() {
-                        _mapCreated = true;
-                      });
-                    },
-                    onTap: (LatLng position) async {
-                      ref
-                          .read(selectedMarkerProvider.notifier)
-                          .clearSelection();
-                      _createCustomMarkers();
-                    },
-                    markers: _markers.values.toSet(),
-                  ),
-                  if (!_mapCreated)
-                    const Center(child: CircularProgressIndicator()),
-                ],
-              );
-            } else {
-              return Center(
-                child: ElevatedButton(
-                  onPressed: () async {
-                    final permissionGranted = await _checkLocationPermission();
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        return Util.showAppCloseDialog(context, didPop, result);
+      },
+      child: Stack(
+        alignment: Alignment.bottomCenter,
+        children: [
+          // マップ表示
+          shopListAsync.when(
+            data: (shops) {
+              if (_locationPermissionGranted) {
+                return Stack(
+                  children: [
+                    GoogleMap(
+                      mapType: MapType.normal,
+                      initialCameraPosition: _kGooglePlex,
+                      myLocationEnabled: true,
+                      myLocationButtonEnabled: false,
+                      zoomControlsEnabled: false,
+                      onMapCreated: (GoogleMapController controller) async {
+                        final googleMapStyle = await rootBundle
+                            .loadString(Config.googleMapStyleJsonPath);
+                        if (Theme.of(context).brightness == Brightness.dark) {
+                          await controller.setMapStyle(googleMapStyle);
+                        }
+                        _mapController = controller;
+                        setState(() {
+                          _mapCreated = true;
+                        });
+                      },
+                      onTap: (LatLng position) async {
+                        ref
+                            .read(selectedMarkerProvider.notifier)
+                            .clearSelection();
+                        _createCustomMarkers();
+                      },
+                      markers: _markers.values.toSet(),
+                    ),
+                    if (!_mapCreated)
+                      const Center(child: CircularProgressIndicator()),
+                  ],
+                );
+              } else {
+                return Center(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final permissionGranted =
+                          await _checkLocationPermission();
 
-                    // 権限が許可された場合にGoogleMapを再ビルド
-                    if (permissionGranted) {
-                      setState(() {
-                        _locationPermissionGranted = true;
-                      });
-                    }
-                  },
-                  child: Text('位置情報を許可する'),
+                      // 権限が許可された場合にGoogleMapを再ビルド
+                      if (permissionGranted) {
+                        setState(() {
+                          _locationPermissionGranted = true;
+                        });
+                      }
+                    },
+                    child: Text(Config.allowLocationInformation),
+                  ),
+                );
+              }
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (Object error, StackTrace stackTrace) => Center(
+              child:
+                  Text(Util.sprintf(Config.errorDetail, [Config.error, error])),
+            ),
+          ),
+
+          // 検索条件
+          shopListAsync.when(
+            data: (shops) {
+              final searchCondition = ref.watch(searchConditionProvider);
+              final searchKeyword = ref.watch(searchKeywordProvider);
+              final searchItemList = ref
+                  .read(searchConditionProvider.notifier)
+                  .getSearchItemList();
+              return Positioned(
+                top: 8,
+                left: 16,
+                right: 16,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextField(
+                      controller: _searchController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: colorScheme.surface,
+                        hintText: Config.inputKeyword,
+                        hintStyle: TextStyle(
+                            color: colorScheme.primary.withOpacity(0.4)),
+                        prefixIcon: IconButton(
+                          icon: Icon(Icons.search),
+                          onPressed: _keywordSearch,
+                        ),
+                        suffixIcon: IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: (() {
+                              _searchController.clear();
+                              _keywordSearch();
+                            })),
+                      ),
+                      onSubmitted: (text) => _keywordSearch(),
+                    ),
+                    const SizedBox(height: 4.0),
+                    Wrap(
+                      alignment: WrapAlignment.start,
+                      spacing: 8.0,
+                      runSpacing: 0.0,
+                      children: [
+                        for (final MapEntry(:key, :value)
+                            in searchItemList.entries) ...{
+                          _buildSearchTypeButton(
+                            context,
+                            ref,
+                            key,
+                            value,
+                            searchCondition,
+                            searchKeyword,
+                          ),
+                        },
+                      ],
+                    ),
+                  ],
                 ),
               );
-            }
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (Object error, StackTrace stackTrace) => Center(
-            child: Text('Error: $error'),
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (Object error, StackTrace stackTrace) => Center(
+              child:
+                  Text(Util.sprintf(Config.errorDetail, [Config.error, error])),
+            ),
           ),
-        ),
 
-        // 検索条件
-        shopListAsync.when(
-          data: (shops) {
-            final searchCondition = ref.watch(searchConditionProvider);
-            final searchKeyword = ref.watch(searchKeywordProvider);
-            final searchItemList =
-                ref.read(searchConditionProvider.notifier).getSearchItemList();
-            return Positioned(
-              top: 8,
-              left: 16,
-              right: 16,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                      filled: true,
-                      fillColor: colorScheme.surface,
-                      hintText: 'キーワードを入力',
-                      hintStyle: TextStyle(
-                          color: colorScheme.primary.withOpacity(0.4)),
-                      prefixIcon: IconButton(
-                        icon: Icon(Icons.search),
-                        onPressed: _keywordSearch,
-                      ),
-                      suffixIcon: IconButton(
-                          icon: Icon(Icons.clear),
-                          onPressed: (() {
-                            _searchController.clear();
-                            _keywordSearch();
-                          })),
-                    ),
-                    onSubmitted: (text) => _keywordSearch(),
-                  ),
-                  const SizedBox(height: 4.0),
-                  Wrap(
-                    alignment: WrapAlignment.start,
-                    spacing: 8.0,
-                    runSpacing: 0.0,
-                    children: [
-                      for (final MapEntry(:key, :value)
-                          in searchItemList.entries) ...{
-                        _buildSearchTypeButton(
-                          context,
-                          ref,
-                          key,
-                          value,
-                          searchCondition,
-                          searchKeyword,
-                        ),
-                      },
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (Object error, StackTrace stackTrace) => Center(
-            child: Text('Error: $error'),
-          ),
-        ),
+          // カード表示
+          shopListAsync.when(
+            data: (shops) {
+              if (_locationPermissionGranted) {
+                // マーカー未選択の場合は非表示
+                if (selectedMarkerId == null) {
+                  return const SizedBox.shrink();
+                }
 
-        // カード表示
-        shopListAsync.when(
-          data: (shops) {
-            if (_locationPermissionGranted) {
-              // マーカー未選択の場合は非表示
-              if (selectedMarkerId == null) {
-                return const SizedBox.shrink();
-              }
-
-              // 選択中のマーカーに該当するIndexを取得
-              final selectedIndex = _markers.values
-                  .toList()
-                  .indexWhere((m) => m.markerId == selectedMarkerId);
-              if (selectedIndex != -1) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  // PageViewがビルドされた後にジャンプ
-                  if (_pageController.hasClients) {
-                    _pageController.jumpToPage(selectedIndex);
-                  }
-                });
-              }
-
-              return Positioned(
-                bottom: 20,
-                left: 0,
-                right: 0,
-                height: 160,
-                child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: _markers.length,
-                  onPageChanged: (index) async {
-                    final markerId = _markers.values.toList()[index].markerId;
-                    if (index != selectedIndex) {
-                      // 選択状態のマーカーを更新
-                      ref
-                          .read(selectedMarkerProvider.notifier)
-                          .selectMarker(markerId);
-                      // 選択した店舗のマーカーを変更
-                      _createCustomMarkers(markerId);
+                // 選択中のマーカーに該当するIndexを取得
+                final selectedIndex = _markers.values
+                    .toList()
+                    .indexWhere((m) => m.markerId == selectedMarkerId);
+                if (selectedIndex != -1) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    // PageViewがビルドされた後にジャンプ
+                    if (_pageController.hasClients) {
+                      _pageController.jumpToPage(selectedIndex);
                     }
-                    //スワイプ後のお店の座標までカメラを移動
-                    final shop = shops!.shops[index];
-                    _mapController.animateCamera(CameraUpdate.newLatLng(
-                        LatLng(shop.latitude, shop.longitude)));
-                  },
-                  itemBuilder: (context, index) {
-                    final shop = shops!.shops[index];
-                    final attributes = {
-                      'メニュー名': shop.menuName,
-                      '住所': shop.address,
-                      '提供時間': shop.businessHours,
-                    };
-                    return GestureDetector(
-                        onTap: () async {
-                          final result = await Navigator.of(context).push<bool>(
-                            MaterialPageRoute(builder: (context) {
-                              final shop = shops.shops.elementAt(index);
-                              return ShopDetailPage(
-                                  year: shop.year,
-                                  no: shop.no,
-                                  shopId: shop.iD.toInt(),
-                                  shopName: shop.shopName,
-                                  address: shop.address);
-                            }),
-                          ).then((onValue) async {
-                            // 遷移先ページから戻ってきたあとの処理
-                            // 検索条件を取得
-                            final searchCondition = ref
-                                .read(searchConditionProvider.notifier)
-                                .getSearchCondition();
-                            // 検索キーワードを取得
-                            final searchKeyword = ref
-                                .read(searchKeywordProvider.notifier)
-                                .getSearchKeyword();
-                            // 店舗情報を取得
-                            final shops = await ref
-                                .read(shopProvider(context).notifier)
-                                .getShops(
-                                    context, searchCondition, searchKeyword);
-                            if (shops != null) {
-                              // マーカー情報を更新
-                              Future.sync(() => _setCustomMarkers(shops));
-                              final selectedMarkerId = ref
+                  });
+                }
+
+                return Positioned(
+                  bottom: 20,
+                  left: 0,
+                  right: 0,
+                  height: 160,
+                  child: PageView.builder(
+                    controller: _pageController,
+                    itemCount: _markers.length,
+                    onPageChanged: (index) async {
+                      final markerId = _markers.values.toList()[index].markerId;
+                      if (index != selectedIndex) {
+                        // 選択状態のマーカーを更新
+                        ref
+                            .read(selectedMarkerProvider.notifier)
+                            .selectMarker(markerId);
+                        // 選択した店舗のマーカーを変更
+                        _createCustomMarkers(markerId);
+                      }
+                      //スワイプ後のお店の座標までカメラを移動
+                      final shop = shops!.shops[index];
+                      _mapController.animateCamera(CameraUpdate.newLatLng(
+                          LatLng(shop.latitude, shop.longitude)));
+                    },
+                    itemBuilder: (context, index) {
+                      final shop = shops!.shops[index];
+                      final attributes = {
+                        Config.shopCardAttributeMenu: shop.menuName,
+                        Config.shopCardAttributeAddress: shop.address,
+                        Config.shopCardAttributeBusinessHours:
+                            shop.businessHours,
+                      };
+                      return GestureDetector(
+                          onTap: () async {
+                            final result =
+                                await Navigator.of(context).push<bool>(
+                              MaterialPageRoute(builder: (context) {
+                                final shop = shops.shops.elementAt(index);
+                                return ShopDetailPage(
+                                    year: shop.year,
+                                    no: shop.no,
+                                    shopId: shop.iD.toInt(),
+                                    shopName: shop.shopName,
+                                    address: shop.address);
+                              }),
+                            ).then((onValue) async {
+                              // 遷移先ページから戻ってきたあとの処理
+                              // 検索条件を取得
+                              final searchCondition = ref
+                                  .read(searchConditionProvider.notifier)
+                                  .getSearchCondition();
+                              // 検索キーワードを取得
+                              final searchKeyword = ref
+                                  .read(searchKeywordProvider.notifier)
+                                  .getSearchKeyword();
+                              // 店舗情報を取得
+                              final shops = await ref
+                                  .read(shopProvider(context).notifier)
+                                  .getShops(
+                                      context, searchCondition, searchKeyword);
+                              if (shops != null) {
+                                // マーカー情報を更新
+                                Future.sync(() => _setCustomMarkers(shops));
+                                final selectedMarkerId = ref
+                                    .read(selectedMarkerProvider.notifier)
+                                    .getSelectedMarker();
+                                _createCustomMarkers(selectedMarkerId);
+                              }
+                              // マーカーの選択状態を解除
+                              ref
                                   .read(selectedMarkerProvider.notifier)
-                                  .getSelectedMarker();
-                              _createCustomMarkers(selectedMarkerId);
-                            }
-                            // マーカーの選択状態を解除
-                            ref
-                                .read(selectedMarkerProvider.notifier)
-                                .clearSelection();
-                          });
-                        },
-                        child: Card(
-                          elevation: 5,
-                          margin: const EdgeInsets.symmetric(horizontal: 12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(8),
-                                child: Text(
-                                  '${shop.no}: ${shop.shopName}',
-                                  style: TextStyle(
-                                    fontSize: Config.fontSizeMiddleLarge,
-                                    fontWeight: FontWeight.bold,
+                                  .clearSelection();
+                            });
+                          },
+                          child: Card(
+                            elevation: 5,
+                            margin: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(8),
+                                  child: Text(
+                                    '${shop.no}: ${shop.shopName}',
+                                    style: TextStyle(
+                                      fontSize: Config.fontSizeMiddleLarge,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(width: 8),
-                                  Expanded(
-                                    flex: 1,
-                                    child: ConstrainedBox(
-                                      constraints: BoxConstraints(
-                                        maxWidth: 100,
-                                        maxHeight: 100,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.network(
-                                          shop.menuImageUrl,
-                                          fit: BoxFit.contain,
-                                          loadingBuilder: (context, child,
-                                              loadingProgress) {
-                                            if (loadingProgress == null) {
-                                              return child;
-                                            }
-                                            return Center(
-                                              child: CircularProgressIndicator(
-                                                value: loadingProgress
-                                                            .expectedTotalBytes !=
-                                                        null
-                                                    ? loadingProgress
-                                                            .cumulativeBytesLoaded /
-                                                        loadingProgress
-                                                            .expectedTotalBytes!
-                                                    : null,
-                                              ),
-                                            );
-                                          },
-                                          errorBuilder:
-                                              (context, error, stackTrace) {
-                                            return Icon(Icons.error);
-                                          },
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(width: 8),
+                                    Expanded(
+                                      flex: 1,
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxWidth: 100,
+                                          maxHeight: 100,
+                                        ),
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          child: Image.network(
+                                            shop.menuImageUrl,
+                                            fit: BoxFit.contain,
+                                            loadingBuilder: (context, child,
+                                                loadingProgress) {
+                                              if (loadingProgress == null) {
+                                                return child;
+                                              }
+                                              return Center(
+                                                child:
+                                                    CircularProgressIndicator(
+                                                  value: loadingProgress
+                                                              .expectedTotalBytes !=
+                                                          null
+                                                      ? loadingProgress
+                                                              .cumulativeBytesLoaded /
+                                                          loadingProgress
+                                                              .expectedTotalBytes!
+                                                      : null,
+                                                ),
+                                              );
+                                            },
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              return Icon(Icons.error);
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Padding(
-                                      padding: EdgeInsets.all(8),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children:
-                                            attributes.entries.map((entry) {
-                                          return Padding(
-                                            padding: EdgeInsets.only(bottom: 4),
-                                            child: Text(
-                                              '${entry.key}: ${entry.value}',
-                                              style: TextStyle(
-                                                  fontSize:
-                                                      Config.fontSizeVerySmall),
-                                            ),
-                                          );
-                                        }).toList(),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Padding(
+                                        padding: EdgeInsets.all(8),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children:
+                                              attributes.entries.map((entry) {
+                                            return Padding(
+                                              padding:
+                                                  EdgeInsets.only(bottom: 4),
+                                              child: Text(
+                                                '${entry.key}: ${entry.value}',
+                                                style: TextStyle(
+                                                    fontSize: Config
+                                                        .fontSizeVerySmall),
+                                              ),
+                                            );
+                                          }).toList(),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ));
-                  },
-                ),
-              );
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (Object error, StackTrace stackTrace) => Center(
-            child: Text('Error: $error'),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ));
+                    },
+                  ),
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (Object error, StackTrace stackTrace) => Center(
+              child:
+                  Text(Util.sprintf(Config.errorDetail, [Config.error, error])),
+            ),
           ),
-        ),
 
-        // 現在地ボタン
-        _locationPermissionGranted
-            ? Positioned(
-                right: Config.currentPositionButtonPositionRight,
-                bottom: Config.currentPositionButtonPositionBottom +
-                    (selectedMarkerId != null ? 180 : 0),
-                child: _goToCurrentPositionButton(context),
-              )
-            : Container(),
-      ],
+          // 現在地ボタン
+          _locationPermissionGranted
+              ? Positioned(
+                  right: Config.currentPositionButtonPositionRight,
+                  bottom: Config.currentPositionButtonPositionBottom +
+                      (selectedMarkerId != null ? 180 : 0),
+                  child: _goToCurrentPositionButton(context),
+                )
+              : Container(),
+        ],
+      ),
     );
   }
 
@@ -903,7 +920,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('位置情報サービスを有効にしてください。')),
+        SnackBar(content: Text(Config.pleaseEnableLocationServices)),
       );
       return false;
     }
@@ -914,7 +931,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('位置情報の権限が拒否されました。')),
+          SnackBar(content: Text(Config.locationPermissionDenied)),
         );
         return false;
       }
@@ -922,7 +939,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
     if (permission == LocationPermission.deniedForever) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('位置情報の権限が永久に拒否されています。')),
+        SnackBar(content: Text(Config.locationPermissionPermanentlyDenied)),
       );
       return false;
     }
