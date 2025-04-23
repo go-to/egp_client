@@ -17,6 +17,7 @@ import '../const/config.dart';
 import '../grpc_gen/egp.pb.dart' as pb;
 import '../provider/marker_provider.dart';
 import '../provider/shop_provider.dart';
+import '../service/shop_service.dart';
 import '../view/shop_detail_page.dart';
 
 class CustomMarker {
@@ -65,6 +66,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   Position? currentPosition;
   final _markerQueue = Queue<CustomMarker>();
   bool _isUpdating = false;
+  int shopsTotalNum = 0;
 
   final _pageController = PageController(
     viewportFraction: 0.85,
@@ -94,7 +96,13 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     _startPositionStream();
     _markers = {};
     _customMarkers = [];
+    _setShopsTotal();
     _initializeMarkers();
+  }
+
+  void _setShopsTotal() async {
+    final shopsTotal = await ShopService.getShopsTotal(context);
+    shopsTotalNum = shopsTotal!.totalNum.toInt();
   }
 
   void _initializeMarkers() async {
@@ -563,30 +571,104 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    TextField(
-                      controller: _searchController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide.none,
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 7,
+                          child: Wrap(
+                            alignment: WrapAlignment.start,
+                            spacing: 8.0,
+                            runSpacing: 0.0,
+                            children: [
+                              TextField(
+                                controller: _searchController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  filled: true,
+                                  fillColor: colorScheme.surface,
+                                  hintText: Config.inputKeyword,
+                                  hintStyle: TextStyle(
+                                      color:
+                                          colorScheme.primary.withOpacity(0.4)),
+                                  prefixIcon: IconButton(
+                                    icon: Icon(Icons.search),
+                                    onPressed: _keywordSearch,
+                                  ),
+                                  suffixIcon: IconButton(
+                                      icon: Icon(Icons.clear),
+                                      onPressed: (() {
+                                        _searchController.clear();
+                                        _keywordSearch();
+                                      })),
+                                ),
+                                onSubmitted: (text) => _keywordSearch(),
+                              ),
+                            ],
+                          ),
                         ),
-                        filled: true,
-                        fillColor: colorScheme.surface,
-                        hintText: Config.inputKeyword,
-                        hintStyle: TextStyle(
-                            color: colorScheme.primary.withOpacity(0.4)),
-                        prefixIcon: IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: _keywordSearch,
+                        Expanded(
+                          flex: 3,
+                          child: Wrap(
+                            alignment: WrapAlignment.end,
+                            spacing: 8.0,
+                            runSpacing: 0.0,
+                            children: [
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  minWidth: 110,
+                                ),
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 16, horizontal: 2.5),
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.surface,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: RichText(
+                                    textAlign: TextAlign.center,
+                                    text: TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: shops!.shops.length.toString(),
+                                          style: TextStyle(
+                                            color: colorScheme.primary,
+                                            fontSize: Config.fontSizeLarge,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ' / ',
+                                          style: TextStyle(
+                                            color: colorScheme.primary,
+                                            fontSize:
+                                                Config.fontSizeMiddleLarge,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: shopsTotalNum.toString(),
+                                          style: TextStyle(
+                                            color: colorScheme.primary,
+                                            fontSize: Config.fontSizeLarge,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: ' 件',
+                                          style: TextStyle(
+                                            color: colorScheme.primary,
+                                            fontSize: Config.fontSizeNormal,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        suffixIcon: IconButton(
-                            icon: Icon(Icons.clear),
-                            onPressed: (() {
-                              _searchController.clear();
-                              _keywordSearch();
-                            })),
-                      ),
-                      onSubmitted: (text) => _keywordSearch(),
+                      ],
                     ),
                     const SizedBox(height: 4.0),
                     Wrap(

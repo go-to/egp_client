@@ -248,6 +248,30 @@ final $typed_data.Uint8List shopTimeDescriptor = $convert.base64Decode(
     'axIcCglTdGFydFRpbWUYBSABKAlSCVN0YXJ0VGltZRIYCgdFbmRUaW1lGAYgASgJUgdFbmRUaW'
     '1lEhwKCUlzSG9saWRheRgHIAEoCFIJSXNIb2xpZGF5');
 
+@$core.Deprecated('Use shopsTotalRequestDescriptor instead')
+const ShopsTotalRequest$json = {
+  '1': 'ShopsTotalRequest',
+  '2': [
+    {'1': 'Year', '3': 1, '4': 1, '5': 5, '10': 'Year'},
+  ],
+};
+
+/// Descriptor for `ShopsTotalRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List shopsTotalRequestDescriptor = $convert.base64Decode(
+    'ChFTaG9wc1RvdGFsUmVxdWVzdBISCgRZZWFyGAEgASgFUgRZZWFy');
+
+@$core.Deprecated('Use shopsTotalResponseDescriptor instead')
+const ShopsTotalResponse$json = {
+  '1': 'ShopsTotalResponse',
+  '2': [
+    {'1': 'TotalNum', '3': 1, '4': 1, '5': 3, '10': 'TotalNum'},
+  ],
+};
+
+/// Descriptor for `ShopsTotalResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List shopsTotalResponseDescriptor = $convert.base64Decode(
+    'ChJTaG9wc1RvdGFsUmVzcG9uc2USGgoIVG90YWxOdW0YASABKANSCFRvdGFsTnVt');
+
 @$core.Deprecated('Use shopsRequestDescriptor instead')
 const ShopsRequest$json = {
   '1': 'ShopsRequest',
@@ -255,6 +279,7 @@ const ShopsRequest$json = {
     {'1': 'SearchTypes', '3': 1, '4': 3, '5': 14, '6': '.egp.SearchType', '10': 'SearchTypes'},
     {'1': 'UserId', '3': 2, '4': 1, '5': 9, '10': 'UserId'},
     {'1': 'Keyword', '3': 3, '4': 1, '5': 9, '10': 'Keyword'},
+    {'1': 'Year', '3': 4, '4': 1, '5': 5, '10': 'Year'},
   ],
 };
 
@@ -262,7 +287,7 @@ const ShopsRequest$json = {
 final $typed_data.Uint8List shopsRequestDescriptor = $convert.base64Decode(
     'CgxTaG9wc1JlcXVlc3QSMQoLU2VhcmNoVHlwZXMYASADKA4yDy5lZ3AuU2VhcmNoVHlwZVILU2'
     'VhcmNoVHlwZXMSFgoGVXNlcklkGAIgASgJUgZVc2VySWQSGAoHS2V5d29yZBgDIAEoCVIHS2V5'
-    'd29yZA==');
+    'd29yZBISCgRZZWFyGAQgASgFUgRZZWFy');
 
 @$core.Deprecated('Use shopsResponseDescriptor instead')
 const ShopsResponse$json = {

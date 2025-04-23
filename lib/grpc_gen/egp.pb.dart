@@ -1230,11 +1230,112 @@ class ShopTime extends $pb.GeneratedMessage {
   void clearIsHoliday() => clearField(7);
 }
 
+class ShopsTotalRequest extends $pb.GeneratedMessage {
+  factory ShopsTotalRequest({
+    $core.int? year,
+  }) {
+    final $result = create();
+    if (year != null) {
+      $result.year = year;
+    }
+    return $result;
+  }
+  ShopsTotalRequest._() : super();
+  factory ShopsTotalRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ShopsTotalRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopsTotalRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'Year', $pb.PbFieldType.O3, protoName: 'Year')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ShopsTotalRequest clone() => ShopsTotalRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ShopsTotalRequest copyWith(void Function(ShopsTotalRequest) updates) => super.copyWith((message) => updates(message as ShopsTotalRequest)) as ShopsTotalRequest;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ShopsTotalRequest create() => ShopsTotalRequest._();
+  ShopsTotalRequest createEmptyInstance() => create();
+  static $pb.PbList<ShopsTotalRequest> createRepeated() => $pb.PbList<ShopsTotalRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ShopsTotalRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ShopsTotalRequest>(create);
+  static ShopsTotalRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get year => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set year($core.int v) { $_setSignedInt32(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasYear() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearYear() => clearField(1);
+}
+
+class ShopsTotalResponse extends $pb.GeneratedMessage {
+  factory ShopsTotalResponse({
+    $fixnum.Int64? totalNum,
+  }) {
+    final $result = create();
+    if (totalNum != null) {
+      $result.totalNum = totalNum;
+    }
+    return $result;
+  }
+  ShopsTotalResponse._() : super();
+  factory ShopsTotalResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ShopsTotalResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopsTotalResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
+    ..aInt64(1, _omitFieldNames ? '' : 'TotalNum', protoName: 'TotalNum')
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ShopsTotalResponse clone() => ShopsTotalResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ShopsTotalResponse copyWith(void Function(ShopsTotalResponse) updates) => super.copyWith((message) => updates(message as ShopsTotalResponse)) as ShopsTotalResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ShopsTotalResponse create() => ShopsTotalResponse._();
+  ShopsTotalResponse createEmptyInstance() => create();
+  static $pb.PbList<ShopsTotalResponse> createRepeated() => $pb.PbList<ShopsTotalResponse>();
+  @$core.pragma('dart2js:noInline')
+  static ShopsTotalResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ShopsTotalResponse>(create);
+  static ShopsTotalResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get totalNum => $_getI64(0);
+  @$pb.TagNumber(1)
+  set totalNum($fixnum.Int64 v) { $_setInt64(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasTotalNum() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearTotalNum() => clearField(1);
+}
+
 class ShopsRequest extends $pb.GeneratedMessage {
   factory ShopsRequest({
     $core.Iterable<SearchType>? searchTypes,
     $core.String? userId,
     $core.String? keyword,
+    $core.int? year,
   }) {
     final $result = create();
     if (searchTypes != null) {
@@ -1246,6 +1347,9 @@ class ShopsRequest extends $pb.GeneratedMessage {
     if (keyword != null) {
       $result.keyword = keyword;
     }
+    if (year != null) {
+      $result.year = year;
+    }
     return $result;
   }
   ShopsRequest._() : super();
@@ -1256,6 +1360,7 @@ class ShopsRequest extends $pb.GeneratedMessage {
     ..pc<SearchType>(1, _omitFieldNames ? '' : 'SearchTypes', $pb.PbFieldType.KE, protoName: 'SearchTypes', valueOf: SearchType.valueOf, enumValues: SearchType.values, defaultEnumValue: SearchType.SEARCH_TYPE_IN_CURRENT_SALES)
     ..aOS(2, _omitFieldNames ? '' : 'UserId', protoName: 'UserId')
     ..aOS(3, _omitFieldNames ? '' : 'Keyword', protoName: 'Keyword')
+    ..a<$core.int>(4, _omitFieldNames ? '' : 'Year', $pb.PbFieldType.O3, protoName: 'Year')
     ..hasRequiredFields = false
   ;
 
@@ -1300,6 +1405,15 @@ class ShopsRequest extends $pb.GeneratedMessage {
   $core.bool hasKeyword() => $_has(2);
   @$pb.TagNumber(3)
   void clearKeyword() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.int get year => $_getIZ(3);
+  @$pb.TagNumber(4)
+  set year($core.int v) { $_setSignedInt32(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasYear() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearYear() => clearField(4);
 }
 
 class ShopsResponse extends $pb.GeneratedMessage {

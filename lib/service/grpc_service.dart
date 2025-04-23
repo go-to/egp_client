@@ -19,6 +19,17 @@ class GrpcService {
     );
   }
 
+  static Future<ShopsTotalResponse> getShopsTotal() async {
+    final channel = getChannel();
+    final client = EgpServiceClient(channel);
+
+    final res = await client.getShopsTotal(
+      ShopsTotalRequest(),
+      options: getCallOptions(),
+    );
+    return res;
+  }
+
   static Future<ShopsResponse> getShops(String userId,
       [List<int>? searchParams, String? searchKeyword]) async {
     final channel = getChannel();
