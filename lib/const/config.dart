@@ -33,6 +33,8 @@ class Config {
   static const String needsReservation = '要予約';
   static const String allowLocationInformation = '位置情報を許可する';
   static const String inputKeyword = 'キーワードを入力';
+  static const String fractionBar = '/';
+  static const String shopsUnit = '件';
   static const String shopCardAttributeMenu = 'メニュー名';
   static const String shopCardAttributeAddress = '住所';
   static const String shopCardAttributeBusinessHours = '提供時間';
