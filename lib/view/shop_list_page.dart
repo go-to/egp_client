@@ -591,8 +591,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                   fillColor: colorScheme.surface,
                                   hintText: Config.inputKeyword,
                                   hintStyle: TextStyle(
-                                      color:
-                                          colorScheme.primary.withOpacity(0.4)),
+                                      color: colorScheme.primary
+                                          .withValues(alpha: 0.4)),
                                   prefixIcon: IconButton(
                                     icon: Icon(Icons.search),
                                     onPressed: _keywordSearch,
@@ -618,7 +618,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                             children: [
                               ConstrainedBox(
                                 constraints: BoxConstraints(
-                                  minWidth: 110,
+                                  minWidth: 108,
                                 ),
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
@@ -639,11 +639,10 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                           ),
                                         ),
                                         TextSpan(
-                                          text: ' / ',
+                                          text: ' ${Config.fractionBar} ',
                                           style: TextStyle(
                                             color: colorScheme.primary,
-                                            fontSize:
-                                                Config.fontSizeMiddleLarge,
+                                            fontSize: Config.fontSizeNormal,
                                           ),
                                         ),
                                         TextSpan(
@@ -654,7 +653,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                           ),
                                         ),
                                         TextSpan(
-                                          text: ' 件',
+                                          text: ' ${Config.shopsUnit}',
                                           style: TextStyle(
                                             color: colorScheme.primary,
                                             fontSize: Config.fontSizeNormal,
@@ -941,8 +940,9 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         ref.read(selectedMarkerProvider.notifier).clearSelection();
       },
       style: ElevatedButton.styleFrom(
-        backgroundColor:
-            selectedKeys.contains(searchKey) ? Colors.amberAccent : null,
+        backgroundColor: selectedKeys.contains(searchKey)
+            ? Colors.amberAccent
+            : colorScheme.surface,
       ),
       child: Text(label,
           style: TextStyle(
