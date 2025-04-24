@@ -22,15 +22,15 @@ class _HomePageState extends ConsumerState<HomePage> {
   final List<dynamic> _items = [
     {
       'icon': Icons.list,
-      'label': '店舗情報',
+      'label': Config.menuLabelShop,
     },
     {
       'icon': custom_icon.Custom.stamp,
-      'label': 'スタンプ',
+      'label': Config.menuLabelStamp,
     },
     {
       'icon': Icons.settings,
-      'label': '設定',
+      'label': Config.menuLabelSetting,
     },
   ];
 

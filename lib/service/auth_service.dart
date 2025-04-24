@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../common/util.dart';
+import '../const/config.dart';
 import '../provider/firebase_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,7 +17,8 @@ class AuthService extends _$AuthService {
       final auth = ref.read(firebaseAuthProvider);
       await auth.signInAnonymously();
     } catch (e) {
-      print('匿名ログインに失敗しました: $e');
+      print(
+          Util.sprintf(Config.errorDetail, [Config.failedToAnonymousLogin, e]));
     }
   }
 
@@ -24,7 +27,7 @@ class AuthService extends _$AuthService {
       final auth = ref.read(firebaseAuthProvider);
       await auth.signOut();
     } catch (e) {
-      print('ログアウトに失敗しました: $e');
+      print(Util.sprintf(Config.errorDetail, [Config.failedToLogout, e]));
     }
   }
 
@@ -34,7 +37,8 @@ class AuthService extends _$AuthService {
       final auth = ref.read(firebaseAuthProvider);
       return auth.currentUser;
     } catch (e) {
-      print('匿名ユーザー情報の取得に失敗しました: $e');
+      print(Util.sprintf(
+          Config.errorDetail, [Config.failedToGetAnonymousUserInformation, e]));
     }
     return null;
   }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:widget_to_marker/widget_to_marker.dart';
 
+import '../const/config.dart';
+
 class ShopMarkerWidget extends StatelessWidget {
   final String shopName;
   final bool inCurrentSales;
@@ -16,7 +18,7 @@ class ShopMarkerWidget extends StatelessWidget {
       children: [
         Image(
           image: AssetImage(
-            'assets/images/shop_selected.png',
+            Config.shopSelectedImagePath,
           ),
           height: 150,
           width: 150,
