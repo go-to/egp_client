@@ -58,6 +58,7 @@ class ShopListPage extends ConsumerStatefulWidget {
 class _ShopListPageState extends ConsumerState<ShopListPage> {
   bool _locationPermissionGranted = false;
   bool _mapCreated = false;
+  late DraggableScrollableController _draggableController;
   late GoogleMapController _mapController;
   final TextEditingController _searchController = TextEditingController();
   late StreamSubscription<Position>? _positionStream;
@@ -98,6 +99,12 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     _customMarkers = [];
     _setShopsTotal();
     _initializeMarkers();
+    _draggableController = DraggableScrollableController();
+  }
+
+  void _resetBottomSheet() {
+    _draggableController.reset();
+    _draggableController = DraggableScrollableController();
   }
 
   void _setShopsTotal() async {
@@ -188,6 +195,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
           iconParam: marker.icon,
           zIndexParam: marker.zIndex,
           onTapParam: () {
+            // ボトムシートの高さを初期状態に戻す
+            _resetBottomSheet();
             ref.read(selectedMarkerProvider.notifier).selectMarker(markerId);
             _createCustomMarkers(markerId);
           },
@@ -387,23 +396,6 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     return BitmapDescriptor.bytes(data2!.buffer.asUint8List());
   }
 
-  void updateMarkerIcon(
-      CustomMarker marker, BitmapDescriptor newIcon, double newZIndex) {
-    if (_markers.containsKey(marker.id)) {
-      setState(() {
-        _markers[marker.id] = _markers[marker.id]!.copyWith(
-          iconParam: newIcon,
-          zIndexParam: newZIndex,
-          onTapParam: () {
-            final markerId = MarkerId(marker.id);
-            ref.read(selectedMarkerProvider.notifier).selectMarker(markerId);
-            _createCustomMarkers(markerId);
-          },
-        );
-      });
-    }
-  }
-
   void resetCustomMarkers() {
     setState(() {
       _markers = {};
@@ -414,6 +406,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   @override
   void dispose() {
     _positionStream?.cancel();
+    _draggableController.dispose();
     _pageController.dispose();
     _mapController.dispose();
     super.dispose();
@@ -722,7 +715,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                 }
 
                 return Positioned(
-                  bottom: 20,
+                  bottom: 50,
                   left: 0,
                   right: 0,
                   height: 160,
@@ -901,8 +894,239 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
               ? Positioned(
                   right: Config.currentPositionButtonPositionRight,
                   bottom: Config.currentPositionButtonPositionBottom +
-                      (selectedMarkerId != null ? 180 : 0),
+                      (selectedMarkerId != null ? 200 : 30),
                   child: _goToCurrentPositionButton(context),
+                )
+              : Container(),
+
+          // ボトムシート
+          shopListAsync.when(
+            data: (shops) {
+              if (_locationPermissionGranted) {
+                return DraggableScrollableSheet(
+                  expand: false,
+                  controller: _draggableController,
+                  initialChildSize: Config.bottomSheetMinSize,
+                  minChildSize: Config.bottomSheetMinSize,
+                  maxChildSize: Config.bottomSheetMaxSize,
+                  builder: (context, scrollController) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: colorScheme.surface,
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(16)),
+                      ),
+                      child: Column(
+                        children: [
+                          GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onVerticalDragUpdate: (details) {
+                              final newSize = _draggableController.size -
+                                  details.delta.dy /
+                                      MediaQuery.of(context).size.height;
+                              setState(() {
+                                _draggableController.jumpTo(newSize.clamp(
+                                    Config.bottomSheetMinSize,
+                                    Config.bottomSheetMaxSize));
+                              });
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              child: Center(
+                                child: Container(
+                                  width: 40,
+                                  height: 6,
+                                  decoration: BoxDecoration(
+                                    color: colorScheme.primary
+                                        .withValues(alpha: 0.5),
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView.separated(
+                                controller: scrollController,
+                                itemCount: shops!.shops.length,
+                                separatorBuilder: (context, index) =>
+                                    const Divider(height: 1),
+                                itemBuilder: (context, index) {
+                                  final shop = shops.shops.elementAt(index);
+                                  final attributes = {
+                                    Config.shopCardAttributeMenu: shop.menuName,
+                                    Config.shopCardAttributeAddress:
+                                        shop.address,
+                                    Config.shopCardAttributeBusinessHours:
+                                        shop.businessHours,
+                                  };
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      final result = await Navigator.of(context)
+                                          .push<bool>(
+                                        MaterialPageRoute(builder: (context) {
+                                          final shop =
+                                              shops.shops.elementAt(index);
+                                          return ShopDetailPage(
+                                              year: shop.year,
+                                              no: shop.no,
+                                              shopId: shop.iD.toInt(),
+                                              shopName: shop.shopName,
+                                              address: shop.address);
+                                        }),
+                                      ).then((onValue) async {
+                                        // 遷移先ページから戻ってきたあとの処理
+                                        // 検索条件を取得
+                                        final searchCondition = ref
+                                            .read(searchConditionProvider
+                                                .notifier)
+                                            .getSearchCondition();
+                                        // 検索キーワードを取得
+                                        final searchKeyword = ref
+                                            .read(
+                                                searchKeywordProvider.notifier)
+                                            .getSearchKeyword();
+                                        // 店舗情報を取得
+                                        final shops = await ref
+                                            .read(
+                                                shopProvider(context).notifier)
+                                            .getShops(context, searchCondition,
+                                                searchKeyword);
+                                        if (shops != null) {
+                                          // マーカー情報を更新
+                                          Future.sync(
+                                              () => _setCustomMarkers(shops));
+                                          final selectedMarkerId = ref
+                                              .read(selectedMarkerProvider
+                                                  .notifier)
+                                              .getSelectedMarker();
+                                          _createCustomMarkers(
+                                              selectedMarkerId);
+                                        }
+                                        // マーカーの選択状態を解除
+                                        ref
+                                            .read(
+                                                selectedMarkerProvider.notifier)
+                                            .clearSelection();
+                                      });
+                                    },
+                                    child: Container(
+                                      height: 180,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8),
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              const SizedBox(height: 20),
+                                              ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(8),
+                                                child: Image.network(
+                                                  shop.menuImageUrl,
+                                                  fit: BoxFit.cover,
+                                                  height: 140,
+                                                  width: 160,
+                                                  loadingBuilder: (context,
+                                                      child, loadingProgress) {
+                                                    if (loadingProgress ==
+                                                        null) {
+                                                      return child;
+                                                    }
+                                                    return Center(
+                                                      child:
+                                                          CircularProgressIndicator(
+                                                        value: loadingProgress
+                                                                    .expectedTotalBytes !=
+                                                                null
+                                                            ? loadingProgress
+                                                                    .cumulativeBytesLoaded /
+                                                                loadingProgress
+                                                                    .expectedTotalBytes!
+                                                            : null,
+                                                      ),
+                                                    );
+                                                  },
+                                                  errorBuilder: (context, error,
+                                                      stackTrace) {
+                                                    return Icon(Icons.error);
+                                                  },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          // ),
+                                          const SizedBox(width: 12),
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                    const SizedBox(height: 20),
+                                                    Text(
+                                                        '${shop.no}: ${shop.shopName}',
+                                                        style: TextStyle(
+                                                            fontSize: Config
+                                                                .fontSizeMiddleLarge,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    const SizedBox(height: 4),
+                                                  ] +
+                                                  attributes.entries
+                                                      .map((entry) {
+                                                    return Padding(
+                                                      padding: EdgeInsets.only(
+                                                          bottom: 4),
+                                                      child: Text(
+                                                        '${entry.key}: ${entry.value}',
+                                                        style: TextStyle(
+                                                            fontSize: Config
+                                                                .fontSizeVerySmall),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                }),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (Object error, StackTrace stackTrace) => Center(
+              child:
+                  Text(Util.sprintf(Config.errorDetail, [Config.error, error])),
+            ),
+          ),
+
+          // ボトムシート表示中に地図アイコンを表示
+          _draggableController.isAttached &&
+                  _draggableController.size > Config.bottomSheetMinSize * 1.5
+              ? Positioned(
+                  right: Config.currentPositionButtonPositionRight,
+                  bottom: Config.currentPositionButtonPositionBottom +
+                      (selectedMarkerId != null ? 200 : 30),
+                  child: _showMapButton(context),
                 )
               : Container(),
         ],
@@ -990,6 +1214,28 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         );
       },
       child: const Icon(Icons.my_location_outlined),
+    );
+  }
+
+  // 地図表示ボタンWidget
+  Widget _showMapButton(BuildContext context) {
+    // 現在のテーマからカラースキームを取得
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        minimumSize: const Size(Config.currentPositionButtonWidth,
+            Config.currentPositionButtonHeight),
+        backgroundColor: colorScheme.secondary,
+        foregroundColor: colorScheme.primary,
+        shape: const CircleBorder(),
+      ),
+      onPressed: () async {
+        setState(() {
+          _draggableController.reset();
+        });
+      },
+      child: const Icon(Icons.map_outlined),
     );
   }
 

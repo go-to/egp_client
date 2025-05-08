@@ -40,6 +40,10 @@ class Config {
   static const String shopCardAttributeBusinessHours = '提供時間';
   static const int customMarkerIconGenerateProcessBatchSize = 100;
 
+  // ボトムシート
+  static const double bottomSheetMinSize = 0.05;
+  static const double bottomSheetMaxSize = 0.785;
+
   // 現在地ボタン
   static const double currentPositionButtonWidth = 55;
   static const double currentPositionButtonHeight = 55;
