@@ -1128,9 +1128,6 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                                             child:
                                                                 Transform.scale(
                                                               scale: 1.2,
-                                                              filterQuality:
-                                                                  FilterQuality
-                                                                      .high,
                                                               child: Image.asset(
                                                                   Config
                                                                       .isStampedSelectedImagePath,
