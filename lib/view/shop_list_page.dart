@@ -965,7 +965,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                             ),
                           ),
                           AnimatedContainer(
-                            duration: const Duration(milliseconds: 100),
+                            duration: const Duration(milliseconds: 300),
                             height: _draggableController.isAttached &&
                                     _draggableController.size >=
                                         Config.bottomSheetMinSize * 2.5
