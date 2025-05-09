@@ -52,6 +52,20 @@ final $typed_data.Uint8List searchTypeDescriptor = $convert.base64Decode(
     'RUFSQ0hfVFlQRV9ORUVEU19SRVNFUlZBVElPThADEh0KGVNFQVJDSF9UWVBFX0JFRVJfQ09DS1'
     'RBSUwQBA==');
 
+@$core.Deprecated('Use sortOrderTypeDescriptor instead')
+const SortOrderType$json = {
+  '1': 'SortOrderType',
+  '2': [
+    {'1': 'SORT_ORDER_NO', '2': 0},
+    {'1': 'SORT_ORDER_DISTANCE', '2': 1},
+  ],
+};
+
+/// Descriptor for `SortOrderType`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List sortOrderTypeDescriptor = $convert.base64Decode(
+    'Cg1Tb3J0T3JkZXJUeXBlEhEKDVNPUlRfT1JERVJfTk8QABIXChNTT1JUX09SREVSX0RJU1RBTk'
+    'NFEAE=');
+
 @$core.Deprecated('Use dateDescriptor instead')
 const Date$json = {
   '1': 'Date',
@@ -71,285 +85,292 @@ final $typed_data.Uint8List dateDescriptor = $convert.base64Decode(
 const Event$json = {
   '1': 'Event',
   '2': [
-    {'1': 'ID', '3': 1, '4': 1, '5': 3, '10': 'ID'},
-    {'1': 'Name', '3': 2, '4': 1, '5': 9, '10': 'Name'},
-    {'1': 'Year', '3': 3, '4': 1, '5': 5, '10': 'Year'},
-    {'1': 'StartDate', '3': 4, '4': 1, '5': 11, '6': '.egp.Date', '10': 'StartDate'},
-    {'1': 'EndDate', '3': 5, '4': 1, '5': 11, '6': '.egp.Date', '10': 'EndDate'},
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+    {'1': 'name', '3': 2, '4': 1, '5': 9, '10': 'name'},
+    {'1': 'year', '3': 3, '4': 1, '5': 5, '10': 'year'},
+    {'1': 'start_date', '3': 4, '4': 1, '5': 11, '6': '.egp.Date', '10': 'startDate'},
+    {'1': 'end_date', '3': 5, '4': 1, '5': 11, '6': '.egp.Date', '10': 'endDate'},
   ],
 };
 
 /// Descriptor for `Event`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List eventDescriptor = $convert.base64Decode(
-    'CgVFdmVudBIOCgJJRBgBIAEoA1ICSUQSEgoETmFtZRgCIAEoCVIETmFtZRISCgRZZWFyGAMgAS'
-    'gFUgRZZWFyEicKCVN0YXJ0RGF0ZRgEIAEoCzIJLmVncC5EYXRlUglTdGFydERhdGUSIwoHRW5k'
-    'RGF0ZRgFIAEoCzIJLmVncC5EYXRlUgdFbmREYXRl');
+    'CgVFdmVudBIOCgJpZBgBIAEoA1ICaWQSEgoEbmFtZRgCIAEoCVIEbmFtZRISCgR5ZWFyGAMgAS'
+    'gFUgR5ZWFyEigKCnN0YXJ0X2RhdGUYBCABKAsyCS5lZ3AuRGF0ZVIJc3RhcnREYXRlEiQKCGVu'
+    'ZF9kYXRlGAUgASgLMgkuZWdwLkRhdGVSB2VuZERhdGU=');
 
 @$core.Deprecated('Use categoryDescriptor instead')
 const Category$json = {
   '1': 'Category',
   '2': [
-    {'1': 'ID', '3': 1, '4': 1, '5': 3, '10': 'ID'},
-    {'1': 'Name', '3': 2, '4': 1, '5': 9, '10': 'Name'},
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+    {'1': 'name', '3': 2, '4': 1, '5': 9, '10': 'name'},
   ],
 };
 
 /// Descriptor for `Category`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List categoryDescriptor = $convert.base64Decode(
-    'CghDYXRlZ29yeRIOCgJJRBgBIAEoA1ICSUQSEgoETmFtZRgCIAEoCVIETmFtZQ==');
+    'CghDYXRlZ29yeRIOCgJpZBgBIAEoA1ICaWQSEgoEbmFtZRgCIAEoCVIEbmFtZQ==');
 
 @$core.Deprecated('Use categoriesDescriptor instead')
 const Categories$json = {
   '1': 'Categories',
   '2': [
-    {'1': 'Categories', '3': 1, '4': 3, '5': 11, '6': '.egp.Category', '10': 'Categories'},
+    {'1': 'categories', '3': 1, '4': 3, '5': 11, '6': '.egp.Category', '10': 'categories'},
   ],
 };
 
 /// Descriptor for `Categories`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List categoriesDescriptor = $convert.base64Decode(
-    'CgpDYXRlZ29yaWVzEi0KCkNhdGVnb3JpZXMYASADKAsyDS5lZ3AuQ2F0ZWdvcnlSCkNhdGVnb3'
+    'CgpDYXRlZ29yaWVzEi0KCmNhdGVnb3JpZXMYASADKAsyDS5lZ3AuQ2F0ZWdvcnlSCmNhdGVnb3'
     'JpZXM=');
 
 @$core.Deprecated('Use beerTypeDescriptor instead')
 const BeerType$json = {
   '1': 'BeerType',
   '2': [
-    {'1': 'ID', '3': 1, '4': 1, '5': 3, '10': 'ID'},
-    {'1': 'Name', '3': 2, '4': 1, '5': 9, '10': 'Name'},
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+    {'1': 'name', '3': 2, '4': 1, '5': 9, '10': 'name'},
   ],
 };
 
 /// Descriptor for `BeerType`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List beerTypeDescriptor = $convert.base64Decode(
-    'CghCZWVyVHlwZRIOCgJJRBgBIAEoA1ICSUQSEgoETmFtZRgCIAEoCVIETmFtZQ==');
+    'CghCZWVyVHlwZRIOCgJpZBgBIAEoA1ICaWQSEgoEbmFtZRgCIAEoCVIEbmFtZQ==');
 
 @$core.Deprecated('Use beerTypesDescriptor instead')
 const BeerTypes$json = {
   '1': 'BeerTypes',
   '2': [
-    {'1': 'BeerTypes', '3': 1, '4': 3, '5': 11, '6': '.egp.BeerType', '10': 'BeerTypes'},
+    {'1': 'beer_types', '3': 1, '4': 3, '5': 11, '6': '.egp.BeerType', '10': 'beerTypes'},
   ],
 };
 
 /// Descriptor for `BeerTypes`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List beerTypesDescriptor = $convert.base64Decode(
-    'CglCZWVyVHlwZXMSKwoJQmVlclR5cGVzGAEgAygLMg0uZWdwLkJlZXJUeXBlUglCZWVyVHlwZX'
-    'M=');
+    'CglCZWVyVHlwZXMSLAoKYmVlcl90eXBlcxgBIAMoCzINLmVncC5CZWVyVHlwZVIJYmVlclR5cG'
+    'Vz');
 
 @$core.Deprecated('Use shopDescriptor instead')
 const Shop$json = {
   '1': 'Shop',
   '2': [
-    {'1': 'ID', '3': 1, '4': 1, '5': 3, '10': 'ID'},
-    {'1': 'EventID', '3': 2, '4': 1, '5': 3, '10': 'EventID'},
-    {'1': 'Year', '3': 34, '4': 1, '5': 5, '10': 'Year'},
-    {'1': 'CategoryID', '3': 3, '4': 1, '5': 14, '6': '.egp.CategoryType', '10': 'CategoryID'},
-    {'1': 'CategoryName', '3': 35, '4': 1, '5': 9, '10': 'CategoryName'},
-    {'1': 'No', '3': 4, '4': 1, '5': 5, '10': 'No'},
-    {'1': 'ShopName', '3': 5, '4': 1, '5': 9, '10': 'ShopName'},
-    {'1': 'MenuName', '3': 6, '4': 1, '5': 9, '10': 'MenuName'},
-    {'1': 'MenuImageUrl', '3': 36, '4': 1, '5': 9, '10': 'MenuImageUrl'},
-    {'1': 'Phone', '3': 7, '4': 1, '5': 9, '10': 'Phone'},
-    {'1': 'Address', '3': 8, '4': 1, '5': 9, '10': 'Address'},
-    {'1': 'BusinessDays', '3': 9, '4': 1, '5': 9, '10': 'BusinessDays'},
-    {'1': 'RegularHoliday', '3': 10, '4': 1, '5': 9, '10': 'RegularHoliday'},
-    {'1': 'BusinessHours', '3': 11, '4': 1, '5': 9, '10': 'BusinessHours'},
-    {'1': 'ChargePrice', '3': 12, '4': 1, '5': 9, '10': 'ChargePrice'},
-    {'1': 'NormalizedChargePrice', '3': 13, '4': 1, '5': 5, '10': 'NormalizedChargePrice'},
-    {'1': 'SinglePrice', '3': 14, '4': 1, '5': 9, '10': 'SinglePrice'},
-    {'1': 'NormalizedSinglePrice', '3': 15, '4': 1, '5': 5, '10': 'NormalizedSinglePrice'},
-    {'1': 'SetPrice', '3': 16, '4': 1, '5': 9, '10': 'SetPrice'},
-    {'1': 'NormalizedSetPrice', '3': 17, '4': 1, '5': 5, '10': 'NormalizedSetPrice'},
-    {'1': 'BeerType', '3': 18, '4': 1, '5': 9, '10': 'BeerType'},
-    {'1': 'NeedsReservation', '3': 19, '4': 1, '5': 9, '10': 'NeedsReservation'},
-    {'1': 'NormalizedNeedsReservation', '3': 20, '4': 1, '5': 8, '10': 'NormalizedNeedsReservation'},
-    {'1': 'UseHachipay', '3': 21, '4': 1, '5': 9, '10': 'UseHachipay'},
-    {'1': 'NormalizedUseHachipay', '3': 22, '4': 1, '5': 8, '10': 'NormalizedUseHachipay'},
-    {'1': 'IsOpenHoliday', '3': 23, '4': 1, '5': 8, '10': 'IsOpenHoliday'},
-    {'1': 'IsIrregularHoliday', '3': 24, '4': 1, '5': 8, '10': 'IsIrregularHoliday'},
-    {'1': 'Latitude', '3': 25, '4': 1, '5': 1, '10': 'Latitude'},
-    {'1': 'Longitude', '3': 26, '4': 1, '5': 1, '10': 'Longitude'},
-    {'1': 'Distance', '3': 27, '4': 1, '5': 9, '10': 'Distance'},
-    {'1': 'WeekNumber', '3': 28, '4': 1, '5': 5, '10': 'WeekNumber'},
-    {'1': 'DayOfWeek', '3': 29, '4': 1, '5': 5, '10': 'DayOfWeek'},
-    {'1': 'StartTime', '3': 30, '4': 1, '5': 9, '10': 'StartTime'},
-    {'1': 'EndTime', '3': 31, '4': 1, '5': 9, '10': 'EndTime'},
-    {'1': 'IsHoliday', '3': 32, '4': 1, '5': 8, '10': 'IsHoliday'},
-    {'1': 'InCurrentSales', '3': 33, '4': 1, '5': 8, '10': 'InCurrentSales'},
-    {'1': 'IsStamped', '3': 37, '4': 1, '5': 8, '10': 'IsStamped'},
-    {'1': 'NumberOfTimes', '3': 38, '4': 1, '5': 5, '10': 'NumberOfTimes'},
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+    {'1': 'event_id', '3': 2, '4': 1, '5': 3, '10': 'eventId'},
+    {'1': 'year', '3': 34, '4': 1, '5': 5, '10': 'year'},
+    {'1': 'category_id', '3': 3, '4': 1, '5': 14, '6': '.egp.CategoryType', '10': 'categoryId'},
+    {'1': 'category_name', '3': 35, '4': 1, '5': 9, '10': 'categoryName'},
+    {'1': 'no', '3': 4, '4': 1, '5': 5, '10': 'no'},
+    {'1': 'shop_name', '3': 5, '4': 1, '5': 9, '10': 'shopName'},
+    {'1': 'menu_name', '3': 6, '4': 1, '5': 9, '10': 'menuName'},
+    {'1': 'menu_image_url', '3': 36, '4': 1, '5': 9, '10': 'menuImageUrl'},
+    {'1': 'phone', '3': 7, '4': 1, '5': 9, '10': 'phone'},
+    {'1': 'address', '3': 8, '4': 1, '5': 9, '10': 'address'},
+    {'1': 'business_days', '3': 9, '4': 1, '5': 9, '10': 'businessDays'},
+    {'1': 'regular_holiday', '3': 10, '4': 1, '5': 9, '10': 'regularHoliday'},
+    {'1': 'business_hours', '3': 11, '4': 1, '5': 9, '10': 'businessHours'},
+    {'1': 'charge_price', '3': 12, '4': 1, '5': 9, '10': 'chargePrice'},
+    {'1': 'normalized_charge_price', '3': 13, '4': 1, '5': 5, '10': 'normalizedChargePrice'},
+    {'1': 'single_price', '3': 14, '4': 1, '5': 9, '10': 'singlePrice'},
+    {'1': 'normalized_single_price', '3': 15, '4': 1, '5': 5, '10': 'normalizedSinglePrice'},
+    {'1': 'set_price', '3': 16, '4': 1, '5': 9, '10': 'setPrice'},
+    {'1': 'normalized_set_price', '3': 17, '4': 1, '5': 5, '10': 'normalizedSetPrice'},
+    {'1': 'beer_type', '3': 18, '4': 1, '5': 9, '10': 'beerType'},
+    {'1': 'needs_reservation', '3': 19, '4': 1, '5': 9, '10': 'needsReservation'},
+    {'1': 'normalized_needs_reservation', '3': 20, '4': 1, '5': 8, '10': 'normalizedNeedsReservation'},
+    {'1': 'use_hachipay', '3': 21, '4': 1, '5': 9, '10': 'useHachipay'},
+    {'1': 'normalized_use_hachipay', '3': 22, '4': 1, '5': 8, '10': 'normalizedUseHachipay'},
+    {'1': 'is_open_holiday', '3': 23, '4': 1, '5': 8, '10': 'isOpenHoliday'},
+    {'1': 'is_irregular_holiday', '3': 24, '4': 1, '5': 8, '10': 'isIrregularHoliday'},
+    {'1': 'latitude', '3': 25, '4': 1, '5': 1, '10': 'latitude'},
+    {'1': 'longitude', '3': 26, '4': 1, '5': 1, '10': 'longitude'},
+    {'1': 'distance', '3': 27, '4': 1, '5': 9, '10': 'distance'},
+    {'1': 'week_number', '3': 28, '4': 1, '5': 5, '10': 'weekNumber'},
+    {'1': 'day_of_week', '3': 29, '4': 1, '5': 5, '10': 'dayOfWeek'},
+    {'1': 'start_time', '3': 30, '4': 1, '5': 9, '10': 'startTime'},
+    {'1': 'end_time', '3': 31, '4': 1, '5': 9, '10': 'endTime'},
+    {'1': 'is_holiday', '3': 32, '4': 1, '5': 8, '10': 'isHoliday'},
+    {'1': 'in_current_sales', '3': 33, '4': 1, '5': 8, '10': 'inCurrentSales'},
+    {'1': 'is_stamped', '3': 37, '4': 1, '5': 8, '10': 'isStamped'},
+    {'1': 'number_of_times', '3': 38, '4': 1, '5': 5, '10': 'numberOfTimes'},
   ],
 };
 
 /// Descriptor for `Shop`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List shopDescriptor = $convert.base64Decode(
-    'CgRTaG9wEg4KAklEGAEgASgDUgJJRBIYCgdFdmVudElEGAIgASgDUgdFdmVudElEEhIKBFllYX'
-    'IYIiABKAVSBFllYXISMQoKQ2F0ZWdvcnlJRBgDIAEoDjIRLmVncC5DYXRlZ29yeVR5cGVSCkNh'
-    'dGVnb3J5SUQSIgoMQ2F0ZWdvcnlOYW1lGCMgASgJUgxDYXRlZ29yeU5hbWUSDgoCTm8YBCABKA'
-    'VSAk5vEhoKCFNob3BOYW1lGAUgASgJUghTaG9wTmFtZRIaCghNZW51TmFtZRgGIAEoCVIITWVu'
-    'dU5hbWUSIgoMTWVudUltYWdlVXJsGCQgASgJUgxNZW51SW1hZ2VVcmwSFAoFUGhvbmUYByABKA'
-    'lSBVBob25lEhgKB0FkZHJlc3MYCCABKAlSB0FkZHJlc3MSIgoMQnVzaW5lc3NEYXlzGAkgASgJ'
-    'UgxCdXNpbmVzc0RheXMSJgoOUmVndWxhckhvbGlkYXkYCiABKAlSDlJlZ3VsYXJIb2xpZGF5Ei'
-    'QKDUJ1c2luZXNzSG91cnMYCyABKAlSDUJ1c2luZXNzSG91cnMSIAoLQ2hhcmdlUHJpY2UYDCAB'
-    'KAlSC0NoYXJnZVByaWNlEjQKFU5vcm1hbGl6ZWRDaGFyZ2VQcmljZRgNIAEoBVIVTm9ybWFsaX'
-    'plZENoYXJnZVByaWNlEiAKC1NpbmdsZVByaWNlGA4gASgJUgtTaW5nbGVQcmljZRI0ChVOb3Jt'
-    'YWxpemVkU2luZ2xlUHJpY2UYDyABKAVSFU5vcm1hbGl6ZWRTaW5nbGVQcmljZRIaCghTZXRQcm'
-    'ljZRgQIAEoCVIIU2V0UHJpY2USLgoSTm9ybWFsaXplZFNldFByaWNlGBEgASgFUhJOb3JtYWxp'
-    'emVkU2V0UHJpY2USGgoIQmVlclR5cGUYEiABKAlSCEJlZXJUeXBlEioKEE5lZWRzUmVzZXJ2YX'
-    'Rpb24YEyABKAlSEE5lZWRzUmVzZXJ2YXRpb24SPgoaTm9ybWFsaXplZE5lZWRzUmVzZXJ2YXRp'
-    'b24YFCABKAhSGk5vcm1hbGl6ZWROZWVkc1Jlc2VydmF0aW9uEiAKC1VzZUhhY2hpcGF5GBUgAS'
-    'gJUgtVc2VIYWNoaXBheRI0ChVOb3JtYWxpemVkVXNlSGFjaGlwYXkYFiABKAhSFU5vcm1hbGl6'
-    'ZWRVc2VIYWNoaXBheRIkCg1Jc09wZW5Ib2xpZGF5GBcgASgIUg1Jc09wZW5Ib2xpZGF5Ei4KEk'
-    'lzSXJyZWd1bGFySG9saWRheRgYIAEoCFISSXNJcnJlZ3VsYXJIb2xpZGF5EhoKCExhdGl0dWRl'
-    'GBkgASgBUghMYXRpdHVkZRIcCglMb25naXR1ZGUYGiABKAFSCUxvbmdpdHVkZRIaCghEaXN0YW'
-    '5jZRgbIAEoCVIIRGlzdGFuY2USHgoKV2Vla051bWJlchgcIAEoBVIKV2Vla051bWJlchIcCglE'
-    'YXlPZldlZWsYHSABKAVSCURheU9mV2VlaxIcCglTdGFydFRpbWUYHiABKAlSCVN0YXJ0VGltZR'
-    'IYCgdFbmRUaW1lGB8gASgJUgdFbmRUaW1lEhwKCUlzSG9saWRheRggIAEoCFIJSXNIb2xpZGF5'
-    'EiYKDkluQ3VycmVudFNhbGVzGCEgASgIUg5JbkN1cnJlbnRTYWxlcxIcCglJc1N0YW1wZWQYJS'
-    'ABKAhSCUlzU3RhbXBlZBIkCg1OdW1iZXJPZlRpbWVzGCYgASgFUg1OdW1iZXJPZlRpbWVz');
+    'CgRTaG9wEg4KAmlkGAEgASgDUgJpZBIZCghldmVudF9pZBgCIAEoA1IHZXZlbnRJZBISCgR5ZW'
+    'FyGCIgASgFUgR5ZWFyEjIKC2NhdGVnb3J5X2lkGAMgASgOMhEuZWdwLkNhdGVnb3J5VHlwZVIK'
+    'Y2F0ZWdvcnlJZBIjCg1jYXRlZ29yeV9uYW1lGCMgASgJUgxjYXRlZ29yeU5hbWUSDgoCbm8YBC'
+    'ABKAVSAm5vEhsKCXNob3BfbmFtZRgFIAEoCVIIc2hvcE5hbWUSGwoJbWVudV9uYW1lGAYgASgJ'
+    'UghtZW51TmFtZRIkCg5tZW51X2ltYWdlX3VybBgkIAEoCVIMbWVudUltYWdlVXJsEhQKBXBob2'
+    '5lGAcgASgJUgVwaG9uZRIYCgdhZGRyZXNzGAggASgJUgdhZGRyZXNzEiMKDWJ1c2luZXNzX2Rh'
+    'eXMYCSABKAlSDGJ1c2luZXNzRGF5cxInCg9yZWd1bGFyX2hvbGlkYXkYCiABKAlSDnJlZ3VsYX'
+    'JIb2xpZGF5EiUKDmJ1c2luZXNzX2hvdXJzGAsgASgJUg1idXNpbmVzc0hvdXJzEiEKDGNoYXJn'
+    'ZV9wcmljZRgMIAEoCVILY2hhcmdlUHJpY2USNgoXbm9ybWFsaXplZF9jaGFyZ2VfcHJpY2UYDS'
+    'ABKAVSFW5vcm1hbGl6ZWRDaGFyZ2VQcmljZRIhCgxzaW5nbGVfcHJpY2UYDiABKAlSC3Npbmds'
+    'ZVByaWNlEjYKF25vcm1hbGl6ZWRfc2luZ2xlX3ByaWNlGA8gASgFUhVub3JtYWxpemVkU2luZ2'
+    'xlUHJpY2USGwoJc2V0X3ByaWNlGBAgASgJUghzZXRQcmljZRIwChRub3JtYWxpemVkX3NldF9w'
+    'cmljZRgRIAEoBVISbm9ybWFsaXplZFNldFByaWNlEhsKCWJlZXJfdHlwZRgSIAEoCVIIYmVlcl'
+    'R5cGUSKwoRbmVlZHNfcmVzZXJ2YXRpb24YEyABKAlSEG5lZWRzUmVzZXJ2YXRpb24SQAocbm9y'
+    'bWFsaXplZF9uZWVkc19yZXNlcnZhdGlvbhgUIAEoCFIabm9ybWFsaXplZE5lZWRzUmVzZXJ2YX'
+    'Rpb24SIQoMdXNlX2hhY2hpcGF5GBUgASgJUgt1c2VIYWNoaXBheRI2Chdub3JtYWxpemVkX3Vz'
+    'ZV9oYWNoaXBheRgWIAEoCFIVbm9ybWFsaXplZFVzZUhhY2hpcGF5EiYKD2lzX29wZW5faG9saW'
+    'RheRgXIAEoCFINaXNPcGVuSG9saWRheRIwChRpc19pcnJlZ3VsYXJfaG9saWRheRgYIAEoCFIS'
+    'aXNJcnJlZ3VsYXJIb2xpZGF5EhoKCGxhdGl0dWRlGBkgASgBUghsYXRpdHVkZRIcCglsb25naX'
+    'R1ZGUYGiABKAFSCWxvbmdpdHVkZRIaCghkaXN0YW5jZRgbIAEoCVIIZGlzdGFuY2USHwoLd2Vl'
+    'a19udW1iZXIYHCABKAVSCndlZWtOdW1iZXISHgoLZGF5X29mX3dlZWsYHSABKAVSCWRheU9mV2'
+    'VlaxIdCgpzdGFydF90aW1lGB4gASgJUglzdGFydFRpbWUSGQoIZW5kX3RpbWUYHyABKAlSB2Vu'
+    'ZFRpbWUSHQoKaXNfaG9saWRheRggIAEoCFIJaXNIb2xpZGF5EigKEGluX2N1cnJlbnRfc2FsZX'
+    'MYISABKAhSDmluQ3VycmVudFNhbGVzEh0KCmlzX3N0YW1wZWQYJSABKAhSCWlzU3RhbXBlZBIm'
+    'Cg9udW1iZXJfb2ZfdGltZXMYJiABKAVSDW51bWJlck9mVGltZXM=');
 
 @$core.Deprecated('Use shopLocationDescriptor instead')
 const ShopLocation$json = {
   '1': 'ShopLocation',
   '2': [
-    {'1': 'ID', '3': 1, '4': 1, '5': 3, '10': 'ID'},
-    {'1': 'ShopID', '3': 2, '4': 1, '5': 3, '10': 'ShopID'},
-    {'1': 'Latitude', '3': 3, '4': 1, '5': 1, '10': 'Latitude'},
-    {'1': 'Longitude', '3': 4, '4': 1, '5': 1, '10': 'Longitude'},
-    {'1': 'Location', '3': 5, '4': 1, '5': 9, '10': 'Location'},
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+    {'1': 'shop_id', '3': 2, '4': 1, '5': 3, '10': 'shopId'},
+    {'1': 'latitude', '3': 3, '4': 1, '5': 1, '10': 'latitude'},
+    {'1': 'longitude', '3': 4, '4': 1, '5': 1, '10': 'longitude'},
+    {'1': 'location', '3': 5, '4': 1, '5': 9, '10': 'location'},
   ],
 };
 
 /// Descriptor for `ShopLocation`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List shopLocationDescriptor = $convert.base64Decode(
-    'CgxTaG9wTG9jYXRpb24SDgoCSUQYASABKANSAklEEhYKBlNob3BJRBgCIAEoA1IGU2hvcElEEh'
-    'oKCExhdGl0dWRlGAMgASgBUghMYXRpdHVkZRIcCglMb25naXR1ZGUYBCABKAFSCUxvbmdpdHVk'
-    'ZRIaCghMb2NhdGlvbhgFIAEoCVIITG9jYXRpb24=');
+    'CgxTaG9wTG9jYXRpb24SDgoCaWQYASABKANSAmlkEhcKB3Nob3BfaWQYAiABKANSBnNob3BJZB'
+    'IaCghsYXRpdHVkZRgDIAEoAVIIbGF0aXR1ZGUSHAoJbG9uZ2l0dWRlGAQgASgBUglsb25naXR1'
+    'ZGUSGgoIbG9jYXRpb24YBSABKAlSCGxvY2F0aW9u');
 
 @$core.Deprecated('Use shopTimeDescriptor instead')
 const ShopTime$json = {
   '1': 'ShopTime',
   '2': [
-    {'1': 'ID', '3': 1, '4': 1, '5': 3, '10': 'ID'},
-    {'1': 'ShopID', '3': 2, '4': 1, '5': 3, '10': 'ShopID'},
-    {'1': 'WeekNumber', '3': 3, '4': 1, '5': 5, '10': 'WeekNumber'},
-    {'1': 'DayOfWeek', '3': 4, '4': 1, '5': 5, '10': 'DayOfWeek'},
-    {'1': 'StartTime', '3': 5, '4': 1, '5': 9, '10': 'StartTime'},
-    {'1': 'EndTime', '3': 6, '4': 1, '5': 9, '10': 'EndTime'},
-    {'1': 'IsHoliday', '3': 7, '4': 1, '5': 8, '10': 'IsHoliday'},
+    {'1': 'id', '3': 1, '4': 1, '5': 3, '10': 'id'},
+    {'1': 'shop_id', '3': 2, '4': 1, '5': 3, '10': 'shopId'},
+    {'1': 'week_number', '3': 3, '4': 1, '5': 5, '10': 'weekNumber'},
+    {'1': 'day_of_week', '3': 4, '4': 1, '5': 5, '10': 'dayOfWeek'},
+    {'1': 'start_time', '3': 5, '4': 1, '5': 9, '10': 'startTime'},
+    {'1': 'end_time', '3': 6, '4': 1, '5': 9, '10': 'endTime'},
+    {'1': 'is_holiday', '3': 7, '4': 1, '5': 8, '10': 'isHoliday'},
   ],
 };
 
 /// Descriptor for `ShopTime`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List shopTimeDescriptor = $convert.base64Decode(
-    'CghTaG9wVGltZRIOCgJJRBgBIAEoA1ICSUQSFgoGU2hvcElEGAIgASgDUgZTaG9wSUQSHgoKV2'
-    'Vla051bWJlchgDIAEoBVIKV2Vla051bWJlchIcCglEYXlPZldlZWsYBCABKAVSCURheU9mV2Vl'
-    'axIcCglTdGFydFRpbWUYBSABKAlSCVN0YXJ0VGltZRIYCgdFbmRUaW1lGAYgASgJUgdFbmRUaW'
-    '1lEhwKCUlzSG9saWRheRgHIAEoCFIJSXNIb2xpZGF5');
+    'CghTaG9wVGltZRIOCgJpZBgBIAEoA1ICaWQSFwoHc2hvcF9pZBgCIAEoA1IGc2hvcElkEh8KC3'
+    'dlZWtfbnVtYmVyGAMgASgFUgp3ZWVrTnVtYmVyEh4KC2RheV9vZl93ZWVrGAQgASgFUglkYXlP'
+    'ZldlZWsSHQoKc3RhcnRfdGltZRgFIAEoCVIJc3RhcnRUaW1lEhkKCGVuZF90aW1lGAYgASgJUg'
+    'dlbmRUaW1lEh0KCmlzX2hvbGlkYXkYByABKAhSCWlzSG9saWRheQ==');
 
 @$core.Deprecated('Use shopsTotalRequestDescriptor instead')
 const ShopsTotalRequest$json = {
   '1': 'ShopsTotalRequest',
   '2': [
-    {'1': 'Year', '3': 1, '4': 1, '5': 5, '10': 'Year'},
+    {'1': 'year', '3': 1, '4': 1, '5': 5, '10': 'year'},
   ],
 };
 
 /// Descriptor for `ShopsTotalRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List shopsTotalRequestDescriptor = $convert.base64Decode(
-    'ChFTaG9wc1RvdGFsUmVxdWVzdBISCgRZZWFyGAEgASgFUgRZZWFy');
+    'ChFTaG9wc1RvdGFsUmVxdWVzdBISCgR5ZWFyGAEgASgFUgR5ZWFy');
 
 @$core.Deprecated('Use shopsTotalResponseDescriptor instead')
 const ShopsTotalResponse$json = {
   '1': 'ShopsTotalResponse',
   '2': [
-    {'1': 'TotalNum', '3': 1, '4': 1, '5': 3, '10': 'TotalNum'},
+    {'1': 'total_num', '3': 1, '4': 1, '5': 3, '10': 'totalNum'},
   ],
 };
 
 /// Descriptor for `ShopsTotalResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List shopsTotalResponseDescriptor = $convert.base64Decode(
-    'ChJTaG9wc1RvdGFsUmVzcG9uc2USGgoIVG90YWxOdW0YASABKANSCFRvdGFsTnVt');
+    'ChJTaG9wc1RvdGFsUmVzcG9uc2USGwoJdG90YWxfbnVtGAEgASgDUgh0b3RhbE51bQ==');
 
 @$core.Deprecated('Use shopsRequestDescriptor instead')
 const ShopsRequest$json = {
   '1': 'ShopsRequest',
   '2': [
-    {'1': 'SearchTypes', '3': 1, '4': 3, '5': 14, '6': '.egp.SearchType', '10': 'SearchTypes'},
-    {'1': 'UserId', '3': 2, '4': 1, '5': 9, '10': 'UserId'},
-    {'1': 'Keyword', '3': 3, '4': 1, '5': 9, '10': 'Keyword'},
-    {'1': 'Year', '3': 4, '4': 1, '5': 5, '10': 'Year'},
+    {'1': 'search_types', '3': 1, '4': 3, '5': 14, '6': '.egp.SearchType', '10': 'searchTypes'},
+    {'1': 'user_id', '3': 2, '4': 1, '5': 9, '10': 'userId'},
+    {'1': 'keyword', '3': 3, '4': 1, '5': 9, '10': 'keyword'},
+    {'1': 'year', '3': 4, '4': 1, '5': 5, '10': 'year'},
+    {'1': 'sort_order', '3': 5, '4': 1, '5': 14, '6': '.egp.SortOrderType', '10': 'sortOrder'},
+    {'1': 'latitude', '3': 6, '4': 1, '5': 1, '10': 'latitude'},
+    {'1': 'longitude', '3': 7, '4': 1, '5': 1, '10': 'longitude'},
   ],
 };
 
 /// Descriptor for `ShopsRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List shopsRequestDescriptor = $convert.base64Decode(
-    'CgxTaG9wc1JlcXVlc3QSMQoLU2VhcmNoVHlwZXMYASADKA4yDy5lZ3AuU2VhcmNoVHlwZVILU2'
-    'VhcmNoVHlwZXMSFgoGVXNlcklkGAIgASgJUgZVc2VySWQSGAoHS2V5d29yZBgDIAEoCVIHS2V5'
-    'd29yZBISCgRZZWFyGAQgASgFUgRZZWFy');
+    'CgxTaG9wc1JlcXVlc3QSMgoMc2VhcmNoX3R5cGVzGAEgAygOMg8uZWdwLlNlYXJjaFR5cGVSC3'
+    'NlYXJjaFR5cGVzEhcKB3VzZXJfaWQYAiABKAlSBnVzZXJJZBIYCgdrZXl3b3JkGAMgASgJUgdr'
+    'ZXl3b3JkEhIKBHllYXIYBCABKAVSBHllYXISMQoKc29ydF9vcmRlchgFIAEoDjISLmVncC5Tb3'
+    'J0T3JkZXJUeXBlUglzb3J0T3JkZXISGgoIbGF0aXR1ZGUYBiABKAFSCGxhdGl0dWRlEhwKCWxv'
+    'bmdpdHVkZRgHIAEoAVIJbG9uZ2l0dWRl');
 
 @$core.Deprecated('Use shopsResponseDescriptor instead')
 const ShopsResponse$json = {
   '1': 'ShopsResponse',
   '2': [
-    {'1': 'Shops', '3': 1, '4': 3, '5': 11, '6': '.egp.Shop', '10': 'Shops'},
+    {'1': 'shops', '3': 1, '4': 3, '5': 11, '6': '.egp.Shop', '10': 'shops'},
   ],
 };
 
 /// Descriptor for `ShopsResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List shopsResponseDescriptor = $convert.base64Decode(
-    'Cg1TaG9wc1Jlc3BvbnNlEh8KBVNob3BzGAEgAygLMgkuZWdwLlNob3BSBVNob3Bz');
+    'Cg1TaG9wc1Jlc3BvbnNlEh8KBXNob3BzGAEgAygLMgkuZWdwLlNob3BSBXNob3Bz');
 
 @$core.Deprecated('Use shopRequestDescriptor instead')
 const ShopRequest$json = {
   '1': 'ShopRequest',
   '2': [
-    {'1': 'UserId', '3': 1, '4': 1, '5': 9, '10': 'UserId'},
-    {'1': 'ShopId', '3': 2, '4': 1, '5': 3, '10': 'ShopId'},
+    {'1': 'user_id', '3': 1, '4': 1, '5': 9, '10': 'userId'},
+    {'1': 'shop_id', '3': 2, '4': 1, '5': 3, '10': 'shopId'},
   ],
 };
 
 /// Descriptor for `ShopRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List shopRequestDescriptor = $convert.base64Decode(
-    'CgtTaG9wUmVxdWVzdBIWCgZVc2VySWQYASABKAlSBlVzZXJJZBIWCgZTaG9wSWQYAiABKANSBl'
-    'Nob3BJZA==');
+    'CgtTaG9wUmVxdWVzdBIXCgd1c2VyX2lkGAEgASgJUgZ1c2VySWQSFwoHc2hvcF9pZBgCIAEoA1'
+    'IGc2hvcElk');
 
 @$core.Deprecated('Use shopResponseDescriptor instead')
 const ShopResponse$json = {
   '1': 'ShopResponse',
   '2': [
-    {'1': 'Shop', '3': 1, '4': 1, '5': 11, '6': '.egp.Shop', '10': 'Shop'},
+    {'1': 'shop', '3': 1, '4': 1, '5': 11, '6': '.egp.Shop', '10': 'shop'},
   ],
 };
 
 /// Descriptor for `ShopResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List shopResponseDescriptor = $convert.base64Decode(
-    'CgxTaG9wUmVzcG9uc2USHQoEU2hvcBgBIAEoCzIJLmVncC5TaG9wUgRTaG9w');
+    'CgxTaG9wUmVzcG9uc2USHQoEc2hvcBgBIAEoCzIJLmVncC5TaG9wUgRzaG9w');
 
 @$core.Deprecated('Use stampRequestDescriptor instead')
 const StampRequest$json = {
   '1': 'StampRequest',
   '2': [
-    {'1': 'UserId', '3': 1, '4': 1, '5': 9, '10': 'UserId'},
-    {'1': 'ShopId', '3': 2, '4': 1, '5': 3, '10': 'ShopId'},
+    {'1': 'user_id', '3': 1, '4': 1, '5': 9, '10': 'userId'},
+    {'1': 'shop_id', '3': 2, '4': 1, '5': 3, '10': 'shopId'},
   ],
 };
 
 /// Descriptor for `StampRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List stampRequestDescriptor = $convert.base64Decode(
-    'CgxTdGFtcFJlcXVlc3QSFgoGVXNlcklkGAEgASgJUgZVc2VySWQSFgoGU2hvcElkGAIgASgDUg'
-    'ZTaG9wSWQ=');
+    'CgxTdGFtcFJlcXVlc3QSFwoHdXNlcl9pZBgBIAEoCVIGdXNlcklkEhcKB3Nob3BfaWQYAiABKA'
+    'NSBnNob3BJZA==');
 
 @$core.Deprecated('Use stampResponseDescriptor instead')
 const StampResponse$json = {
   '1': 'StampResponse',
   '2': [
-    {'1': 'NumberOfTimes', '3': 1, '4': 1, '5': 5, '10': 'NumberOfTimes'},
+    {'1': 'number_of_times', '3': 1, '4': 1, '5': 5, '10': 'numberOfTimes'},
   ],
 };
 
 /// Descriptor for `StampResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List stampResponseDescriptor = $convert.base64Decode(
-    'Cg1TdGFtcFJlc3BvbnNlEiQKDU51bWJlck9mVGltZXMYASABKAVSDU51bWJlck9mVGltZXM=');
+    'Cg1TdGFtcFJlc3BvbnNlEiYKD251bWJlcl9vZl90aW1lcxgBIAEoBVINbnVtYmVyT2ZUaW1lcw'
+    '==');
 

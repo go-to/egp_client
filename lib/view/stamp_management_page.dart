@@ -133,7 +133,7 @@ class _StampManagementPageState extends ConsumerState<StampManagementPage> {
                             return ShopDetailPage(
                                 year: shop.year,
                                 no: shop.no,
-                                shopId: shop.iD.toInt(),
+                                shopId: shop.id.toInt(),
                                 shopName: shop.shopName,
                                 address: shop.address);
                           }),
