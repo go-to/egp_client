@@ -19,6 +19,7 @@ import '../provider/marker_provider.dart';
 import '../provider/shop_provider.dart';
 import '../service/shop_service.dart';
 import '../view/shop_detail_page.dart';
+import '../icon/custom_icons.dart' as custom_icon;
 
 class CustomMarker {
   final String id;
@@ -894,7 +895,9 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
               ? Positioned(
                   right: Config.currentPositionButtonPositionRight,
                   bottom: Config.currentPositionButtonPositionBottom +
-                      (selectedMarkerId != null ? 200 : 30),
+                      (selectedMarkerId != null
+                          ? Config.buttonMarginBottomWhenCardOpen
+                          : Config.buttonMarginBottomNormal),
                   child: _goToCurrentPositionButton(context),
                 )
               : Container(),
@@ -1154,11 +1157,11 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
           // ボトムシート表示中に地図アイコンを表示
           _draggableController.isAttached &&
-                  _draggableController.size > Config.bottomSheetMinSize * 1.5
+                  _draggableController.size > Config.bottomSheetMinSize * 7
               ? Positioned(
-                  right: Config.currentPositionButtonPositionRight,
-                  bottom: Config.currentPositionButtonPositionBottom +
-                      (selectedMarkerId != null ? 200 : 30),
+                  right: Config.showMapButtonPositionRight,
+                  bottom: Config.showMapButtonPositionBottom +
+                      Config.buttonMarginBottomNormal,
                   child: _showMapButton(context),
                 )
               : Container(),
@@ -1257,18 +1260,35 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        minimumSize: const Size(Config.currentPositionButtonWidth,
-            Config.currentPositionButtonHeight),
+        minimumSize:
+            const Size(Config.showMapButtonWidth, Config.showMapButtonHeight),
+        maximumSize:
+            const Size(Config.showMapButtonWidth, Config.showMapButtonHeight),
         backgroundColor: colorScheme.secondary,
         foregroundColor: colorScheme.primary,
-        shape: const CircleBorder(),
       ),
       onPressed: () async {
         setState(() {
           _draggableController.reset();
         });
       },
-      child: const Icon(Icons.map_outlined),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Icon(
+            custom_icon.Custom.map,
+            size: Config.iconSizeSmall,
+            color: colorScheme.primary,
+          ),
+          Text(
+            Config.showMap,
+            style: TextStyle(
+              fontSize: Config.fontSizeNormal,
+              color: colorScheme.primary,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
