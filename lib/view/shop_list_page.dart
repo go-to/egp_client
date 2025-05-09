@@ -129,7 +129,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
   Marker _createTempMarker(pb.Shop shop) {
     return Marker(
-      markerId: MarkerId('${shop.iD}'),
+      markerId: MarkerId('${shop.id}'),
       position: LatLng(shop.latitude, shop.longitude),
       icon: shopDefaultIcon,
     );
@@ -211,9 +211,9 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     for (var shop in shops.shops) {
       _customMarkers.add(
         CustomMarker(
-          id: shop.iD.toString(),
+          id: shop.id.toString(),
           no: shop.no,
-          categoryId: shop.categoryID,
+          categoryId: shop.categoryId,
           position: LatLng(shop.latitude, shop.longitude),
           zIndex: 0.0,
           inCurrentSales: shop.inCurrentSales,
@@ -755,7 +755,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                 return ShopDetailPage(
                                     year: shop.year,
                                     no: shop.no,
-                                    shopId: shop.iD.toInt(),
+                                    shopId: shop.id.toInt(),
                                     shopName: shop.shopName,
                                     address: shop.address);
                               }),
@@ -979,7 +979,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                                 return ShopDetailPage(
                                                     year: shop.year,
                                                     no: shop.no,
-                                                    shopId: shop.iD.toInt(),
+                                                    shopId: shop.id.toInt(),
                                                     shopName: shop.shopName,
                                                     address: shop.address);
                                               }),

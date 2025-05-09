@@ -61,7 +61,7 @@ class StampCard extends StatelessWidget {
                 Stack(
                   children: [
                     for (int i = 0; i < shop.numberOfTimes; i++) ...{
-                      paintStamp(userId, shop.iD.toInt(), i)
+                      paintStamp(userId, shop.id.toInt(), i)
                     }
                   ],
                 ),
