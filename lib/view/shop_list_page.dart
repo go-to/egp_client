@@ -946,163 +946,196 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: ListView.separated(
-                                controller: scrollController,
-                                itemCount: shops!.shops.length,
-                                separatorBuilder: (context, index) =>
-                                    const Divider(height: 1),
-                                itemBuilder: (context, index) {
-                                  final shop = shops.shops.elementAt(index);
-                                  final attributes = {
-                                    Config.shopCardAttributeMenu: shop.menuName,
-                                    Config.shopCardAttributeAddress:
-                                        shop.address,
-                                    Config.shopCardAttributeBusinessHours:
-                                        shop.businessHours,
-                                  };
-                                  return GestureDetector(
-                                    onTap: () async {
-                                      final result = await Navigator.of(context)
-                                          .push<bool>(
-                                        MaterialPageRoute(builder: (context) {
-                                          final shop =
-                                              shops.shops.elementAt(index);
-                                          return ShopDetailPage(
-                                              year: shop.year,
-                                              no: shop.no,
-                                              shopId: shop.iD.toInt(),
-                                              shopName: shop.shopName,
-                                              address: shop.address);
-                                        }),
-                                      ).then((onValue) async {
-                                        // 遷移先ページから戻ってきたあとの処理
-                                        // 検索条件を取得
-                                        final searchCondition = ref
-                                            .read(searchConditionProvider
-                                                .notifier)
-                                            .getSearchCondition();
-                                        // 検索キーワードを取得
-                                        final searchKeyword = ref
-                                            .read(
-                                                searchKeywordProvider.notifier)
-                                            .getSearchKeyword();
-                                        // 店舗情報を取得
-                                        final shops = await ref
-                                            .read(
-                                                shopProvider(context).notifier)
-                                            .getShops(context, searchCondition,
-                                                searchKeyword);
-                                        if (shops != null) {
-                                          // マーカー情報を更新
-                                          Future.sync(
-                                              () => _setCustomMarkers(shops));
-                                          final selectedMarkerId = ref
-                                              .read(selectedMarkerProvider
-                                                  .notifier)
-                                              .getSelectedMarker();
-                                          _createCustomMarkers(
-                                              selectedMarkerId);
-                                        }
-                                        // マーカーの選択状態を解除
-                                        ref
-                                            .read(
-                                                selectedMarkerProvider.notifier)
-                                            .clearSelection();
-                                      });
-                                    },
-                                    child: Container(
-                                      height: 180,
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8),
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              const SizedBox(height: 20),
-                                              ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                                child: Image.network(
-                                                  shop.menuImageUrl,
-                                                  fit: BoxFit.cover,
-                                                  height: 140,
-                                                  width: 160,
-                                                  loadingBuilder: (context,
-                                                      child, loadingProgress) {
-                                                    if (loadingProgress ==
-                                                        null) {
-                                                      return child;
-                                                    }
-                                                    return Center(
-                                                      child:
-                                                          CircularProgressIndicator(
-                                                        value: loadingProgress
-                                                                    .expectedTotalBytes !=
-                                                                null
-                                                            ? loadingProgress
-                                                                    .cumulativeBytesLoaded /
-                                                                loadingProgress
-                                                                    .expectedTotalBytes!
-                                                            : null,
-                                                      ),
-                                                    );
-                                                  },
-                                                  errorBuilder: (context, error,
-                                                      stackTrace) {
-                                                    return Icon(Icons.error);
-                                                  },
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          // ),
-                                          const SizedBox(width: 12),
-                                          Expanded(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
+                          shops!.shops.isNotEmpty
+                              ? Expanded(
+                                  child: ListView.separated(
+                                      controller: scrollController,
+                                      itemCount: shops.shops.length,
+                                      separatorBuilder: (context, index) =>
+                                          const Divider(height: 1),
+                                      itemBuilder: (context, index) {
+                                        final shop =
+                                            shops.shops.elementAt(index);
+                                        final attributes = {
+                                          Config.shopCardAttributeMenu:
+                                              shop.menuName,
+                                          Config.shopCardAttributeAddress:
+                                              shop.address,
+                                          Config.shopCardAttributeBusinessHours:
+                                              shop.businessHours,
+                                        };
+                                        return GestureDetector(
+                                          onTap: () async {
+                                            final result =
+                                                await Navigator.of(context)
+                                                    .push<bool>(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                                final shop = shops.shops
+                                                    .elementAt(index);
+                                                return ShopDetailPage(
+                                                    year: shop.year,
+                                                    no: shop.no,
+                                                    shopId: shop.iD.toInt(),
+                                                    shopName: shop.shopName,
+                                                    address: shop.address);
+                                              }),
+                                            ).then((onValue) async {
+                                              // 遷移先ページから戻ってきたあとの処理
+                                              // 検索条件を取得
+                                              final searchCondition = ref
+                                                  .read(searchConditionProvider
+                                                      .notifier)
+                                                  .getSearchCondition();
+                                              // 検索キーワードを取得
+                                              final searchKeyword = ref
+                                                  .read(searchKeywordProvider
+                                                      .notifier)
+                                                  .getSearchKeyword();
+                                              // 店舗情報を取得
+                                              final shops = await ref
+                                                  .read(shopProvider(context)
+                                                      .notifier)
+                                                  .getShops(
+                                                      context,
+                                                      searchCondition,
+                                                      searchKeyword);
+                                              if (shops != null) {
+                                                // マーカー情報を更新
+                                                Future.sync(() =>
+                                                    _setCustomMarkers(shops));
+                                                final selectedMarkerId = ref
+                                                    .read(selectedMarkerProvider
+                                                        .notifier)
+                                                    .getSelectedMarker();
+                                                _createCustomMarkers(
+                                                    selectedMarkerId);
+                                              }
+                                              // マーカーの選択状態を解除
+                                              ref
+                                                  .read(selectedMarkerProvider
+                                                      .notifier)
+                                                  .clearSelection();
+                                            });
+                                          },
+                                          child: Container(
+                                            height: 180,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                            child: Row(
                                               crossAxisAlignment:
                                                   CrossAxisAlignment.start,
                                               children: [
+                                                Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
                                                     const SizedBox(height: 20),
-                                                    Text(
-                                                        '${shop.no}: ${shop.shopName}',
-                                                        style: TextStyle(
-                                                            fontSize: Config
-                                                                .fontSizeMiddleLarge,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold)),
-                                                    const SizedBox(height: 4),
-                                                  ] +
-                                                  attributes.entries
-                                                      .map((entry) {
-                                                    return Padding(
-                                                      padding: EdgeInsets.only(
-                                                          bottom: 4),
-                                                      child: Text(
-                                                        '${entry.key}: ${entry.value}',
-                                                        style: TextStyle(
-                                                            fontSize: Config
-                                                                .fontSizeVerySmall),
+                                                    ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                      child: Image.network(
+                                                        shop.menuImageUrl,
+                                                        fit: BoxFit.cover,
+                                                        height: 140,
+                                                        width: 160,
+                                                        loadingBuilder: (context,
+                                                            child,
+                                                            loadingProgress) {
+                                                          if (loadingProgress ==
+                                                              null) {
+                                                            return child;
+                                                          }
+                                                          return Center(
+                                                            child:
+                                                                CircularProgressIndicator(
+                                                              value: loadingProgress
+                                                                          .expectedTotalBytes !=
+                                                                      null
+                                                                  ? loadingProgress
+                                                                          .cumulativeBytesLoaded /
+                                                                      loadingProgress
+                                                                          .expectedTotalBytes!
+                                                                  : null,
+                                                            ),
+                                                          );
+                                                        },
+                                                        errorBuilder: (context,
+                                                            error, stackTrace) {
+                                                          return Icon(
+                                                              Icons.error);
+                                                        },
                                                       ),
-                                                    );
-                                                  }).toList(),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const SizedBox(width: 12),
+                                                Expanded(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                          const SizedBox(
+                                                              height: 20),
+                                                          Text(
+                                                              '${shop.no}: ${shop.shopName}',
+                                                              style: TextStyle(
+                                                                  fontSize: Config
+                                                                      .fontSizeMiddleLarge,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold)),
+                                                          const SizedBox(
+                                                              height: 4),
+                                                        ] +
+                                                        attributes.entries
+                                                            .map((entry) {
+                                                          return Padding(
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    bottom: 4),
+                                                            child: Text(
+                                                              '${entry.key}: ${entry.value}',
+                                                              style: TextStyle(
+                                                                  fontSize: Config
+                                                                      .fontSizeVerySmall),
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                }),
-                          ),
+                                        );
+                                      }),
+                                )
+                              : Expanded(
+                                  child: ListView(
+                                    controller: scrollController,
+                                    children: [
+                                      Container(
+                                        alignment: Alignment.topLeft,
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 20, horizontal: 20),
+                                        child: Text(
+                                          Config.noMatchingShops,
+                                          style: TextStyle(
+                                            color: colorScheme.primary,
+                                            fontSize:
+                                                Config.fontSizeMiddleLarge,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
                         ],
                       ),
                     );

@@ -43,6 +43,7 @@ class Config {
   // ボトムシート
   static const double bottomSheetMinSize = 0.05;
   static const double bottomSheetMaxSize = 0.785;
+  static const String noMatchingShops = '該当する店舗はありません';
 
   // 現在地ボタン
   static const double currentPositionButtonWidth = 55;
