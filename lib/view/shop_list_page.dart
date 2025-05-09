@@ -931,7 +931,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                       decoration: BoxDecoration(
                         color: colorScheme.surface,
                         borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(16)),
+                            BorderRadius.vertical(top: Radius.circular(48)),
                       ),
                       child: Column(
                         children: [
