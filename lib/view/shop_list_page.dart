@@ -948,8 +948,9 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                               });
                             },
                             child: Container(
+                              height: 39,
                               width: double.infinity,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              padding: const EdgeInsets.only(bottom: 8),
                               child: Center(
                                 child: Container(
                                   width: 40,
@@ -975,27 +976,47 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                             child: _draggableController.isAttached &&
                                     _draggableController.size >=
                                         Config.bottomSheetMinSize * 2.5
-                                ? DropdownButton<int>(
-                                    isExpanded: true,
-                                    value: sortOrder,
-                                    items: sortOrderList.entries.map((entry) {
-                                      return DropdownMenuItem<int>(
-                                        value: entry.key,
-                                        child: Text(entry.value),
-                                      );
-                                    }).toList(),
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        // ソート順を設定
-                                        ref
-                                            .read(sortOrderProvider.notifier)
-                                            .setSortOrder(value);
-                                        // 店舗情報を取得
-                                        _searchShops();
-                                        // スクロール位置をリセット
-                                        // scrollController.jumpTo(0);
-                                      }
-                                    },
+                                ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      SizedBox(
+                                        child: Text(
+                                          Config.sortOrderLabel,
+                                          style: TextStyle(
+                                            fontSize:
+                                                Config.fontSizeMiddleLarge,
+                                            color: colorScheme.primary,
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Expanded(
+                                          child: DropdownButton<int>(
+                                        isExpanded: true,
+                                        value: sortOrder,
+                                        items:
+                                            sortOrderList.entries.map((entry) {
+                                          return DropdownMenuItem<int>(
+                                            value: entry.key,
+                                            child: Text(entry.value),
+                                          );
+                                        }).toList(),
+                                        onChanged: (value) {
+                                          if (value != null) {
+                                            // ソート順を設定
+                                            ref
+                                                .read(
+                                                    sortOrderProvider.notifier)
+                                                .setSortOrder(value);
+                                            // 店舗情報を取得
+                                            _searchShops();
+                                            // スクロール位置をリセット
+                                            // scrollController.jumpTo(0);
+                                          }
+                                        },
+                                      )),
+                                    ],
                                   )
                                 : null,
                           ),
@@ -1019,9 +1040,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                         };
                                         return GestureDetector(
                                           onTap: () async {
-                                            final result =
-                                                await Navigator.of(context)
-                                                    .push<bool>(
+                                            await Navigator.of(context)
+                                                .push<bool>(
                                               MaterialPageRoute(
                                                   builder: (context) {
                                                 final shop = shops.shops
