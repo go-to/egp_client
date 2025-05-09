@@ -1074,42 +1074,111 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                                       CrossAxisAlignment.start,
                                                   children: [
                                                     const SizedBox(height: 20),
-                                                    ClipRRect(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8),
-                                                      child: Image.network(
-                                                        shop.menuImageUrl,
-                                                        fit: BoxFit.cover,
-                                                        height: 140,
-                                                        width: 160,
-                                                        loadingBuilder: (context,
-                                                            child,
-                                                            loadingProgress) {
-                                                          if (loadingProgress ==
-                                                              null) {
-                                                            return child;
-                                                          }
-                                                          return Center(
+                                                    Stack(
+                                                      children: [
+                                                        ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(8),
+                                                          child: Image.network(
+                                                            shop.menuImageUrl,
+                                                            fit: BoxFit.cover,
+                                                            height: 140,
+                                                            width: 160,
+                                                            loadingBuilder:
+                                                                (context, child,
+                                                                    loadingProgress) {
+                                                              if (loadingProgress ==
+                                                                  null) {
+                                                                return child;
+                                                              }
+                                                              return Center(
+                                                                child:
+                                                                    CircularProgressIndicator(
+                                                                  value: loadingProgress
+                                                                              .expectedTotalBytes !=
+                                                                          null
+                                                                      ? loadingProgress
+                                                                              .cumulativeBytesLoaded /
+                                                                          loadingProgress
+                                                                              .expectedTotalBytes!
+                                                                      : null,
+                                                                ),
+                                                              );
+                                                            },
+                                                            errorBuilder:
+                                                                (context, error,
+                                                                    stackTrace) {
+                                                              return Icon(
+                                                                  Icons.error);
+                                                            },
+                                                          ),
+                                                        ),
+                                                        // スタンプ押下済み
+                                                        if (shop.isStamped)
+                                                          Container(
+                                                            height: 140,
+                                                            width: 160,
+                                                            color: Colors.black
+                                                                .withValues(
+                                                                    alpha: 0.7),
+                                                          ),
+                                                        if (shop.isStamped)
+                                                          Positioned(
                                                             child:
-                                                                CircularProgressIndicator(
-                                                              value: loadingProgress
-                                                                          .expectedTotalBytes !=
-                                                                      null
-                                                                  ? loadingProgress
-                                                                          .cumulativeBytesLoaded /
-                                                                      loadingProgress
-                                                                          .expectedTotalBytes!
-                                                                  : null,
+                                                                Transform.scale(
+                                                              scale: 1.2,
+                                                              filterQuality:
+                                                                  FilterQuality
+                                                                      .high,
+                                                              child: Image.asset(
+                                                                  Config
+                                                                      .isStampedSelectedImagePath,
+                                                                  width: 150,
+                                                                  height: 150),
                                                             ),
-                                                          );
-                                                        },
-                                                        errorBuilder: (context,
-                                                            error, stackTrace) {
-                                                          return Icon(
-                                                              Icons.error);
-                                                        },
-                                                      ),
+                                                          ),
+                                                        // 距離
+                                                        Positioned(
+                                                          top: 8,
+                                                          right: 8,
+                                                          child: Align(
+                                                            alignment: Alignment
+                                                                .center,
+                                                            child: Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          10,
+                                                                      vertical:
+                                                                          2),
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .amberAccent,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8),
+                                                              ),
+                                                              child: Text(
+                                                                shop.distance,
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: Config
+                                                                      .fontSizeNormal,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),

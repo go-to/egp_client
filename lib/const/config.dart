@@ -75,7 +75,7 @@ class Config {
   // 並び順
   static const Map<int, String> sortOrderList = {
     0: '店舗No.順',
-    1: '現在地からの距離順',
+    1: '現在地から近い順',
   };
 
   // 店舗詳細
