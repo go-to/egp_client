@@ -6,6 +6,7 @@ import 'dart:ui' as ui;
 import 'package:egp_client/grpc_gen/egp.pb.dart';
 import 'package:egp_client/provider/search_condition_provider.dart';
 import 'package:egp_client/provider/search_keyword_provider.dart';
+import 'package:egp_client/provider/sort_order_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -60,6 +61,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   bool _locationPermissionGranted = false;
   bool _mapCreated = false;
   late DraggableScrollableController _draggableController;
+  late ScrollController _scrollController;
   late GoogleMapController _mapController;
   final TextEditingController _searchController = TextEditingController();
   late StreamSubscription<Position>? _positionStream;
@@ -114,8 +116,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   }
 
   void _initializeMarkers() async {
-    final shops =
-        await ref.read(shopProvider(context).notifier).getShops(context);
+    final shops = await _searchShops();
     if (shops != null) {
       // 初期マーカーとしてデフォルトアイコンを表示
       _setCustomMarkers(shops);
@@ -447,19 +448,35 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     }
   }
 
-  // キーワード検索
-  void _keywordSearch() async {
-    final query = _searchController.text.trim();
+  // 現在地情報を取得
+  Future<Position> _getCurrentPosition() async {
+    return await Geolocator.getCurrentPosition(
+        locationSettings: locationSettings);
+  }
+
+  // 店舗情報取得
+  Future<ShopsResponse?> _searchShops() async {
     // 検索条件を取得
     final searchCondition =
         ref.read(searchConditionProvider.notifier).getSearchCondition();
     // 検索キーワードを取得
     final searchKeyword =
-        ref.read(searchKeywordProvider.notifier).setSearchKeyword(query);
+        ref.read(searchKeywordProvider.notifier).getSearchKeyword();
+    // ソート順
+    final sortOrder = ref.read(sortOrderProvider.notifier).getSortOrder();
+    // 緯度・経度
+    final position = await _getCurrentPosition();
+    final latitude = position.latitude;
+    final longitude = position.longitude;
+
     // 店舗情報を取得
-    final shops = await ref
-        .read(shopProvider(context).notifier)
-        .getShops(context, searchCondition, searchKeyword);
+    final shops = await ref.read(shopProvider(context).notifier).getShops(
+        context,
+        searchCondition,
+        searchKeyword,
+        sortOrder,
+        latitude,
+        longitude);
     if (shops != null) {
       // マーカー情報を更新
       Future.sync(() => _setCustomMarkers(shops));
@@ -469,6 +486,22 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     }
     // マーカーの選択状態を解除
     ref.read(selectedMarkerProvider.notifier).clearSelection();
+
+    // ボトムシートのスクロール位置を先頭に戻す
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(0);
+    }
+
+    return shops;
+  }
+
+  // キーワード検索
+  void _keywordSearch() async {
+    final query = _searchController.text.trim();
+    // 検索キーワードを設定
+    ref.read(searchKeywordProvider.notifier).setSearchKeyword(query);
+    // 店舗情報を取得
+    _searchShops();
   }
 
   @override
@@ -761,31 +794,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                               }),
                             ).then((onValue) async {
                               // 遷移先ページから戻ってきたあとの処理
-                              // 検索条件を取得
-                              final searchCondition = ref
-                                  .read(searchConditionProvider.notifier)
-                                  .getSearchCondition();
-                              // 検索キーワードを取得
-                              final searchKeyword = ref
-                                  .read(searchKeywordProvider.notifier)
-                                  .getSearchKeyword();
                               // 店舗情報を取得
-                              final shops = await ref
-                                  .read(shopProvider(context).notifier)
-                                  .getShops(
-                                      context, searchCondition, searchKeyword);
-                              if (shops != null) {
-                                // マーカー情報を更新
-                                Future.sync(() => _setCustomMarkers(shops));
-                                final selectedMarkerId = ref
-                                    .read(selectedMarkerProvider.notifier)
-                                    .getSelectedMarker();
-                                _createCustomMarkers(selectedMarkerId);
-                              }
-                              // マーカーの選択状態を解除
-                              ref
-                                  .read(selectedMarkerProvider.notifier)
-                                  .clearSelection();
+                              _searchShops();
                             });
                           },
                           child: Card(
@@ -906,6 +916,9 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
           shopListAsync.when(
             data: (shops) {
               if (_locationPermissionGranted) {
+                final sortOrder = ref.watch(sortOrderProvider);
+                final sortOrderList =
+                    ref.read(sortOrderProvider.notifier).getSortOrderList();
                 return DraggableScrollableSheet(
                   expand: false,
                   controller: _draggableController,
@@ -913,6 +926,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                   minChildSize: Config.bottomSheetMinSize,
                   maxChildSize: Config.bottomSheetMaxSize,
                   builder: (context, scrollController) {
+                    _scrollController = scrollController;
                     return Container(
                       decoration: BoxDecoration(
                         color: colorScheme.surface,
@@ -949,10 +963,46 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                               ),
                             ),
                           ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 100),
+                            height: _draggableController.isAttached &&
+                                    _draggableController.size >=
+                                        Config.bottomSheetMinSize * 2.5
+                                ? 60
+                                : 0,
+                            curve: Curves.easeInOut,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: _draggableController.isAttached &&
+                                    _draggableController.size >=
+                                        Config.bottomSheetMinSize * 2.5
+                                ? DropdownButton<int>(
+                                    isExpanded: true,
+                                    value: sortOrder,
+                                    items: sortOrderList.entries.map((entry) {
+                                      return DropdownMenuItem<int>(
+                                        value: entry.key,
+                                        child: Text(entry.value),
+                                      );
+                                    }).toList(),
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        // ソート順を設定
+                                        ref
+                                            .read(sortOrderProvider.notifier)
+                                            .setSortOrder(value);
+                                        // 店舗情報を取得
+                                        _searchShops();
+                                        // スクロール位置をリセット
+                                        // scrollController.jumpTo(0);
+                                      }
+                                    },
+                                  )
+                                : null,
+                          ),
                           shops!.shops.isNotEmpty
                               ? Expanded(
                                   child: ListView.separated(
-                                      controller: scrollController,
+                                      controller: _scrollController,
                                       itemCount: shops.shops.length,
                                       separatorBuilder: (context, index) =>
                                           const Divider(height: 1),
@@ -985,40 +1035,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                               }),
                                             ).then((onValue) async {
                                               // 遷移先ページから戻ってきたあとの処理
-                                              // 検索条件を取得
-                                              final searchCondition = ref
-                                                  .read(searchConditionProvider
-                                                      .notifier)
-                                                  .getSearchCondition();
-                                              // 検索キーワードを取得
-                                              final searchKeyword = ref
-                                                  .read(searchKeywordProvider
-                                                      .notifier)
-                                                  .getSearchKeyword();
                                               // 店舗情報を取得
-                                              final shops = await ref
-                                                  .read(shopProvider(context)
-                                                      .notifier)
-                                                  .getShops(
-                                                      context,
-                                                      searchCondition,
-                                                      searchKeyword);
-                                              if (shops != null) {
-                                                // マーカー情報を更新
-                                                Future.sync(() =>
-                                                    _setCustomMarkers(shops));
-                                                final selectedMarkerId = ref
-                                                    .read(selectedMarkerProvider
-                                                        .notifier)
-                                                    .getSelectedMarker();
-                                                _createCustomMarkers(
-                                                    selectedMarkerId);
-                                              }
-                                              // マーカーの選択状態を解除
-                                              ref
-                                                  .read(selectedMarkerProvider
-                                                      .notifier)
-                                                  .clearSelection();
+                                              _searchShops();
                                             });
                                           },
                                           child: Container(
@@ -1121,7 +1139,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                 )
                               : Expanded(
                                   child: ListView(
-                                    controller: scrollController,
+                                    controller: _scrollController,
                                     children: [
                                       Container(
                                         alignment: Alignment.topLeft,
@@ -1178,26 +1196,14 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
 
     return ElevatedButton(
       onPressed: () async {
-        // ボタンの状態を更新
-        final searchCondition = ref
+        // ボタンの選択状態を設定
+        ref
             .read(searchConditionProvider.notifier)
             .setSearchCondition(searchKey);
-        // 検索キーワードを取得
-        final searchKeyword =
-            ref.read(searchKeywordProvider.notifier).setSearchKeyword(keyword);
+        // 検索キーワードを設定
+        ref.read(searchKeywordProvider.notifier).setSearchKeyword(keyword);
         // 店舗情報を取得
-        final shops = await ref
-            .read(shopProvider(context).notifier)
-            .getShops(context, searchCondition, searchKeyword);
-        if (shops != null) {
-          // マーカー情報を更新
-          Future.sync(() => _setCustomMarkers(shops));
-          final selectedMarkerId =
-              ref.read(selectedMarkerProvider.notifier).getSelectedMarker();
-          _createCustomMarkers(selectedMarkerId);
-        }
-        // マーカーの選択状態を解除
-        ref.read(selectedMarkerProvider.notifier).clearSelection();
+        _searchShops();
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: selectedKeys.contains(searchKey)
@@ -1242,8 +1248,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
         // 現在のズームレベルを取得
         double zoomLevel = await _mapController.getZoomLevel();
         // 現在位置に移動
-        final position = await Geolocator.getCurrentPosition(
-            locationSettings: locationSettings);
+        final position = await _getCurrentPosition();
         final currentLatLng = LatLng(position.latitude, position.longitude);
         _mapController.animateCamera(
           CameraUpdate.newLatLngZoom(currentLatLng, zoomLevel),

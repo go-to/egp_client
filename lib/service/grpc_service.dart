@@ -31,10 +31,15 @@ class GrpcService {
   }
 
   static Future<ShopsResponse> getShops(String userId,
-      [List<int>? searchParams, String? searchKeyword]) async {
+      [List<int>? searchParams,
+      String? searchKeyword,
+      int? sortOrder,
+      double? latitude,
+      double? longitude]) async {
     final channel = getChannel();
     final client = EgpServiceClient(channel);
     List<SearchType> searchTypes = [];
+    SortOrderType sortOrderType = SortOrderType.SORT_ORDER_NO;
 
     for (final searchType in searchParams!) {
       final value = SearchType.valueOf(searchType);
@@ -43,9 +48,22 @@ class GrpcService {
       }
       searchTypes.add(value);
     }
+    if (sortOrder != null) {
+      for (SortOrderType s in SortOrderType.values) {
+        if (s.value == sortOrder) {
+          sortOrderType = s;
+          break;
+        }
+      }
+    }
     final res = await client.getShops(
       ShopsRequest(
-          searchTypes: searchTypes, userId: userId, keyword: searchKeyword),
+          searchTypes: searchTypes,
+          userId: userId,
+          keyword: searchKeyword,
+          sortOrder: sortOrderType,
+          latitude: latitude,
+          longitude: longitude),
       options: getCallOptions(),
     );
     return res;

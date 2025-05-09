@@ -71,6 +71,12 @@ class Config {
     4: 'ビアカクテル部門',
   };
 
+  // 並び順
+  static const Map<int, String> sortOrderList = {
+    0: '店舗No.順',
+    1: '現在地からの距離順',
+  };
+
   // 店舗詳細
   static const String openMap = '地図を開く';
   static const String hasStamp = '獲得済み (%d個)';
