@@ -1121,7 +1121,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                                             width: 160,
                                                             color: Colors.black
                                                                 .withValues(
-                                                                    alpha: 0.7),
+                                                                    alpha: 0.5),
                                                           ),
                                                         if (shop.isStamped)
                                                           Positioned(
@@ -1152,8 +1152,11 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                                                           2),
                                                               decoration:
                                                                   BoxDecoration(
-                                                                color: Colors
-                                                                    .amberAccent,
+                                                                color: colorScheme
+                                                                    .surface
+                                                                    .withValues(
+                                                                        alpha:
+                                                                            0.9),
                                                                 borderRadius:
                                                                     BorderRadius
                                                                         .circular(
@@ -1163,13 +1166,72 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                                                 shop.distance,
                                                                 style:
                                                                     TextStyle(
-                                                                  color: Colors
-                                                                      .black,
+                                                                  color: colorScheme
+                                                                      .primary,
                                                                   fontSize: Config
                                                                       .fontSizeNormal,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        // 選択
+                                                        Positioned(
+                                                          top: 8,
+                                                          left: 6,
+                                                          child:
+                                                              GestureDetector(
+                                                            onTap: () {
+                                                              final markerId =
+                                                                  MarkerId(shop
+                                                                      .id
+                                                                      .toString());
+                                                              // ボトムシートの高さを初期状態に戻す
+                                                              _resetBottomSheet();
+                                                              ref
+                                                                  .read(selectedMarkerProvider
+                                                                      .notifier)
+                                                                  .selectMarker(
+                                                                      markerId);
+                                                              _createCustomMarkers(
+                                                                  markerId);
+                                                            },
+                                                            child: Align(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              child: Container(
+                                                                padding: const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        16,
+                                                                    vertical:
+                                                                        4),
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  color: Colors
+                                                                      .amberAccent,
+                                                                  borderRadius:
+                                                                      BorderRadius
+                                                                          .circular(
+                                                                              8),
+                                                                ),
+                                                                child: Text(
+                                                                  Config
+                                                                      .selectCard,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .black,
+                                                                    fontSize: Config
+                                                                        .fontSizeSmall,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                  ),
                                                                 ),
                                                               ),
                                                             ),

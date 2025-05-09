@@ -46,6 +46,7 @@ class Config {
   static const String sortOrderLabel = '表示順: ';
   static const String noMatchingShops = '該当する店舗はありません';
   static const String showMap = '地図';
+  static const String selectCard = '選択';
 
   // 現在地ボタン
   static const double currentPositionButtonWidth = 55;
