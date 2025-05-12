@@ -767,7 +767,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                         // 選択した店舗のマーカーを変更
                         _createCustomMarkers(markerId);
                       }
-                      //スワイプ後のお店の座標までカメラを移動
+                      // スワイプ後のお店の座標までカメラを移動
                       final shop = shops!.shops[index];
                       _mapController.animateCamera(CameraUpdate.newLatLng(
                           LatLng(shop.latitude, shop.longitude)));
@@ -1190,10 +1190,45 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                                           child:
                                                               GestureDetector(
                                                             onTap: () {
+                                                              // 選択したマーカーIDを取得
                                                               final markerId =
                                                                   MarkerId(shop
                                                                       .id
                                                                       .toString());
+                                                              // 直前に選択していたマーカーIDを取得
+                                                              final prevSelectedMarkerId = ref
+                                                                  .read(selectedMarkerProvider
+                                                                      .notifier)
+                                                                  .getSelectedMarker();
+                                                              // カメラ位置を移動するかを判定するための変数
+                                                              bool
+                                                                  needsAnimateCamera =
+                                                                  false;
+
+                                                              // 初回選択時
+                                                              if (prevSelectedMarkerId ==
+                                                                  null) {
+                                                                // 選択中のマーカーに該当するIndexを取得
+                                                                final selectedIndex = _markers
+                                                                    .values
+                                                                    .toList()
+                                                                    .indexWhere((m) =>
+                                                                        m.markerId ==
+                                                                        markerId);
+                                                                // 初回に先頭のIndexを選択した場合、PageControllerの変更を検知できないので、カメラ位置を移動する処理を明示的に実行する
+                                                                if (selectedIndex ==
+                                                                    0) {
+                                                                  needsAnimateCamera =
+                                                                      true;
+                                                                }
+                                                              }
+                                                              // 新たに選択したマーカーIDと直前に選択していたマーカーIDが同じ場合も同上
+                                                              else if (markerId ==
+                                                                  prevSelectedMarkerId) {
+                                                                needsAnimateCamera =
+                                                                    true;
+                                                              }
+
                                                               // ボトムシートの高さを初期状態に戻す
                                                               _resetBottomSheet();
                                                               ref
@@ -1203,6 +1238,14 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                                                       markerId);
                                                               _createCustomMarkers(
                                                                   markerId);
+
+                                                              if (needsAnimateCamera) {
+                                                                // スワイプ後のお店の座標までカメラを移動
+                                                                _mapController.animateCamera(
+                                                                    CameraUpdate.newLatLng(LatLng(
+                                                                        shop.latitude,
+                                                                        shop.longitude)));
+                                                              }
                                                             },
                                                             child: Align(
                                                               alignment:
