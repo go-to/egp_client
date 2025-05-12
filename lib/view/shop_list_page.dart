@@ -455,7 +455,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   }
 
   // 店舗情報取得
-  Future<ShopsResponse?> _searchShops() async {
+  Future<ShopsResponse?> _searchShops(
+      [bool? needsBottomSheetScrollPosition = true]) async {
     // 検索条件を取得
     final searchCondition =
         ref.read(searchConditionProvider.notifier).getSearchCondition();
@@ -488,7 +489,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     ref.read(selectedMarkerProvider.notifier).clearSelection();
 
     // ボトムシートのスクロール位置を先頭に戻す
-    if (_scrollController.hasClients) {
+    if (needsBottomSheetScrollPosition! && _scrollController.hasClients) {
       _scrollController.jumpTo(0);
     }
 
@@ -795,7 +796,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                             ).then((onValue) async {
                               // 遷移先ページから戻ってきたあとの処理
                               // 店舗情報を取得
-                              _searchShops();
+                              _searchShops(false);
                             });
                           },
                           child: Card(
@@ -1056,7 +1057,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                             ).then((onValue) async {
                                               // 遷移先ページから戻ってきたあとの処理
                                               // 店舗情報を取得
-                                              _searchShops();
+                                              _searchShops(false);
                                             });
                                           },
                                           child: Container(
