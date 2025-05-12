@@ -1027,7 +1027,11 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                       controller: _scrollController,
                                       itemCount: shops.shops.length,
                                       separatorBuilder: (context, index) =>
-                                          const Divider(height: 1),
+                                          Divider(
+                                            height: 1,
+                                            color: colorScheme.primary
+                                                .withValues(alpha: 0.4),
+                                          ),
                                       itemBuilder: (context, index) {
                                         final shop =
                                             shops.shops.elementAt(index);
