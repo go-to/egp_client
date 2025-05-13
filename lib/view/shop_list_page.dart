@@ -103,6 +103,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
     _setShopsTotal();
     _initializeMarkers();
     _draggableController = DraggableScrollableController();
+    _scrollController = ScrollController();
   }
 
   void _resetBottomSheet() {
@@ -408,6 +409,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
   @override
   void dispose() {
     _positionStream?.cancel();
+    _scrollController.dispose();
     _draggableController.dispose();
     _pageController.dispose();
     _mapController.dispose();
