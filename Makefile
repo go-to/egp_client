@@ -1,3 +1,5 @@
+SHELL=/bin/bash
+
 ANDROID_ENV_FILE_PATH=android/secret.properties
 IOS_ENV_FILE_PATH=ios/RUNNER/Environment.swift
 ENV_FILE_DEFAULT_EXTENSION=.example
@@ -34,6 +36,17 @@ build-app:
 release-note:
 	cat release_note.txt > android/fastlane/release_note.txt
 	cat release_note.txt > ios/fastlane/release_note.txt
+release-check:
+	cat release_note.txt
+	@echo ''
+	cat android/fastlane/release_note.txt
+	@echo ''
+	cat ios/fastlane/release_note.txt
+	@echo ''
+	@if [ -n "`diff -u release_note.txt android/fastlane/release_note.txt`" ]; then echo 'Android用release_noteが更新されていません' && exit 1; fi
+	@if [ -n "`diff -u release_note.txt ios/fastlane/release_note.txt`" ]; then echo 'iOS用release_noteが更新されていません' && exit 1; fi
+	@diff_output="$$(diff <(cat pubspec.yaml | grep 'version:' | awk '{print $$2 ")"}' | tr '+' '(') <(cat release_note.txt | head -n 1))"; if [ -n "$${diff_output}" ]; then echo 'バージョン情報が更新されていません'; echo "$$diff_output" && exit 1; fi
+	@echo 'release check ok'
 deploy-android:
 	(cd android && fastlane android deploy)
 deploy-ios:
