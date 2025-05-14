@@ -43,6 +43,10 @@ class Config {
   // ボトムシート
   static const double bottomSheetMinSize = 0.05;
   static const double bottomSheetMaxSize = 0.785;
+  static const double bottomSheetMinusValueFirst = 0.02;
+  static const double bottomSheetMinusValueSecond = 0.05;
+  static const int bottomSheetScreenHeightMinusThresholdFirst = 900;
+  static const int bottomSheetScreenHeightMinusThresholdSecond = 800;
   static const String sortOrderLabel = '表示順: ';
   static const String noMatchingShops = '該当する店舗はありません';
   static const String showMap = '地図';

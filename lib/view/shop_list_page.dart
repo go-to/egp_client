@@ -924,12 +924,27 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                 final sortOrder = ref.watch(sortOrderProvider);
                 final sortOrderList =
                     ref.read(sortOrderProvider.notifier).getSortOrderList();
+                // 画面の高さに応じてスクロール可能な最大位置を決める
+                double maxChildSize = Config.bottomSheetMaxSize;
+                final screenHeight = MediaQuery.of(context).size.height;
+                final safePadding = MediaQuery.of(context).padding;
+                final screenSize =
+                    screenHeight - safePadding.top - safePadding.bottom;
+                if (screenSize <
+                    Config.bottomSheetScreenHeightMinusThresholdFirst) {
+                  maxChildSize -= Config.bottomSheetMinusValueFirst;
+                }
+                if (screenSize <
+                    Config.bottomSheetScreenHeightMinusThresholdSecond) {
+                  maxChildSize -= Config.bottomSheetMinusValueSecond;
+                }
+
                 return DraggableScrollableSheet(
                   expand: false,
                   controller: _draggableController,
                   initialChildSize: Config.bottomSheetMinSize,
                   minChildSize: Config.bottomSheetMinSize,
-                  maxChildSize: Config.bottomSheetMaxSize,
+                  maxChildSize: maxChildSize,
                   builder: (context, scrollController) {
                     _scrollController = scrollController;
                     return Container(
@@ -945,7 +960,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                             onVerticalDragUpdate: (details) {
                               final newSize = _draggableController.size -
                                   details.delta.dy /
-                                      MediaQuery.of(context).size.height;
+                                      screenSize.clamp(40, screenSize.toInt());
                               setState(() {
                                 _draggableController.jumpTo(newSize.clamp(
                                     Config.bottomSheetMinSize,
@@ -953,9 +968,9 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                               });
                             },
                             child: Container(
-                              height: 39,
+                              height: 30,
                               width: double.infinity,
-                              padding: const EdgeInsets.only(bottom: 8),
+                              padding: const EdgeInsets.only(top: 6, bottom: 2),
                               child: Center(
                                 child: Container(
                                   width: 40,
@@ -970,17 +985,17 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                             ),
                           ),
                           AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 250),
                             height: _draggableController.isAttached &&
                                     _draggableController.size >=
                                         Config.bottomSheetMinSize * 2.5
-                                ? 60
+                                ? 40
                                 : 0,
                             curve: Curves.easeInOut,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: _draggableController.isAttached &&
                                     _draggableController.size >=
-                                        Config.bottomSheetMinSize * 2.5
+                                        Config.bottomSheetMinSize * 3
                                 ? Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceAround,
