@@ -604,7 +604,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                     Row(
                       children: [
                         Expanded(
-                          flex: 7,
+                          flex: 6,
                           child: Wrap(
                             alignment: WrapAlignment.start,
                             spacing: 8.0,
@@ -665,7 +665,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                           text: shops!.shops.length.toString(),
                                           style: TextStyle(
                                             color: colorScheme.primary,
-                                            fontSize: Config.fontSizeLarge,
+                                            fontSize: Config
+                                                .fontSizeMediumLargeMiddle,
                                           ),
                                         ),
                                         TextSpan(
@@ -679,7 +680,8 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                           text: shopsTotalNum.toString(),
                                           style: TextStyle(
                                             color: colorScheme.primary,
-                                            fontSize: Config.fontSizeLarge,
+                                            fontSize: Config
+                                                .fontSizeMediumLargeMiddle,
                                           ),
                                         ),
                                         TextSpan(
@@ -812,7 +814,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                   child: Text(
                                     '${shop.no}: ${shop.shopName}',
                                     style: TextStyle(
-                                      fontSize: Config.fontSizeMiddleLarge,
+                                      fontSize: Config.fontSizeMediumLarge,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
@@ -988,7 +990,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                           Config.sortOrderLabel,
                                           style: TextStyle(
                                             fontSize:
-                                                Config.fontSizeMiddleLarge,
+                                                Config.fontSizeMediumLarge,
                                             color: colorScheme.primary,
                                           ),
                                         ),
@@ -1306,7 +1308,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                                               '${shop.no}: ${shop.shopName}',
                                                               style: TextStyle(
                                                                   fontSize: Config
-                                                                      .fontSizeMiddleLarge,
+                                                                      .fontSizeMediumLarge,
                                                                   fontWeight:
                                                                       FontWeight
                                                                           .bold)),
@@ -1348,7 +1350,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                                           style: TextStyle(
                                             color: colorScheme.primary,
                                             fontSize:
-                                                Config.fontSizeMiddleLarge,
+                                                Config.fontSizeMediumLarge,
                                           ),
                                         ),
                                       )

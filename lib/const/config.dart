@@ -147,14 +147,15 @@ class Config {
   // 文字サイズ
   static final double fontSizeVeryLarge = 36;
   static final double fontSizeLarge = 20;
-  static final double fontSizeMiddleLarge = 16;
+  static final double fontSizeMediumLargeMiddle = 18;
+  static final double fontSizeMediumLarge = 16;
   static final double fontSizeNormal = 14;
   static final double fontSizeSmall = 12;
   static final double fontSizeVerySmall = 10;
 
   // アイコンサイズ
   static final double iconSizeLarge = 24;
-  static final double iconSizeMiddleSmall = 18;
+  static final double iconSizeMediumSmall = 18;
   static final double iconSizeSmall = 16;
 
   // 秒数

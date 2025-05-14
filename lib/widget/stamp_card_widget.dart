@@ -30,7 +30,7 @@ class StampCard extends StatelessWidget {
             child: Text(
               shopName,
               style: TextStyle(
-                fontSize: Config.fontSizeMiddleLarge,
+                fontSize: Config.fontSizeMediumLarge,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
