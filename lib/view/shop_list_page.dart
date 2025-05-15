@@ -959,8 +959,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                             behavior: HitTestBehavior.opaque,
                             onVerticalDragUpdate: (details) {
                               final newSize = _draggableController.size -
-                                  details.delta.dy /
-                                      screenSize.clamp(40, screenSize.toInt());
+                                  details.delta.dy / screenSize;
                               setState(() {
                                 _draggableController.jumpTo(newSize.clamp(
                                     Config.bottomSheetMinSize,
@@ -968,7 +967,7 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                               });
                             },
                             child: Container(
-                              height: 30,
+                              height: 38,
                               width: double.infinity,
                               padding: const EdgeInsets.only(top: 6, bottom: 2),
                               child: Center(
@@ -984,61 +983,51 @@ class _ShopListPageState extends ConsumerState<ShopListPage> {
                               ),
                             ),
                           ),
-                          AnimatedContainer(
-                            duration: const Duration(milliseconds: 250),
+                          Container(
                             height: _draggableController.isAttached &&
                                     _draggableController.size >=
                                         Config.bottomSheetMinSize * 2.5
-                                ? 40
+                                ? 60
                                 : 0,
-                            curve: Curves.easeInOut,
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: _draggableController.isAttached &&
-                                    _draggableController.size >=
-                                        Config.bottomSheetMinSize * 3
-                                ? Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      SizedBox(
-                                        child: Text(
-                                          Config.sortOrderLabel,
-                                          style: TextStyle(
-                                            fontSize:
-                                                Config.fontSizeMediumLarge,
-                                            color: colorScheme.primary,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Expanded(
-                                          child: DropdownButton<int>(
-                                        isExpanded: true,
-                                        value: sortOrder,
-                                        items:
-                                            sortOrderList.entries.map((entry) {
-                                          return DropdownMenuItem<int>(
-                                            value: entry.key,
-                                            child: Text(entry.value),
-                                          );
-                                        }).toList(),
-                                        onChanged: (value) {
-                                          if (value != null) {
-                                            // ソート順を設定
-                                            ref
-                                                .read(
-                                                    sortOrderProvider.notifier)
-                                                .setSortOrder(value);
-                                            // 店舗情報を取得
-                                            _searchShops();
-                                            // スクロール位置をリセット
-                                            // scrollController.jumpTo(0);
-                                          }
-                                        },
-                                      )),
-                                    ],
-                                  )
-                                : null,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                SizedBox(
+                                  child: Text(
+                                    Config.sortOrderLabel,
+                                    style: TextStyle(
+                                      fontSize: Config.fontSizeMediumLarge,
+                                      color: colorScheme.primary,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                    child: DropdownButton<int>(
+                                  isExpanded: true,
+                                  value: sortOrder,
+                                  items: sortOrderList.entries.map((entry) {
+                                    return DropdownMenuItem<int>(
+                                      value: entry.key,
+                                      child: Text(entry.value),
+                                    );
+                                  }).toList(),
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      // ソート順を設定
+                                      ref
+                                          .read(sortOrderProvider.notifier)
+                                          .setSortOrder(value);
+                                      // 店舗情報を取得
+                                      _searchShops();
+                                      // スクロール位置をリセット
+                                      // scrollController.jumpTo(0);
+                                    }
+                                  },
+                                )),
+                              ],
+                            ),
                           ),
                           shops!.shops.isNotEmpty
                               ? Expanded(
