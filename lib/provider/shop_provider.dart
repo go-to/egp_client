@@ -21,11 +21,15 @@ class Shop extends _$Shop {
   }
 
   Future<ShopsResponse?> getShops(BuildContext context,
-      [List<int>? searchCondition, String? searchKeyword]) async {
+      [List<int>? searchCondition,
+      String? searchKeyword,
+      int? sortOrder,
+      double? latitude,
+      double? longitude]) async {
     User? user = ref.read(authServiceProvider.notifier).getCurrentUser();
     String userId = user != null ? user.uid : '';
-    final shops = await ShopService.getShops(
-        context, userId, searchCondition, searchKeyword);
+    final shops = await ShopService.getShops(context, userId, searchCondition,
+        searchKeyword, sortOrder, latitude, longitude);
     state = AsyncData(shops);
     return shops;
   }

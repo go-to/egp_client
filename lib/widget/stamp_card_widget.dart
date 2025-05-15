@@ -30,7 +30,7 @@ class StampCard extends StatelessWidget {
             child: Text(
               shopName,
               style: TextStyle(
-                fontSize: Config.fontSizeMiddleLarge,
+                fontSize: Config.fontSizeMediumLarge,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -61,7 +61,7 @@ class StampCard extends StatelessWidget {
                 Stack(
                   children: [
                     for (int i = 0; i < shop.numberOfTimes; i++) ...{
-                      paintStamp(userId, shop.iD.toInt(), i)
+                      paintStamp(userId, shop.id.toInt(), i)
                     }
                   ],
                 ),

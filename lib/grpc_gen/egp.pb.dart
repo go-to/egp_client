@@ -98,15 +98,15 @@ class Date extends $pb.GeneratedMessage {
 
 class Event extends $pb.GeneratedMessage {
   factory Event({
-    $fixnum.Int64? iD,
+    $fixnum.Int64? id,
     $core.String? name,
     $core.int? year,
     Date? startDate,
     Date? endDate,
   }) {
     final $result = create();
-    if (iD != null) {
-      $result.iD = iD;
+    if (id != null) {
+      $result.id = id;
     }
     if (name != null) {
       $result.name = name;
@@ -127,11 +127,11 @@ class Event extends $pb.GeneratedMessage {
   factory Event.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Event', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..aInt64(1, _omitFieldNames ? '' : 'ID', protoName: 'ID')
-    ..aOS(2, _omitFieldNames ? '' : 'Name', protoName: 'Name')
-    ..a<$core.int>(3, _omitFieldNames ? '' : 'Year', $pb.PbFieldType.O3, protoName: 'Year')
-    ..aOM<Date>(4, _omitFieldNames ? '' : 'StartDate', protoName: 'StartDate', subBuilder: Date.create)
-    ..aOM<Date>(5, _omitFieldNames ? '' : 'EndDate', protoName: 'EndDate', subBuilder: Date.create)
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..aOS(2, _omitFieldNames ? '' : 'name')
+    ..a<$core.int>(3, _omitFieldNames ? '' : 'year', $pb.PbFieldType.O3)
+    ..aOM<Date>(4, _omitFieldNames ? '' : 'startDate', subBuilder: Date.create)
+    ..aOM<Date>(5, _omitFieldNames ? '' : 'endDate', subBuilder: Date.create)
     ..hasRequiredFields = false
   ;
 
@@ -157,13 +157,13 @@ class Event extends $pb.GeneratedMessage {
   static Event? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $fixnum.Int64 get iD => $_getI64(0);
+  $fixnum.Int64 get id => $_getI64(0);
   @$pb.TagNumber(1)
-  set iD($fixnum.Int64 v) { $_setInt64(0, v); }
+  set id($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasID() => $_has(0);
+  $core.bool hasId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearID() => clearField(1);
+  void clearId() => clearField(1);
 
   @$pb.TagNumber(2)
   $core.String get name => $_getSZ(1);
@@ -208,12 +208,12 @@ class Event extends $pb.GeneratedMessage {
 
 class Category extends $pb.GeneratedMessage {
   factory Category({
-    $fixnum.Int64? iD,
+    $fixnum.Int64? id,
     $core.String? name,
   }) {
     final $result = create();
-    if (iD != null) {
-      $result.iD = iD;
+    if (id != null) {
+      $result.id = id;
     }
     if (name != null) {
       $result.name = name;
@@ -225,8 +225,8 @@ class Category extends $pb.GeneratedMessage {
   factory Category.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Category', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..aInt64(1, _omitFieldNames ? '' : 'ID', protoName: 'ID')
-    ..aOS(2, _omitFieldNames ? '' : 'Name', protoName: 'Name')
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..aOS(2, _omitFieldNames ? '' : 'name')
     ..hasRequiredFields = false
   ;
 
@@ -252,13 +252,13 @@ class Category extends $pb.GeneratedMessage {
   static Category? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $fixnum.Int64 get iD => $_getI64(0);
+  $fixnum.Int64 get id => $_getI64(0);
   @$pb.TagNumber(1)
-  set iD($fixnum.Int64 v) { $_setInt64(0, v); }
+  set id($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasID() => $_has(0);
+  $core.bool hasId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearID() => clearField(1);
+  void clearId() => clearField(1);
 
   @$pb.TagNumber(2)
   $core.String get name => $_getSZ(1);
@@ -285,7 +285,7 @@ class Categories extends $pb.GeneratedMessage {
   factory Categories.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Categories', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..pc<Category>(1, _omitFieldNames ? '' : 'Categories', $pb.PbFieldType.PM, protoName: 'Categories', subBuilder: Category.create)
+    ..pc<Category>(1, _omitFieldNames ? '' : 'categories', $pb.PbFieldType.PM, subBuilder: Category.create)
     ..hasRequiredFields = false
   ;
 
@@ -316,12 +316,12 @@ class Categories extends $pb.GeneratedMessage {
 
 class BeerType extends $pb.GeneratedMessage {
   factory BeerType({
-    $fixnum.Int64? iD,
+    $fixnum.Int64? id,
     $core.String? name,
   }) {
     final $result = create();
-    if (iD != null) {
-      $result.iD = iD;
+    if (id != null) {
+      $result.id = id;
     }
     if (name != null) {
       $result.name = name;
@@ -333,8 +333,8 @@ class BeerType extends $pb.GeneratedMessage {
   factory BeerType.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'BeerType', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..aInt64(1, _omitFieldNames ? '' : 'ID', protoName: 'ID')
-    ..aOS(2, _omitFieldNames ? '' : 'Name', protoName: 'Name')
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..aOS(2, _omitFieldNames ? '' : 'name')
     ..hasRequiredFields = false
   ;
 
@@ -360,13 +360,13 @@ class BeerType extends $pb.GeneratedMessage {
   static BeerType? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $fixnum.Int64 get iD => $_getI64(0);
+  $fixnum.Int64 get id => $_getI64(0);
   @$pb.TagNumber(1)
-  set iD($fixnum.Int64 v) { $_setInt64(0, v); }
+  set id($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasID() => $_has(0);
+  $core.bool hasId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearID() => clearField(1);
+  void clearId() => clearField(1);
 
   @$pb.TagNumber(2)
   $core.String get name => $_getSZ(1);
@@ -393,7 +393,7 @@ class BeerTypes extends $pb.GeneratedMessage {
   factory BeerTypes.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'BeerTypes', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..pc<BeerType>(1, _omitFieldNames ? '' : 'BeerTypes', $pb.PbFieldType.PM, protoName: 'BeerTypes', subBuilder: BeerType.create)
+    ..pc<BeerType>(1, _omitFieldNames ? '' : 'beerTypes', $pb.PbFieldType.PM, subBuilder: BeerType.create)
     ..hasRequiredFields = false
   ;
 
@@ -424,9 +424,9 @@ class BeerTypes extends $pb.GeneratedMessage {
 
 class Shop extends $pb.GeneratedMessage {
   factory Shop({
-    $fixnum.Int64? iD,
-    $fixnum.Int64? eventID,
-    CategoryType? categoryID,
+    $fixnum.Int64? id,
+    $fixnum.Int64? eventId,
+    CategoryType? categoryId,
     $core.int? no,
     $core.String? shopName,
     $core.String? menuName,
@@ -464,14 +464,14 @@ class Shop extends $pb.GeneratedMessage {
     $core.int? numberOfTimes,
   }) {
     final $result = create();
-    if (iD != null) {
-      $result.iD = iD;
+    if (id != null) {
+      $result.id = id;
     }
-    if (eventID != null) {
-      $result.eventID = eventID;
+    if (eventId != null) {
+      $result.eventId = eventId;
     }
-    if (categoryID != null) {
-      $result.categoryID = categoryID;
+    if (categoryId != null) {
+      $result.categoryId = categoryId;
     }
     if (no != null) {
       $result.no = no;
@@ -585,44 +585,44 @@ class Shop extends $pb.GeneratedMessage {
   factory Shop.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'Shop', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..aInt64(1, _omitFieldNames ? '' : 'ID', protoName: 'ID')
-    ..aInt64(2, _omitFieldNames ? '' : 'EventID', protoName: 'EventID')
-    ..e<CategoryType>(3, _omitFieldNames ? '' : 'CategoryID', $pb.PbFieldType.OE, protoName: 'CategoryID', defaultOrMaker: CategoryType.CATEGORY_TYPE_NONE, valueOf: CategoryType.valueOf, enumValues: CategoryType.values)
-    ..a<$core.int>(4, _omitFieldNames ? '' : 'No', $pb.PbFieldType.O3, protoName: 'No')
-    ..aOS(5, _omitFieldNames ? '' : 'ShopName', protoName: 'ShopName')
-    ..aOS(6, _omitFieldNames ? '' : 'MenuName', protoName: 'MenuName')
-    ..aOS(7, _omitFieldNames ? '' : 'Phone', protoName: 'Phone')
-    ..aOS(8, _omitFieldNames ? '' : 'Address', protoName: 'Address')
-    ..aOS(9, _omitFieldNames ? '' : 'BusinessDays', protoName: 'BusinessDays')
-    ..aOS(10, _omitFieldNames ? '' : 'RegularHoliday', protoName: 'RegularHoliday')
-    ..aOS(11, _omitFieldNames ? '' : 'BusinessHours', protoName: 'BusinessHours')
-    ..aOS(12, _omitFieldNames ? '' : 'ChargePrice', protoName: 'ChargePrice')
-    ..a<$core.int>(13, _omitFieldNames ? '' : 'NormalizedChargePrice', $pb.PbFieldType.O3, protoName: 'NormalizedChargePrice')
-    ..aOS(14, _omitFieldNames ? '' : 'SinglePrice', protoName: 'SinglePrice')
-    ..a<$core.int>(15, _omitFieldNames ? '' : 'NormalizedSinglePrice', $pb.PbFieldType.O3, protoName: 'NormalizedSinglePrice')
-    ..aOS(16, _omitFieldNames ? '' : 'SetPrice', protoName: 'SetPrice')
-    ..a<$core.int>(17, _omitFieldNames ? '' : 'NormalizedSetPrice', $pb.PbFieldType.O3, protoName: 'NormalizedSetPrice')
-    ..aOS(18, _omitFieldNames ? '' : 'BeerType', protoName: 'BeerType')
-    ..aOS(19, _omitFieldNames ? '' : 'NeedsReservation', protoName: 'NeedsReservation')
-    ..aOB(20, _omitFieldNames ? '' : 'NormalizedNeedsReservation', protoName: 'NormalizedNeedsReservation')
-    ..aOS(21, _omitFieldNames ? '' : 'UseHachipay', protoName: 'UseHachipay')
-    ..aOB(22, _omitFieldNames ? '' : 'NormalizedUseHachipay', protoName: 'NormalizedUseHachipay')
-    ..aOB(23, _omitFieldNames ? '' : 'IsOpenHoliday', protoName: 'IsOpenHoliday')
-    ..aOB(24, _omitFieldNames ? '' : 'IsIrregularHoliday', protoName: 'IsIrregularHoliday')
-    ..a<$core.double>(25, _omitFieldNames ? '' : 'Latitude', $pb.PbFieldType.OD, protoName: 'Latitude')
-    ..a<$core.double>(26, _omitFieldNames ? '' : 'Longitude', $pb.PbFieldType.OD, protoName: 'Longitude')
-    ..aOS(27, _omitFieldNames ? '' : 'Distance', protoName: 'Distance')
-    ..a<$core.int>(28, _omitFieldNames ? '' : 'WeekNumber', $pb.PbFieldType.O3, protoName: 'WeekNumber')
-    ..a<$core.int>(29, _omitFieldNames ? '' : 'DayOfWeek', $pb.PbFieldType.O3, protoName: 'DayOfWeek')
-    ..aOS(30, _omitFieldNames ? '' : 'StartTime', protoName: 'StartTime')
-    ..aOS(31, _omitFieldNames ? '' : 'EndTime', protoName: 'EndTime')
-    ..aOB(32, _omitFieldNames ? '' : 'IsHoliday', protoName: 'IsHoliday')
-    ..aOB(33, _omitFieldNames ? '' : 'InCurrentSales', protoName: 'InCurrentSales')
-    ..a<$core.int>(34, _omitFieldNames ? '' : 'Year', $pb.PbFieldType.O3, protoName: 'Year')
-    ..aOS(35, _omitFieldNames ? '' : 'CategoryName', protoName: 'CategoryName')
-    ..aOS(36, _omitFieldNames ? '' : 'MenuImageUrl', protoName: 'MenuImageUrl')
-    ..aOB(37, _omitFieldNames ? '' : 'IsStamped', protoName: 'IsStamped')
-    ..a<$core.int>(38, _omitFieldNames ? '' : 'NumberOfTimes', $pb.PbFieldType.O3, protoName: 'NumberOfTimes')
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..aInt64(2, _omitFieldNames ? '' : 'eventId')
+    ..e<CategoryType>(3, _omitFieldNames ? '' : 'categoryId', $pb.PbFieldType.OE, defaultOrMaker: CategoryType.CATEGORY_TYPE_NONE, valueOf: CategoryType.valueOf, enumValues: CategoryType.values)
+    ..a<$core.int>(4, _omitFieldNames ? '' : 'no', $pb.PbFieldType.O3)
+    ..aOS(5, _omitFieldNames ? '' : 'shopName')
+    ..aOS(6, _omitFieldNames ? '' : 'menuName')
+    ..aOS(7, _omitFieldNames ? '' : 'phone')
+    ..aOS(8, _omitFieldNames ? '' : 'address')
+    ..aOS(9, _omitFieldNames ? '' : 'businessDays')
+    ..aOS(10, _omitFieldNames ? '' : 'regularHoliday')
+    ..aOS(11, _omitFieldNames ? '' : 'businessHours')
+    ..aOS(12, _omitFieldNames ? '' : 'chargePrice')
+    ..a<$core.int>(13, _omitFieldNames ? '' : 'normalizedChargePrice', $pb.PbFieldType.O3)
+    ..aOS(14, _omitFieldNames ? '' : 'singlePrice')
+    ..a<$core.int>(15, _omitFieldNames ? '' : 'normalizedSinglePrice', $pb.PbFieldType.O3)
+    ..aOS(16, _omitFieldNames ? '' : 'setPrice')
+    ..a<$core.int>(17, _omitFieldNames ? '' : 'normalizedSetPrice', $pb.PbFieldType.O3)
+    ..aOS(18, _omitFieldNames ? '' : 'beerType')
+    ..aOS(19, _omitFieldNames ? '' : 'needsReservation')
+    ..aOB(20, _omitFieldNames ? '' : 'normalizedNeedsReservation')
+    ..aOS(21, _omitFieldNames ? '' : 'useHachipay')
+    ..aOB(22, _omitFieldNames ? '' : 'normalizedUseHachipay')
+    ..aOB(23, _omitFieldNames ? '' : 'isOpenHoliday')
+    ..aOB(24, _omitFieldNames ? '' : 'isIrregularHoliday')
+    ..a<$core.double>(25, _omitFieldNames ? '' : 'latitude', $pb.PbFieldType.OD)
+    ..a<$core.double>(26, _omitFieldNames ? '' : 'longitude', $pb.PbFieldType.OD)
+    ..aOS(27, _omitFieldNames ? '' : 'distance')
+    ..a<$core.int>(28, _omitFieldNames ? '' : 'weekNumber', $pb.PbFieldType.O3)
+    ..a<$core.int>(29, _omitFieldNames ? '' : 'dayOfWeek', $pb.PbFieldType.O3)
+    ..aOS(30, _omitFieldNames ? '' : 'startTime')
+    ..aOS(31, _omitFieldNames ? '' : 'endTime')
+    ..aOB(32, _omitFieldNames ? '' : 'isHoliday')
+    ..aOB(33, _omitFieldNames ? '' : 'inCurrentSales')
+    ..a<$core.int>(34, _omitFieldNames ? '' : 'year', $pb.PbFieldType.O3)
+    ..aOS(35, _omitFieldNames ? '' : 'categoryName')
+    ..aOS(36, _omitFieldNames ? '' : 'menuImageUrl')
+    ..aOB(37, _omitFieldNames ? '' : 'isStamped')
+    ..a<$core.int>(38, _omitFieldNames ? '' : 'numberOfTimes', $pb.PbFieldType.O3)
     ..hasRequiredFields = false
   ;
 
@@ -648,31 +648,31 @@ class Shop extends $pb.GeneratedMessage {
   static Shop? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $fixnum.Int64 get iD => $_getI64(0);
+  $fixnum.Int64 get id => $_getI64(0);
   @$pb.TagNumber(1)
-  set iD($fixnum.Int64 v) { $_setInt64(0, v); }
+  set id($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasID() => $_has(0);
+  $core.bool hasId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearID() => clearField(1);
+  void clearId() => clearField(1);
 
   @$pb.TagNumber(2)
-  $fixnum.Int64 get eventID => $_getI64(1);
+  $fixnum.Int64 get eventId => $_getI64(1);
   @$pb.TagNumber(2)
-  set eventID($fixnum.Int64 v) { $_setInt64(1, v); }
+  set eventId($fixnum.Int64 v) { $_setInt64(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasEventID() => $_has(1);
+  $core.bool hasEventId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearEventID() => clearField(2);
+  void clearEventId() => clearField(2);
 
   @$pb.TagNumber(3)
-  CategoryType get categoryID => $_getN(2);
+  CategoryType get categoryId => $_getN(2);
   @$pb.TagNumber(3)
-  set categoryID(CategoryType v) { setField(3, v); }
+  set categoryId(CategoryType v) { setField(3, v); }
   @$pb.TagNumber(3)
-  $core.bool hasCategoryID() => $_has(2);
+  $core.bool hasCategoryId() => $_has(2);
   @$pb.TagNumber(3)
-  void clearCategoryID() => clearField(3);
+  void clearCategoryId() => clearField(3);
 
   @$pb.TagNumber(4)
   $core.int get no => $_getIZ(3);
@@ -992,18 +992,18 @@ class Shop extends $pb.GeneratedMessage {
 
 class ShopLocation extends $pb.GeneratedMessage {
   factory ShopLocation({
-    $fixnum.Int64? iD,
-    $fixnum.Int64? shopID,
+    $fixnum.Int64? id,
+    $fixnum.Int64? shopId,
     $core.double? latitude,
     $core.double? longitude,
     $core.String? location,
   }) {
     final $result = create();
-    if (iD != null) {
-      $result.iD = iD;
+    if (id != null) {
+      $result.id = id;
     }
-    if (shopID != null) {
-      $result.shopID = shopID;
+    if (shopId != null) {
+      $result.shopId = shopId;
     }
     if (latitude != null) {
       $result.latitude = latitude;
@@ -1021,11 +1021,11 @@ class ShopLocation extends $pb.GeneratedMessage {
   factory ShopLocation.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopLocation', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..aInt64(1, _omitFieldNames ? '' : 'ID', protoName: 'ID')
-    ..aInt64(2, _omitFieldNames ? '' : 'ShopID', protoName: 'ShopID')
-    ..a<$core.double>(3, _omitFieldNames ? '' : 'Latitude', $pb.PbFieldType.OD, protoName: 'Latitude')
-    ..a<$core.double>(4, _omitFieldNames ? '' : 'Longitude', $pb.PbFieldType.OD, protoName: 'Longitude')
-    ..aOS(5, _omitFieldNames ? '' : 'Location', protoName: 'Location')
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..aInt64(2, _omitFieldNames ? '' : 'shopId')
+    ..a<$core.double>(3, _omitFieldNames ? '' : 'latitude', $pb.PbFieldType.OD)
+    ..a<$core.double>(4, _omitFieldNames ? '' : 'longitude', $pb.PbFieldType.OD)
+    ..aOS(5, _omitFieldNames ? '' : 'location')
     ..hasRequiredFields = false
   ;
 
@@ -1051,22 +1051,22 @@ class ShopLocation extends $pb.GeneratedMessage {
   static ShopLocation? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $fixnum.Int64 get iD => $_getI64(0);
+  $fixnum.Int64 get id => $_getI64(0);
   @$pb.TagNumber(1)
-  set iD($fixnum.Int64 v) { $_setInt64(0, v); }
+  set id($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasID() => $_has(0);
+  $core.bool hasId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearID() => clearField(1);
+  void clearId() => clearField(1);
 
   @$pb.TagNumber(2)
-  $fixnum.Int64 get shopID => $_getI64(1);
+  $fixnum.Int64 get shopId => $_getI64(1);
   @$pb.TagNumber(2)
-  set shopID($fixnum.Int64 v) { $_setInt64(1, v); }
+  set shopId($fixnum.Int64 v) { $_setInt64(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasShopID() => $_has(1);
+  $core.bool hasShopId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearShopID() => clearField(2);
+  void clearShopId() => clearField(2);
 
   @$pb.TagNumber(3)
   $core.double get latitude => $_getN(2);
@@ -1098,8 +1098,8 @@ class ShopLocation extends $pb.GeneratedMessage {
 
 class ShopTime extends $pb.GeneratedMessage {
   factory ShopTime({
-    $fixnum.Int64? iD,
-    $fixnum.Int64? shopID,
+    $fixnum.Int64? id,
+    $fixnum.Int64? shopId,
     $core.int? weekNumber,
     $core.int? dayOfWeek,
     $core.String? startTime,
@@ -1107,11 +1107,11 @@ class ShopTime extends $pb.GeneratedMessage {
     $core.bool? isHoliday,
   }) {
     final $result = create();
-    if (iD != null) {
-      $result.iD = iD;
+    if (id != null) {
+      $result.id = id;
     }
-    if (shopID != null) {
-      $result.shopID = shopID;
+    if (shopId != null) {
+      $result.shopId = shopId;
     }
     if (weekNumber != null) {
       $result.weekNumber = weekNumber;
@@ -1135,13 +1135,13 @@ class ShopTime extends $pb.GeneratedMessage {
   factory ShopTime.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopTime', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..aInt64(1, _omitFieldNames ? '' : 'ID', protoName: 'ID')
-    ..aInt64(2, _omitFieldNames ? '' : 'ShopID', protoName: 'ShopID')
-    ..a<$core.int>(3, _omitFieldNames ? '' : 'WeekNumber', $pb.PbFieldType.O3, protoName: 'WeekNumber')
-    ..a<$core.int>(4, _omitFieldNames ? '' : 'DayOfWeek', $pb.PbFieldType.O3, protoName: 'DayOfWeek')
-    ..aOS(5, _omitFieldNames ? '' : 'StartTime', protoName: 'StartTime')
-    ..aOS(6, _omitFieldNames ? '' : 'EndTime', protoName: 'EndTime')
-    ..aOB(7, _omitFieldNames ? '' : 'IsHoliday', protoName: 'IsHoliday')
+    ..aInt64(1, _omitFieldNames ? '' : 'id')
+    ..aInt64(2, _omitFieldNames ? '' : 'shopId')
+    ..a<$core.int>(3, _omitFieldNames ? '' : 'weekNumber', $pb.PbFieldType.O3)
+    ..a<$core.int>(4, _omitFieldNames ? '' : 'dayOfWeek', $pb.PbFieldType.O3)
+    ..aOS(5, _omitFieldNames ? '' : 'startTime')
+    ..aOS(6, _omitFieldNames ? '' : 'endTime')
+    ..aOB(7, _omitFieldNames ? '' : 'isHoliday')
     ..hasRequiredFields = false
   ;
 
@@ -1167,22 +1167,22 @@ class ShopTime extends $pb.GeneratedMessage {
   static ShopTime? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $fixnum.Int64 get iD => $_getI64(0);
+  $fixnum.Int64 get id => $_getI64(0);
   @$pb.TagNumber(1)
-  set iD($fixnum.Int64 v) { $_setInt64(0, v); }
+  set id($fixnum.Int64 v) { $_setInt64(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasID() => $_has(0);
+  $core.bool hasId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearID() => clearField(1);
+  void clearId() => clearField(1);
 
   @$pb.TagNumber(2)
-  $fixnum.Int64 get shopID => $_getI64(1);
+  $fixnum.Int64 get shopId => $_getI64(1);
   @$pb.TagNumber(2)
-  set shopID($fixnum.Int64 v) { $_setInt64(1, v); }
+  set shopId($fixnum.Int64 v) { $_setInt64(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasShopID() => $_has(1);
+  $core.bool hasShopId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearShopID() => clearField(2);
+  void clearShopId() => clearField(2);
 
   @$pb.TagNumber(3)
   $core.int get weekNumber => $_getIZ(2);
@@ -1245,7 +1245,7 @@ class ShopsTotalRequest extends $pb.GeneratedMessage {
   factory ShopsTotalRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopsTotalRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..a<$core.int>(1, _omitFieldNames ? '' : 'Year', $pb.PbFieldType.O3, protoName: 'Year')
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'year', $pb.PbFieldType.O3)
     ..hasRequiredFields = false
   ;
 
@@ -1295,7 +1295,7 @@ class ShopsTotalResponse extends $pb.GeneratedMessage {
   factory ShopsTotalResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopsTotalResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..aInt64(1, _omitFieldNames ? '' : 'TotalNum', protoName: 'TotalNum')
+    ..aInt64(1, _omitFieldNames ? '' : 'totalNum')
     ..hasRequiredFields = false
   ;
 
@@ -1336,6 +1336,9 @@ class ShopsRequest extends $pb.GeneratedMessage {
     $core.String? userId,
     $core.String? keyword,
     $core.int? year,
+    SortOrderType? sortOrder,
+    $core.double? latitude,
+    $core.double? longitude,
   }) {
     final $result = create();
     if (searchTypes != null) {
@@ -1350,6 +1353,15 @@ class ShopsRequest extends $pb.GeneratedMessage {
     if (year != null) {
       $result.year = year;
     }
+    if (sortOrder != null) {
+      $result.sortOrder = sortOrder;
+    }
+    if (latitude != null) {
+      $result.latitude = latitude;
+    }
+    if (longitude != null) {
+      $result.longitude = longitude;
+    }
     return $result;
   }
   ShopsRequest._() : super();
@@ -1357,10 +1369,13 @@ class ShopsRequest extends $pb.GeneratedMessage {
   factory ShopsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopsRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..pc<SearchType>(1, _omitFieldNames ? '' : 'SearchTypes', $pb.PbFieldType.KE, protoName: 'SearchTypes', valueOf: SearchType.valueOf, enumValues: SearchType.values, defaultEnumValue: SearchType.SEARCH_TYPE_IN_CURRENT_SALES)
-    ..aOS(2, _omitFieldNames ? '' : 'UserId', protoName: 'UserId')
-    ..aOS(3, _omitFieldNames ? '' : 'Keyword', protoName: 'Keyword')
-    ..a<$core.int>(4, _omitFieldNames ? '' : 'Year', $pb.PbFieldType.O3, protoName: 'Year')
+    ..pc<SearchType>(1, _omitFieldNames ? '' : 'searchTypes', $pb.PbFieldType.KE, valueOf: SearchType.valueOf, enumValues: SearchType.values, defaultEnumValue: SearchType.SEARCH_TYPE_IN_CURRENT_SALES)
+    ..aOS(2, _omitFieldNames ? '' : 'userId')
+    ..aOS(3, _omitFieldNames ? '' : 'keyword')
+    ..a<$core.int>(4, _omitFieldNames ? '' : 'year', $pb.PbFieldType.O3)
+    ..e<SortOrderType>(5, _omitFieldNames ? '' : 'sortOrder', $pb.PbFieldType.OE, defaultOrMaker: SortOrderType.SORT_ORDER_NO, valueOf: SortOrderType.valueOf, enumValues: SortOrderType.values)
+    ..a<$core.double>(6, _omitFieldNames ? '' : 'latitude', $pb.PbFieldType.OD)
+    ..a<$core.double>(7, _omitFieldNames ? '' : 'longitude', $pb.PbFieldType.OD)
     ..hasRequiredFields = false
   ;
 
@@ -1414,6 +1429,33 @@ class ShopsRequest extends $pb.GeneratedMessage {
   $core.bool hasYear() => $_has(3);
   @$pb.TagNumber(4)
   void clearYear() => clearField(4);
+
+  @$pb.TagNumber(5)
+  SortOrderType get sortOrder => $_getN(4);
+  @$pb.TagNumber(5)
+  set sortOrder(SortOrderType v) { setField(5, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasSortOrder() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearSortOrder() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.double get latitude => $_getN(5);
+  @$pb.TagNumber(6)
+  set latitude($core.double v) { $_setDouble(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasLatitude() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearLatitude() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.double get longitude => $_getN(6);
+  @$pb.TagNumber(7)
+  set longitude($core.double v) { $_setDouble(6, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasLongitude() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearLongitude() => clearField(7);
 }
 
 class ShopsResponse extends $pb.GeneratedMessage {
@@ -1431,7 +1473,7 @@ class ShopsResponse extends $pb.GeneratedMessage {
   factory ShopsResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopsResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..pc<Shop>(1, _omitFieldNames ? '' : 'Shops', $pb.PbFieldType.PM, protoName: 'Shops', subBuilder: Shop.create)
+    ..pc<Shop>(1, _omitFieldNames ? '' : 'shops', $pb.PbFieldType.PM, subBuilder: Shop.create)
     ..hasRequiredFields = false
   ;
 
@@ -1479,8 +1521,8 @@ class ShopRequest extends $pb.GeneratedMessage {
   factory ShopRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'UserId', protoName: 'UserId')
-    ..aInt64(2, _omitFieldNames ? '' : 'ShopId', protoName: 'ShopId')
+    ..aOS(1, _omitFieldNames ? '' : 'userId')
+    ..aInt64(2, _omitFieldNames ? '' : 'shopId')
     ..hasRequiredFields = false
   ;
 
@@ -1539,7 +1581,7 @@ class ShopResponse extends $pb.GeneratedMessage {
   factory ShopResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'ShopResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..aOM<Shop>(1, _omitFieldNames ? '' : 'Shop', protoName: 'Shop', subBuilder: Shop.create)
+    ..aOM<Shop>(1, _omitFieldNames ? '' : 'shop', subBuilder: Shop.create)
     ..hasRequiredFields = false
   ;
 
@@ -1595,8 +1637,8 @@ class StampRequest extends $pb.GeneratedMessage {
   factory StampRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'StampRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'UserId', protoName: 'UserId')
-    ..aInt64(2, _omitFieldNames ? '' : 'ShopId', protoName: 'ShopId')
+    ..aOS(1, _omitFieldNames ? '' : 'userId')
+    ..aInt64(2, _omitFieldNames ? '' : 'shopId')
     ..hasRequiredFields = false
   ;
 
@@ -1655,7 +1697,7 @@ class StampResponse extends $pb.GeneratedMessage {
   factory StampResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'StampResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'egp'), createEmptyInstance: create)
-    ..a<$core.int>(1, _omitFieldNames ? '' : 'NumberOfTimes', $pb.PbFieldType.O3, protoName: 'NumberOfTimes')
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'numberOfTimes', $pb.PbFieldType.O3)
     ..hasRequiredFields = false
   ;
 

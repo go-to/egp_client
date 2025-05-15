@@ -59,6 +59,7 @@ class MyApp extends ConsumerWidget {
                     address: '',
                   ),
             },
+            debugShowCheckedModeBanner: false,
           );
         });
   }

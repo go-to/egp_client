@@ -57,5 +57,20 @@ class SearchType extends $pb.ProtobufEnum {
   const SearchType._($core.int v, $core.String n) : super(v, n);
 }
 
+class SortOrderType extends $pb.ProtobufEnum {
+  static const SortOrderType SORT_ORDER_NO = SortOrderType._(0, _omitEnumNames ? '' : 'SORT_ORDER_NO');
+  static const SortOrderType SORT_ORDER_DISTANCE = SortOrderType._(1, _omitEnumNames ? '' : 'SORT_ORDER_DISTANCE');
+
+  static const $core.List<SortOrderType> values = <SortOrderType> [
+    SORT_ORDER_NO,
+    SORT_ORDER_DISTANCE,
+  ];
+
+  static final $core.Map<$core.int, SortOrderType> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static SortOrderType? valueOf($core.int value) => _byValue[value];
+
+  const SortOrderType._($core.int v, $core.String n) : super(v, n);
+}
+
 
 const _omitEnumNames = $core.bool.fromEnvironment('protobuf.omit_enum_names');

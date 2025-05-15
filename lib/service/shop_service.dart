@@ -30,14 +30,19 @@ class ShopService {
   }
 
   static Future<ShopsResponse?> getShops(BuildContext context, String userId,
-      [List<int>? searchCondition, String? searchKeyword]) async {
+      [List<int>? searchCondition,
+      String? searchKeyword,
+      int? sortOrder,
+      double? latitude,
+      double? longitude]) async {
     // 店舗情報を取得
     final channel = GrpcService.getChannel();
     ShopsResponse? shops;
 
     try {
       final searchParams = searchCondition ?? [];
-      shops = await GrpcService.getShops(userId, searchParams, searchKeyword);
+      shops = await GrpcService.getShops(
+          userId, searchParams, searchKeyword, sortOrder, latitude, longitude);
     } on GrpcError catch (e) {
       print('Caught error: $e');
       Util.showAlertDialog(

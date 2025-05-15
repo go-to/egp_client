@@ -257,7 +257,7 @@ class _ShopPageDetail extends ConsumerState<ShopDetailPage> {
                 message,
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: Config.fontSizeMiddleLarge,
+                  fontSize: Config.fontSizeMediumLarge,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
