@@ -107,6 +107,11 @@ class Config {
 
   // 設定
   static const String settingPageTitle = '設定画面';
+  static const String settingItemAccount = 'アカウント';
+  static const String accountNewEntry = '新規登録';
+  static const String accountLogin = 'ログイン';
+  static const String accountNickname = 'ニックネーム';
+  static const String accountEmail = 'メールアドレス';
   static const String settingItemTheme = 'テーマ';
   static const String themeLight = 'ライトモード';
   static const String themeDark = 'ダークモード';
