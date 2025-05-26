@@ -107,6 +107,7 @@ class Config {
 
   // 設定
   static const String settingPageTitle = '設定画面';
+  static const String settingItemTheme = 'テーマ';
   static const String themeLight = 'ライトモード';
   static const String themeDark = 'ダークモード';
   static const String themeSystemSetting = 'システム設定に従う';
