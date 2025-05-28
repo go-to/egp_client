@@ -109,7 +109,8 @@ class Config {
   static const String settingPageTitle = '設定画面';
   static const String settingItemAccount = 'アカウント';
   static const String accountNewEntry = '新規登録';
-  static const String accountLogin = 'ログイン';
+  static const String accountSignIn = 'ログイン';
+  static const String accountSignOut = 'ログアウト';
   static const String accountNickname = 'ニックネーム';
   static const String accountEmail = 'メールアドレス';
   static const String settingItemTheme = 'テーマ';
@@ -117,8 +118,26 @@ class Config {
   static const String themeDark = 'ダークモード';
   static const String themeSystemSetting = 'システム設定に従う';
 
+  // ユーザー登録
+  static const String userNewEntryPageTitle = 'アカウント登録';
+  static const String userEmail = 'メールアドレス';
+  static const String userPassword = 'パスワード';
+  static const String userDisplayName = 'ユーザー名';
+  static const String charactersThatDetermineWhetherAnEmailAddressIsValid = '@';
+  static const String userInputEnableRegExp = r'[\x20-\x7E]'; // 半角ASCII文字のみ許可
+  static const String entryNewUser = 'アカウントを登録する';
+  static const String signIn = 'ログインする';
+  static const int minimumPasswordLength = 8;
+  static const int minimumDisplayNameLength = 4;
+
+  // ログイン
+  static const String userSignInPageTitle = 'ログイン';
+
   // メッセージ(成功系)
   static const String messageUrlCopied = 'URLをコピーしました';
+  static const String successEntryNewUser = 'アカウント登録が完了しました';
+  static const String successSignInUser = 'ログインしました';
+  static const String successSignOutUser = 'ログアウトしました';
 
   // メッセージ(促進系)
   static const String pleaseEnableLocationServices = '位置情報サービスを有効にしてください';
@@ -128,15 +147,36 @@ class Config {
   static const String locationPermissionDenied = '位置情報の権限が拒否されました';
   static const String locationPermissionPermanentlyDenied =
       '位置情報の権限が永久に拒否されています';
-  static const String failedToAnonymousLogin = '匿名ログインに失敗しました';
-  static const String failedToLogout = 'ログアウトに失敗しました';
+  static const String failedToAnonymousSignIn = '匿名ログインに失敗しました';
+  static const String failedToSignIn = 'ログインに失敗しました';
+  static const String failedToSignOut = 'ログアウトに失敗しました';
   static const String failedToGetAnonymousUserInformation =
       '匿名ユーザー情報の取得に失敗しました';
+  static const String anonymousUserDoesNotExist = '匿名ユーザーが存在しません';
   static const String failedToGetLocationInformation = '位置情報の取得に失敗しました';
   static const String failedToGetShopInformation = '店舗情報の取得に失敗しました';
+  static const String thisEmailAddressIsAlreadyRegistered = '既に登録済みのメールアドレスです';
+  static const String invalidEmailFormat = '無効なメール形式です';
+  static const String pleaseEnterAValidEmail = '有効なメールを入力してください';
+  static const String inputMustBeManyCharacters = '%sは%s文字以上入力してください';
   static const String anErrorHasOccurred = 'エラーが発生しました';
   static const String error = 'Error';
   static const String errorDetail = '%s: %s';
+
+  // エラーコード
+  static const String errorCodeFirebaseAuthErrorFailedSignInAnonymously =
+      'failed-sign-in-anonymously';
+  static const String errorCodeFirebaseAuthErrorFailedSignIn = 'failed-sign-in';
+  static const String errorCodeFirebaseAuthErrorFailedSignOut =
+      'failed-sign-out';
+  static const String errorCodeFirebaseAuthErrorFailedGetCurrentUser =
+      'failed-get-current-user';
+  static const String errorCodeFirebaseAuthErrorEmailAlreadyInUse =
+      'email-already-in-use';
+  static const String errorCodeFirebaseAuthErrorInvalidEmail = 'invalid-email';
+  static const String errorCodeFirebaseAuthErrorWeakPassword =
+      'weak-passwordweak-password';
+  static const String errorCodeFirebaseAuthErrorInvalidDisplayNameLength = 'invalid-display-name-length';
 
   // ボタンのラベル
   static const String buttonLabelOk = 'OK';

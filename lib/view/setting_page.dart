@@ -1,3 +1,7 @@
+import 'package:egp_client/view/auth_wrapper.dart';
+import 'package:egp_client/view/user_signin_page.dart';
+import 'package:egp_client/view/user_new_entry_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,6 +19,30 @@ class SettingPage extends ConsumerWidget {
     // 現在のテーマからカラースキームを取得
     final colorScheme = Theme.of(context).colorScheme;
     final user = ref.read(authServiceProvider.notifier).getCurrentUser();
+
+    Future<void> _signOut() async {
+      try {
+        // ログアウト処理
+        await AuthService().signOut();
+
+        // ページ遷移処理
+        Function callback = (() => {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => AuthWrapper()),
+              ),
+            });
+
+        // 完了ダイアログ
+        Util.showAlertDialog(
+            context, Config.successSignOutUser, Config.buttonLabelOk, callback);
+      } on FirebaseAuthException catch (e) {
+        String message = Config.anErrorHasOccurred;
+
+        // エラーダイアログ
+        Util.showAlertDialog(context, message, Config.buttonLabelOk);
+      }
+    }
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
@@ -49,15 +77,25 @@ class SettingPage extends ConsumerWidget {
                     if (user!.isAnonymous) ...{
                       ElevatedButton(
                         child: Text(Config.accountNewEntry),
-                        onPressed: () {
-                          // TODO 新規登録処理
+                        onPressed: () async {
+                          // アカウント登録
+                          await Navigator.of(context).push<bool>(
+                            MaterialPageRoute(builder: (context) {
+                              return UserNewEntryPage();
+                            }),
+                          );
                         },
                       ),
                       SizedBox(height: 16),
                       ElevatedButton(
-                        child: Text(Config.accountLogin),
-                        onPressed: () {
-                          // TODO ログイン処理
+                        child: Text(Config.accountSignIn),
+                        onPressed: () async {
+                          // ログイン
+                          await Navigator.of(context).push<bool>(
+                            MaterialPageRoute(builder: (context) {
+                              return UserSignInPage();
+                            }),
+                          );
                         },
                       ),
                     } else ...{
@@ -85,7 +123,12 @@ class SettingPage extends ConsumerWidget {
                           ),
                         ),
                       ),
-                      // TODO ログアウト
+                      // ログアウト処理
+                      SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: _signOut,
+                        child: const Text(Config.accountSignOut),
+                      ),
                     }
                   ],
                 ),
