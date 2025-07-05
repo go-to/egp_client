@@ -11,11 +11,11 @@ class Util {
 
   static void showAlertDialog(
       BuildContext context, String text, String buttonLabel,
-      [Function? func]) {
+      [Function? func]) async {
     // 現在のテーマからカラースキームを取得
     final colorScheme = Theme.of(context).colorScheme;
 
-    showDialog(
+    await showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(

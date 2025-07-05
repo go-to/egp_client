@@ -1,6 +1,8 @@
 import 'package:egp_client/provider/theme_notifier_provider.dart';
 import 'package:egp_client/view/auth_wrapper.dart';
 import 'package:egp_client/view/shop_detail_page.dart';
+import 'package:egp_client/view/user_signin_page.dart';
+import 'package:egp_client/view/user_new_entry_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -58,6 +60,8 @@ class MyApp extends ConsumerWidget {
                     shopName: '',
                     address: '',
                   ),
+              '/user_new_entry': (_) => UserNewEntryPage(),
+              '/user_signin': (_) => UserSignInPage(),
             },
             debugShowCheckedModeBanner: false,
           );
