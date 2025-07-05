@@ -40,11 +40,33 @@ class Config {
   static const String shopCardAttributeBusinessHours = '提供時間';
   static const int customMarkerIconGenerateProcessBatchSize = 100;
 
+  // ボトムシート
+  static const double bottomSheetMinSize = 0.05;
+  static const double bottomSheetMaxSize = 0.785;
+  static const double bottomSheetMinusValueFirst = 0.02;
+  static const double bottomSheetMinusValueSecond = 0.05;
+  static const int bottomSheetScreenHeightMinusThresholdFirst = 900;
+  static const int bottomSheetScreenHeightMinusThresholdSecond = 800;
+  static const String sortOrderLabel = '表示順: ';
+  static const String noMatchingShops = '該当する店舗はありません';
+  static const String showMap = '地図';
+  static const String selectCard = '選択';
+
   // 現在地ボタン
   static const double currentPositionButtonWidth = 55;
   static const double currentPositionButtonHeight = 55;
   static const double currentPositionButtonPositionRight = 10;
   static const double currentPositionButtonPositionBottom = 20;
+
+  // 地図表示ボタン
+  static const double showMapButtonWidth = 100;
+  static const double showMapButtonHeight = 55;
+  static const double showMapButtonPositionRight = 10;
+  static const double showMapButtonPositionBottom = 20;
+
+  // ボタンのスペース
+  static const int buttonMarginBottomWhenCardOpen = 200;
+  static const int buttonMarginBottomNormal = 30;
 
   // 検索項目
   static const Map<int, String> searchItemList = {
@@ -53,6 +75,12 @@ class Config {
     2: '不定休',
     3: '完全予約制',
     4: 'ビアカクテル部門',
+  };
+
+  // 並び順
+  static const Map<int, String> sortOrderList = {
+    0: '店舗No.順',
+    1: '現在地から近い順',
   };
 
   // 店舗詳細
@@ -123,14 +151,15 @@ class Config {
   // 文字サイズ
   static final double fontSizeVeryLarge = 36;
   static final double fontSizeLarge = 20;
-  static final double fontSizeMiddleLarge = 16;
+  static final double fontSizeMediumLargeMiddle = 18;
+  static final double fontSizeMediumLarge = 16;
   static final double fontSizeNormal = 14;
   static final double fontSizeSmall = 12;
   static final double fontSizeVerySmall = 10;
 
   // アイコンサイズ
   static final double iconSizeLarge = 24;
-  static final double iconSizeMiddleSmall = 18;
+  static final double iconSizeMediumSmall = 18;
   static final double iconSizeSmall = 16;
 
   // 秒数
