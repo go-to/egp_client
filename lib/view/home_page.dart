@@ -89,7 +89,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             Icon(
               icon,
               color: isSelected ? Colors.black : colorScheme.primary,
-              size: Config.iconSizeMiddleSmall,
+              size: Config.iconSizeMediumSmall,
             ),
             SizedBox(height: 4),
             Text(
